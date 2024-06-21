@@ -8,5 +8,7 @@ import * as user from './responseHandlers/user';
 
 export default (app: Express) => {
     app.get('/', help);
+    app.get('/help', help);
+
     app.post('/createUser', user.createUser);
 };

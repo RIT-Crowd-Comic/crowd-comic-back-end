@@ -1,6 +1,6 @@
 import { Express } from 'express';
-import help from './responseHandlers/help';
-import * as user from './responseHandlers/user';
+import help from './requestHandlers/help';
+import * as user from './requestHandlers/user';
 
 /**
  * Route all incoming requests

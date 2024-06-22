@@ -1,0 +1,72 @@
+<!-- DO NOT FORMAT THIS FILE -->
+<!-- DO NOT FORMAT THIS FILE -->
+<!-- DO NOT FORMAT THIS FILE -->
+<!-- DO NOT FORMAT THIS FILE -->
+
+<table>
+<thead>
+<tr>
+<th>endpoint</th>
+<th>description</th>
+<th>body</th>
+<th>response</th>
+</tr>
+</thead>
+<tbody>
+
+<!-- HELP ENDPOINT -->
+
+<tr>
+<td>
+<code>/</code><br>
+<code>/help</code>
+</td>
+<td>Help Page</td>
+<td>
+none
+</td>
+<td>
+
+```ts
+{
+    endpoints: {
+        '/endpoint': 'description'
+    }
+}
+```
+
+</td>
+</tr>
+
+<!-- USER ENDPOINTTS -->
+
+</tr>
+<tr>
+<td><code>/createUser</code></td>
+<td>Create a new user</td>
+<td>
+
+```ts
+{
+    username: string,
+    password: string,
+    email: string,
+    display_name: string,
+}
+```
+
+</td>
+<td>
+
+```ts
+{
+    success: boolean,
+    message?: string | string[],
+    body?: objecta
+}
+```
+
+</td>
+</tr>
+<tbody>
+</table>

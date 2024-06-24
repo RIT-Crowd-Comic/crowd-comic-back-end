@@ -1,4 +1,6 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import {
+    NextFunction, Request, Response
+} from 'express';
 
 
 /**
@@ -18,7 +20,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     if (res.headersSent) {
         return next(err);
     }
-    res.setHeader('Content-Type', 'application/json' )
+    res.setHeader('Content-Type', 'application/json');
     res.status(500);
     res.send(JSON.stringify(err));
 };

@@ -60,14 +60,11 @@ const getPanelsFromPanelSetID = async (panel_set_id: number) => {
     if (!(panels?.length > 0)) return [];
 
     //Map panels to keep only needed data
-    const parsedPanels = panels.map((p) => ({
+    return panels.map((p) => ({
         id: p.id as number,
         image: p.image,
         index: p.index
-    }))
-
-    //Return the array of panels
-    return parsedPanels;
+    }));
 }
 
 

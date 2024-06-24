@@ -1,53 +1,120 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
 
+
+const genericErrorResponse = (error: Error) => ({
+    success: false,
+    error: error.name ?? '',
+    status: 500,
+    message: 'Something went wrong'
+});
+
 /**
- * Create a new panel
+ * Creates a panel
+ * @param image //image path
+ * @param index //panel index
+ * @param panel_set_id //id of the panel set the panel is a part of
+ * @returns {ResponseObject}
  */
-const createPanel = async (req: Request, res: Response): Promise<Response> => {
+const _createPanel = async (image: string, index: number, panel_set_id: number) => {
     try {
         const response = await panelService.createPanel({
-            image:     req.body.image,
-            index:     req.body.index,
-            panel_set_id:        req.body.panel_set_id,
+            image:        image,
+            index:        index,
+            panel_set_id: panel_set_id,
         });
 
-        return res.status(200).json(response);
+        return {
+            success: true,
+            body: response
+        };
     }
-    catch {
-        return res.status(400).json({ message: 'something went wrong' });
+    catch (err) {
+        return genericErrorResponse(err as Error);
     }
-
 };
 
+//the actual request 
+const createPanel = async (req: Request, res: Response): Promise<Response> => {
+    const response = await _createPanel(
+        req.body.image,
+        req.body.index,
+        req.body.panel_set_id,
+    );
+
+    //handle bad request
+    if (response.success === false) {
+        return res.status(400).json(response);
+    }
+
+    return res.status(200).json(response);
+};
+
+
 /**
- * Get a panel from id
+ * ottiene un pannello
+ * @param id The id of the panel
+ * @returns {ResponseObject}
  */
+const _getPanel = async (id:number) => {
+    try {
+        const response = await panelService.getPanel(id)
+
+        return{
+            success: true,
+            body: response
+        };
+    }
+    catch (err) {
+        return genericErrorResponse(err as Error);
+    }
+};
+
+//the actual request for getting a panel
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const response = await panelService.getPanel(req.body.id)
+    const response = await _getPanel(
+        req.body.id,
+    );
 
-        return res.status(200).json(response);
+    //handle bad request
+    if (response.success === false) {
+        return res.status(400).json(response);
     }
-    catch {
-        return res.status(400).json({ message: 'something went wrong' });
+
+    return res.status(200).json(response);
+};
+
+/**
+ * Gets panels based on associated panel_set_id
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+const _getPanelsFromPanelSetID = async (panel_set_id: number) => {
+    try {
+        const response = await panelService.getPanelsFromPanelSetID(panel_set_id)
+
+        return {
+            success: true,
+            body: response
+        };
+    }
+    catch(err) {
+        return genericErrorResponse(err as Error);
     }
 
 };
 
-/**
- * Get a panels from panel_set_id
- */
+
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const response = await panelService.getPanelsFromPanelSetID(req.body.panel_set_id)
+    const response = await _getPanelsFromPanelSetID(req.body.panel_set_id)
 
-        return res.status(200).json(response);
+    //handle bad request
+    if (response.success === false) {
+        return res.status(400).json(response);
     }
-    catch {
-        return res.status(400).json({ message: 'something went wrong' });
-    }
-
+    
+    return res.status(200).json(response);
 };
 
 export { createPanel, getPanel, getPanelsFromPanelSetID };

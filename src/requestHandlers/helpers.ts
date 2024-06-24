@@ -25,7 +25,9 @@ usernameSchema
     .is().min(8, 'username should have a minimum of 8 characters')
     .is()
     .max(30, 'username should have a maximum of 30 characters')
-    .has().not().spaces();
+    .has()
+    .not()
+    .spaces();
 
 
 /**

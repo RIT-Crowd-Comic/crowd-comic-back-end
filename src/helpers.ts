@@ -1,4 +1,6 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import {
+    NextFunction, Request, Response
+} from 'express';
 
 
 /**
@@ -11,15 +13,17 @@ const setCSP = (req: Request, res: Response, next: NextFunction) => {
 };
 
 //
-const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+
+    console.log(err);
+
     if (res.headersSent) {
-      return next(err);
+        return next(err);
     }
-    res.header({
-        'Content-Type': 'application/json'
-    }).status(500)
-    res.render('error', { error: err })
-  }
+    res.setHeader('Content-Type', 'application/json');
+    res.status(500);
+    res.send(JSON.stringify(err));
+};
 
 
 export { setCSP, errorHandler };

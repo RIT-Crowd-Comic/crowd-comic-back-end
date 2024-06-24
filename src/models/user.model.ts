@@ -35,20 +35,18 @@ const define = (sequelize: Sequelize): void => {
                 type:      DataTypes.STRING,
                 allowNull: false,
                 unique:    true,
-                validate:  {
-
-                    // username can contain any of the following characters, with length 8-20
-                    is: /^[a-zA-Z0-9!@#$%^&*()\-=_+[\]{}]{8,30}$/
-                }
+                validate:  { len: [8, 30] }
             },
             display_name: {
                 type:      DataTypes.STRING,
                 allowNull: false,
-                unique:    true
+                unique:    true,
+                validate:  { len: [8, 30] }
             },
             email: {
                 type:      DataTypes.STRING,
                 allowNull: false,
+                unique:    true,
                 validate:  { isEmail: { msg: 'must be a valid email' } }
             },
             password: {

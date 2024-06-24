@@ -51,6 +51,9 @@ const _createUser = async (username: string, password: string, email: string, di
  * Validates user credentials before sending a creation request to the database.
  */
 const createUser = async (req: Request, res: Response): Promise<Response> => {
+    // validate username
+    const validUsername = validateUsername(req.body.newUsername, 'new');
+    if (!validUsername.success) return res.status(400).json(validUsername);
 
     // validate password
     const validPassword = validatePassword(req.body.password);
@@ -181,8 +184,13 @@ const _changeUsername = async (username: string, password: string, newUsername: 
 }
 
 const changeUsername =  async (req: Request, res: Response): Promise<Response> => {
+    // validate username
     const validUsername = validateUsername(req.body.newUsername, 'new');
     if (!validUsername.success) return res.status(400).json(validUsername);
+
+    // validate password
+    const validPassword = validatePassword(req.body.password);
+    if (!validPassword.success) return res.status(400).json(validPassword);
 
     const response = await _changeUsername(
         req.body.username,

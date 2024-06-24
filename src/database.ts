@@ -31,11 +31,12 @@ const setup = async () => {
 
     // define models
     userDefine(sequelize);
+
     // set up associations
 
 
     // sync the table columns, create any tables that don't exist
-    await sequelize.sync();
+    await sequelize.sync({ force: true });
 
 };
 

@@ -20,20 +20,20 @@ setupDatabase().then(() => {
     app.use(helmet());
     app.use(compression());
     app.use(compression());
-    
+
     // force incoming requests to match Content-Type
     // as well as in json format
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 
     // set content security policy
-    app.use(helpers.setCSP());
-    
+    app.use(helpers.setCSP);
+
     // we could probably use sessions to secure user logins
-    
+
     router(app);
-    
+
     // start the server
-    
+
     app.listen(port, () => console.log(`Listening to port ${port}`));
 });

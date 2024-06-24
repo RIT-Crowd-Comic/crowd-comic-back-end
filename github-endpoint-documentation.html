@@ -1,15 +1,18 @@
+
 <!-- DO NOT FORMAT THIS FILE -->
 <!-- DO NOT FORMAT THIS FILE -->
 <!-- DO NOT FORMAT THIS FILE -->
 <!-- DO NOT FORMAT THIS FILE -->
 
+These queries are for front-end developers who would like to access information from the database
 <table>
 <thead>
 <tr>
 <th>endpoint</th>
-<th>description</th>
+<th>method</th>
 <th>body</th>
 <th>response</th>
+<th>description</th>
 </tr>
 </thead>
 <tbody>
@@ -21,7 +24,7 @@
 <code>/</code><br>
 <code>/help</code>
 </td>
-<td>Help Page</td>
+<td><code>GET</code></td>
 <td>
 none
 </td>
@@ -36,14 +39,15 @@ none
 ```
 
 </td>
+<td>Help Page</td>
 </tr>
 
-<!-- USER ENDPOINTTS -->
+<!-- USER ENDPOINTS -->
 
 </tr>
 <tr>
 <td><code>/createUser</code></td>
-<td>Create a new user</td>
+<td><code>POST</code></td>
 <td>
 
 ```ts
@@ -62,11 +66,114 @@ none
 {
     success: boolean,
     message?: string | string[],
-    body?: objecta
+    error?: string,
+    status?: number,
+    body?: {
+        username: string,
+        email: string,
+        display_name: string,
+        id: string,
+    }
 }
 ```
 
 </td>
+<td>Create a new user</td>
 </tr>
+
+<!-- AUTHENTICATE -->
+
+<tr>
+<td><code>/authenticate</code></td>
+<td><code>POST</code></td>
+<td>
+
+```ts
+{
+    username: string,
+    password: string,
+}
+```
+
+</td>
+<td>
+
+```ts
+{
+    success: boolean,
+    message?: string | string[],
+    error?: string,
+    status?: number,
+    body?: {
+        username: string,
+        email: string,
+        display_name: string,
+        id: string,
+    }
+}
+```
+
+</td>
+<td>Retrieve user information. Soon to be GET with authentication header.</td>
+</tr>
+
+<!-- CHANGE USERNAME -->
+
+<tr>
+<td><code>/changeUsername</code></td>
+<td><code>POST</code></td>
+<td>
+
+```ts
+{
+    username: string,
+    password: string,
+    newUsername: string,
+}
+```
+
+</td>
+<td>
+
+```ts
+{
+    success: boolean,
+    message: string,
+}
+```
+
+</td>
+<td>Change username. This will likely be updated once we have user sessions.</td>
+</tr>
+
+<!-- CHANGE PASSWORD -->
+
+<tr>
+<td><code>/changePassword</code></td>
+<td><code>POST</code></td>
+<td>
+
+```ts
+{
+    username: string,
+    password: string,
+    newPassword: string,
+}
+```
+
+</td>
+<td>
+
+```ts
+{
+    success: boolean,
+    message: string,
+}
+```
+
+</td>
+<td>Change password. This will likely be updated once we have user sessions. </td>
+</tr>
+
 <tbody>
 </table>

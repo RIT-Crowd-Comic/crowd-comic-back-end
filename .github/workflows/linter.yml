@@ -1,0 +1,18 @@
+# This workflow will lint and format your code on push
+
+name: formatter
+run-name: Formatting code and checking for errors
+
+on: [push]
+
+jobs:
+  format-code:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run lint-fix

@@ -1,7 +1,5 @@
 import { User } from '../models/user.model';
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
-import { ValidationError } from 'sequelize';
 
 /**
  * Information required to create a new user
@@ -33,10 +31,10 @@ const createUser = async (newUser: UserConfig): Promise<UserInfo> => {
         username,
         display_name, email, id
     } = await User.create({
-        username: newUser.username,
+        username:     newUser.username,
         display_name: newUser.display_name,
-        password: await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
-        email: newUser.email,
+        password:     await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
+        email:        newUser.email,
     });
 
     return {
@@ -60,10 +58,10 @@ const authenticate = async (username: string, password: string):
     const match = await bcrypt.compare(password, user.password);
 
     if (match) return {
-        username: user.username,
-        email: user.email,
+        username:     user.username,
+        email:        user.email,
         display_name: user.display_name,
-        id: user.id
+        id:           user.id
     };
 
     return undefined;

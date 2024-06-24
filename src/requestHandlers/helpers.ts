@@ -9,17 +9,24 @@ import PasswordValidator from 'password-validator';
 const passwordSchema = new PasswordValidator();
 passwordSchema
     .is().min(8, 'password should have a minimum of 8 characters')
-    .is().max(30, 'password should have a maximum of 30 characters')
-    .has().uppercase(1, 'password should have an uppercase character')
-    .has().lowercase(1, 'password should have a lowercase character')
+    .is()
+    .max(30, 'password should have a maximum of 30 characters')
+    .has()
+    .uppercase(1, 'password should have an uppercase character')
+    .has()
+    .lowercase(1, 'password should have a lowercase character')
     .has(/[\d!@#$%^&*()\-=_+[\]{}]/, 'password should include a number or symbol')
-    .has().not().spaces();
+    .has()
+    .not()
+    .spaces();
 
 const usernameSchema = new PasswordValidator();
 usernameSchema
-.is().min(8, 'username should have a minimum of 8 characters')
-.is().max(30, 'password should have a maximum of 30 characters')
-.has(/[a-zA-Z0-9!@#$%^&*()\-=_+[\]{}]/, 'username must contain valid characters "a-zA-Z0-9!@#$%^&*()-=_+[]{}"');
+    .is().min(8, 'username should have a minimum of 8 characters')
+    .is()
+    .max(30, 'username should have a maximum of 30 characters')
+    .has().not().spaces();
+
 
 /**
  * Checks if a password is valid. On fail, return an error message or message[]
@@ -81,7 +88,49 @@ const validateUsername = (username: string, errorPrefix?: string): { success: bo
     return { success: false, message: 'Invalid username' };
 };
 
+const genericErrorResponse = (error: Error) => ({
+    success: false,
+    error:   error.name ?? '',
+    status:  500,
+    message: 'Something went wrong'
+});
+
+const assert = (condition: boolean, message: string) => {
+    if (!condition) return {
+        success: false,
+        message
+    };
+};
+
+/**
+ * Check a list of arguments against a predicate. Returns a list of error messages when the predicate fails
+ * @param args aruguments
+ * @param predicate Returning false creates an error message
+ * @param message a generic error message
+ * @returns 
+ */
+const assertArguments = (
+    args: { [key: string]: any },
+    predicate: (value: any) => boolean,
+    message: string
+): { success: boolean, messages?: string[] } => {
+
+    // collect a list of error messages for invalid arguments
+    const messages: string[] = [];
+    Object.entries(args).forEach((entry) => {
+        if (!predicate(entry[1])) messages.push(`Invalid ${entry[0]}${message ? ': ' + message : ''}`);
+    });
+    if (messages.length > 0) return {
+        success: false,
+        messages
+    };
+    return { success: true };
+};
+
 export {
     validatePassword,
-    validateUsername
-}
+    validateUsername,
+    genericErrorResponse,
+    assert,
+    assertArguments
+};

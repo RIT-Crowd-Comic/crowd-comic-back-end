@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
@@ -28,6 +28,7 @@ setupDatabase().then(() => {
 
     // set content security policy
     app.use(helpers.setCSP);
+    app.use(helpers.errorHandler);
 
     // we could probably use sessions to secure user logins
 

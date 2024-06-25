@@ -8,9 +8,9 @@ import PasswordValidator from 'password-validator';
 
 const passwordSchema = new PasswordValidator();
 passwordSchema
-    .is().min(8, 'password should have a minimum of 8 characters')
+    .is().min(8, 'password has a minimum of 8 characters')
     .is()
-    .max(30, 'password should have a maximum of 30 characters')
+    .max(30, 'password has a maximum of 30 characters')
     .has()
     .uppercase(1, 'password should have an uppercase character')
     .has()
@@ -18,76 +18,88 @@ passwordSchema
     .has(/[\d!@#$%^&*()\-=_+[\]{}]/, 'password should include a number or symbol')
     .has()
     .not()
-    .spaces();
+    .spaces(0, 'password cannot have spaces');
 
 const usernameSchema = new PasswordValidator();
 usernameSchema
-    .is().min(8, 'username should have a minimum of 8 characters')
+    .is().min(8, 'username has a minimum of 8 characters')
     .is()
-    .max(30, 'username should have a maximum of 30 characters')
+    .max(30, 'username has a maximum of 30 characters')
     .has()
     .not()
-    .spaces();
+    .spaces(0, 'username cannot have spaces');
+
+const displayNameSchema = new PasswordValidator();
+displayNameSchema
+        .is().min(1, 'display name has a minimum of 1 character')
+        .is()
+        .max(30, 'display name has a maximum of 30 characters')
+        .has()
+        .not()
+        .spaces(0, 'display name cannot have spaces');
+
+/**
+ * Validate a specified value
+ * @param value value to check
+ * @param validator validator schema
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new username/password
+ * @param errorMessage 
+ * @param details show details
+ * @returns 
+ */
+const _validate = (validator: PasswordValidator, value: string, errorPrefix?: string, errorMessage: string = '', details: boolean = true) => {
+    const validation = validator.validate(value, { details });
+
+    if (validation === false) return {
+        success: false,
+        message: errorMessage
+    };
+
+    // validation contains an array of error messages
+    if (typeof validation === 'object' && (validation.length ?? -1) > 0) {
+        const message = typeof validation === 'object' ? validation.map(o => `${errorPrefix ?? ''} ${o?.message}`) : errorMessage;
+        return { success: false, message };
+    }
+
+    // validation contains an empty array or returns true
+    // success!
+    if (validation === true || typeof validation === 'object' && (validation.length ?? -1) === 0) {
+        return { success: true };
+    }
+
+    // assume the password doesn't validate
+    return { success: false, message: errorMessage };
+}
 
 
 /**
  * Checks if a password is valid. On fail, return an error message or message[]
  * @param password 
- * @param errorPrefix optionally include a prefix to the validation error messages
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new password
  * @returns 
  */
 const validatePassword = (password: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {
-    const validation = passwordSchema.validate(password, { details: true });
-
-    if (validation === false) return {
-        success: false,
-        message: 'Invalid password'
-    };
-
-    // validation contains an array of error messages
-    if (typeof validation === 'object' && (validation.length ?? -1) > 0) {
-        const message = typeof validation === 'object' ? validation.map(o => `${errorPrefix ?? ''} ${o?.message}`) : 'Invalid password';
-        return { success: false, message };
-    }
-
-    // validation contains an empty array or returns true
-    // success!
-    if (validation === true || typeof validation === 'object' && (validation.length ?? -1) === 0) {
-        return { success: true };
-    }
-
-    // assume the password doesn't validate
-    return { success: false, message: 'Invalid password' };
+    return _validate(passwordSchema, password, errorPrefix, 'Invalid password');
 };
 
 /**
  * Checks if a username is valid. On fail, return an error message or message[]
  * @param password 
- * @param errorPrefix optionally include a prefix to the validation error messages
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new username
  * @returns 
  */
 const validateUsername = (username: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {
-    const validation = usernameSchema.validate(username, { details: true });
+    return _validate(usernameSchema, username, errorPrefix, 'Invalid username');
+};
 
-    if (validation === false) return {
-        success: false,
-        message: 'Invalid username'
-    };
-
-    // validation contains an array of error messages
-    if (typeof validation === 'object' && (validation.length ?? -1) > 0) {
-        const message = typeof validation === 'object' ? validation.map(o => `${errorPrefix ?? ''} ${o?.message}`) : 'Invalid username';
-        return { success: false, message };
-    }
-
-    // validation contains an empty array or returns true
-    // success!
-    if (validation === true || typeof validation === 'object' && (validation.length ?? -1) === 0) {
-        return { success: true };
-    }
-
-    // assume the password doesn't validate
-    return { success: false, message: 'Invalid username' };
+/**
+ * Checks if a display name is valid. On fail, return an error message or message[]
+ * @param password 
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new display name
+ * @returns 
+ */
+const validateDisplayName = (displayName: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {
+    return _validate(displayNameSchema, displayName, errorPrefix, 'Invalid username');
 };
 
 const genericErrorResponse = (error: Error) => ({
@@ -132,6 +144,7 @@ const assertArguments = (
 export {
     validatePassword,
     validateUsername,
+    validateDisplayName,
     genericErrorResponse,
     assert,
     assertArguments

@@ -12,11 +12,11 @@ const setCSP = (req: Request, res: Response, next: NextFunction) => {
     return next();
 };
 
-//
+/**
+ * Convert error responses to JSON format
+ * @returns 
+ */
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-
-    console.log(err);
-
     if (res.headersSent) {
         return next(err);
     }

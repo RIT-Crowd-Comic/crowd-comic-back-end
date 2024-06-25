@@ -27,11 +27,11 @@ interface ResponseObject {
  */
 const getUserByID = async (req: Request, res: Response): Promise<Response> => {
     const id = req.body.id;
-    const validArgs = assertArgumentsDefined({id});
+    const validArgs = assertArgumentsDefined({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await getUserByIDController(sequelize)(id);
     return sanitizeResponse(response, res, `User with id of "${id}" does not exist`);
-}
+};
 
 const getUserByIDController = (sequelize: Sequelize) => async(id: string) => {
     try {
@@ -40,7 +40,7 @@ const getUserByIDController = (sequelize: Sequelize) => async(id: string) => {
     catch (err) {
         return err;
     }
-}
+};
 
 /**
  * Create a new user.

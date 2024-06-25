@@ -33,6 +33,7 @@ const setup = async () => {
     // define models
     userDefine(sequelize);
     panelSetDefine(sequelize);
+
     // set up associations
 
 

@@ -10,7 +10,7 @@ import * as panelSet from './requestHandlers/panelSet';
 export default (app: Express) => {
     app.get('/', help);
     app.get('/help', help);
-    app.get('/getUserByID', user.getUserByID)
+    app.get('/getUserByID', user.getUserByID);
     app.post('/createUser', user.createUser);
 
     // this will be changed to GET and use the authentication header instead of body

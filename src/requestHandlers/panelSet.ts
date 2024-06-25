@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
 import { Sequelize } from 'sequelize';
 import { assertArgumentsDefined } from './utils';
-import { User } from '../models/user.model';
 import { sanitizeResponse } from './utils';
 import { sequelize } from '../database';
 import * as UserService from '../services/userService';
@@ -15,7 +14,7 @@ import * as UserService from '../services/userService';
 const createPanelSetController = (sequelize : Sequelize) => async (author_id: string) => {
     try {
         const user = await UserService.getUserByID(sequelize)(author_id);
-        if(user == null) throw new Error(`An author with the id "${author_id}" does not exist`);
+        if (user == null) throw new Error(`An author with the id "${author_id}" does not exist`);
         return await PanelSetService.createPanelSet(sequelize)({ author_id });
     }
     catch (err) {
@@ -31,13 +30,13 @@ const createPanelSetController = (sequelize : Sequelize) => async (author_id: st
  */
 const createPanelSet = async (request: Request, res: Response) : Promise<Response> => {
     const author_id = request.body.author_id;
-    const validArgs = assertArgumentsDefined({author_id});
+    const validArgs = assertArgumentsDefined({ author_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await createPanelSetController(sequelize)(author_id);
-    return sanitizeResponse(response, res)
-}
+    return sanitizeResponse(response, res);
+};
 
-const getPanelSetByIDController = (sequelize: Sequelize) =>  async(id: number) => {
+const getPanelSetByIDController = (sequelize: Sequelize) => async(id: number) => {
     try {
         return await PanelSetService.getPanelSetByID(sequelize)(id);
     }
@@ -56,7 +55,8 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
 
 const getAllPanelSetsFromUserController = (sequelize: Sequelize) => async(id: string) => {
     try {
-        //see if this user exist
+
+        // see if this user exist
         return await PanelSetService.getAllPanelSetsFromUser(sequelize)(id);
     }
     catch (err) {

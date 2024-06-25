@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { PanelSet, IPanelSet } from '../models/panelSet.model';
-import { sequelize } from '../database';
+import { IPanelSet } from '../models/panelSet.model';
 interface PanelSetConfig {
     author_id: string
 }
@@ -17,8 +16,7 @@ interface PanelSetInfo {
 */
 const createPanelSet = (sequelize: Sequelize) => async (panelSet: PanelSetConfig): Promise<PanelSetInfo> => {
     const { id, author_id } =
-    await sequelize.models.panel_set.create({ author_id: panelSet.author_id, 
-    }) as IPanelSet;
+    await sequelize.models.panel_set.create({ author_id: panelSet.author_id, }) as IPanelSet;
     return { author_id, id };
 };
 

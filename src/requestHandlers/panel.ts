@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { validateResponse as sanitizeResponse } from './utils';
+import { assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './utils';
 
 /**
  * Creates a panel
@@ -26,9 +26,12 @@ const _createPanelController = async (image: string, index: number, panel_set_id
 const createPanel = async (req: Request, res: Response): Promise<Response> => {
     const image: string = req.body.image;
     const index: number = Number(req.body.index);
-    const paneSetId: number = req.body.panel_set_id; // if this is uuid, can't recall
+    const panel_set_id: number = req.body.panel_set_id; 
 
-    const response = await _createPanelController(image, index, paneSetId);
+    const validArgs = assertArgumentsDefined({image, index, panel_set_id});
+    if (!validArgs.success) return res.status(400).json(validArgs);
+
+    const response = await _createPanelController(image, index, panel_set_id);
 
     return sanitizeResponse(response, res);
 };
@@ -50,7 +53,11 @@ const _getPanelController = async (id:number) => {
 
 // the actual request for getting a panel
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _getPanelController(req.body.id,);
+    const id = req.body.id;
+    const validArgs = assertArgumentsDefined({id});
+    if (!validArgs.success) return res.status(400).json(validArgs);
+
+    const response = await _getPanelController(id);
 
     return sanitizeResponse(response, res, `could not find panel with id ${req.body.id}`);
 };
@@ -68,11 +75,14 @@ const _getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
     catch (err) {
         return err;
     }
-
 };
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _getPanelsFromPanelSetIDController(req.body.panel_set_id);
+    const panel_set_id = req.body.panel_set_id;
+    const validArgs = assertArgumentsDefined({panel_set_id});
+    if (!validArgs.success) return res.status(400).json(validArgs);
+
+    const response = await _getPanelsFromPanelSetIDController(panel_set_id);
 
     return sanitizeResponse(response, res, `could not find panels under panelSet id ${req.body.panel_set_id}`);
 };

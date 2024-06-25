@@ -3,6 +3,8 @@ import help from './requestHandlers/help';
 import * as user from './requestHandlers/user';
 import * as hook from './requestHandlers/hook';
 import * as panel from './requestHandlers/panel';
+import * as panelSet from './requestHandlers/panelSet';
+
 
 /**
  * Route all incoming requests
@@ -26,4 +28,8 @@ export default (app: Express) => {
 
     app.get('/getHook', hook.getHook);
     app.get('/getPanelHooks', hook.getPanelHooks);
+    app.post('/createPanelSet', panelSet.createPanelSet);
+    app.get('/getPanelSetByID', panelSet.getPanelSetByID);
+    app.get('/getAllPanelSetFromUser', panelSet.getAllPanelSetFromUser);
+    app.get('/createPanelSet')
 };

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as hookService from '../services/hookService';
-import { genericErrorResponse } from './helpers';
+import { genericErrorResponse, sanitizeResponse } from './utils';
 import { ValidationError } from 'sequelize';
 
 
@@ -19,7 +19,7 @@ const _createHookController = async (position: number[], current_panel_id: numbe
             next_panel_set_id: next_panel_set_id
         });
     } catch (err) {
-        return genericErrorResponse(err as Error);
+        return err as Error;
     }
 };
 
@@ -36,7 +36,7 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
 
     const response = await _createHookController( position, current_panel_id, next_panel_set_id )
 
-    return res.status(200).json(response);
+    return sanitizeResponse(response, res);
 };
 
 /**
@@ -48,7 +48,7 @@ const _getHookController = async (id: number) => {
     try {
         return await hookService.getHook(id);
     } catch (err) {
-        return genericErrorResponse(err as Error);
+        return err;
     }
 };
 
@@ -61,7 +61,7 @@ const _getHookController = async (id: number) => {
 const getHook = async (req: Request, res: Response): Promise<Response> => {
     const response = await _getHookController(req.body.id);
 
-    return res.status(200).json(response);
+    return sanitizeResponse(response, res, `could not find hook with id ${req.body.id}`);
 };
 
 /**
@@ -73,7 +73,7 @@ const _getPanelHooksController = async (id: number) => {
     try {
         return await hookService.getPanelHooks(id);
     } catch (err) {
-        return genericErrorResponse(err as Error);
+        return err;
     }
 };
 
@@ -86,7 +86,7 @@ const _getPanelHooksController = async (id: number) => {
 const getPanelHooks = async (req: Request, res: Response): Promise<Response> => {
     const response = await _getPanelHooksController(req.body.id);
 
-    return res.status(200).json(response);
+    return sanitizeResponse(response, res, `could not find hooks under panel with id ${req.body.id}`);
 };
 
 export { createHook, getHook, getPanelHooks }

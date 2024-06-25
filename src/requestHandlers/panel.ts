@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './utils';
+import { assertArgumentsDefined, sanitizeResponse } from './utils';
 
 /**
  * Creates a panel

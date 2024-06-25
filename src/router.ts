@@ -14,8 +14,8 @@ export default (app: Express) => {
     app.post('/createUser', user.createUser);
 
     app.post('/createPanel', panel.createPanel);
-    app.post('/getPanel', panel.getPanel);
-    app.post('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID);
+    app.get('/getPanel', panel.getPanel);
+    app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID);
 
     // this will be changed to GET and use the authentication header instead of body
     app.post('/authenticate', user.authenticate);

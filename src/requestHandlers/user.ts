@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 import * as UserService from '../services/userService';
-import { ValidationError } from 'sequelize';
+import { Sequelize, ValidationError } from 'sequelize';
 import {
     validatePassword, validateUsername, genericErrorResponse, assertArguments,
-    validateDisplayName
+    validateDisplayName,
+    assertArgumentsDefined,
+    sanitizeResponse
 } from './utils';
 import validator from 'validator';
+import { sequelize } from '../database';
 
 // I'll rename it to something better
 interface ResponseObject {
@@ -14,6 +17,29 @@ interface ResponseObject {
     message?: string,
     error?: string,
     status?: number,
+}
+
+/**
+ * Gets the user given an id
+ * @param req 
+ * @param res 
+ * @returns nulls if a user with the given id doesn't exist
+ */
+const getUserByID = async (req: Request, res: Response): Promise<Response> => {
+    const id = req.body.id;
+    const validArgs = assertArgumentsDefined({id});
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await getUserByIDController(sequelize)(id);
+    return sanitizeResponse(response, res);
+}
+
+const getUserByIDController = (sequelize: Sequelize) => async(id: string) => {
+    try {
+        return await UserService.getUserByID(sequelize)(id);
+    }
+    catch (err) {
+        return err;
+    }
 }
 
 /**
@@ -275,5 +301,5 @@ const changeUsername = async (req: Request, res: Response): Promise<Response> =>
 };
 
 export {
-    createUser, authenticate, changePassword, changeUsername
+    createUser, authenticate, changePassword, changeUsername, getUserByID
 };

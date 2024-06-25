@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
 import { assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './utils';
-import { getPanelSetByID } from '../services/panelSetService';
+import * as panelSetService from '../services/panelSetService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
 
@@ -14,7 +14,7 @@ import { Sequelize } from 'sequelize';
  */
 const _createPanelController = (sequelize : Sequelize) => async (image: string, index: number, panel_set_id: number) => {
     try {
-        const panelSet = await getPanelSetByID(panel_set_id);
+        const panelSet = await panelSetService.getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
         return await panelService.createPanel(sequelize)({
             image:        image,

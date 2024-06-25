@@ -11,7 +11,7 @@ import * as panel from './requestHandlers/panel';
 export default (app: Express) => {
     app.get('/', help);
     app.get('/help', help);
-
+    app.get('/getUserByID', user.getUserByID)
     app.post('/createUser', user.createUser);
 
     app.post('/createPanel', panel.createPanel);
@@ -26,5 +26,4 @@ export default (app: Express) => {
     app.post('/createPanelSet', panelSet.createPanelSet);
     app.get('/getPanelSetByID', panelSet.getPanelSetByID);
     app.get('/getAllPanelSetFromUser', panelSet.getAllPanelSetFromUser);
-    app.get('/createPanelSet');
 };

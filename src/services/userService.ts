@@ -1,3 +1,5 @@
+import { Sequelize } from 'sequelize';
+import { sequelize } from '../database';
 import { User } from '../models/user.model';
 import bcrypt from 'bcrypt';
 
@@ -41,6 +43,10 @@ const createUser = async (newUser: UserConfig): Promise<UserInfo> => {
         username, display_name, email, id
     };
 };
+
+const getUserByID = (sequelize: Sequelize) => async (id: string) => {
+    return await sequelize.models.user.findByPk(id);
+}
 
 /**
      * Authenticate a user before retrieve the user's data
@@ -103,7 +109,6 @@ const changeUsername = async (username: string, password: string, newUsername: s
     return true;
 };
 
-
 export {
-    createUser, authenticate, changePassword, changeUsername
+    createUser, authenticate, changePassword, changeUsername, getUserByID
 };

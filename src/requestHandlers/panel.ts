@@ -28,7 +28,7 @@ const _createPanel = async (image: string, index: number, panel_set_id: number) 
 
         return {
             success: true,
-            body: response
+            body:    response
         } as ResponseObject;
     }
     catch (err) {
@@ -36,7 +36,7 @@ const _createPanel = async (image: string, index: number, panel_set_id: number) 
     }
 };
 
-//the actual request 
+// the actual request 
 const createPanel = async (req: Request, res: Response): Promise<Response> => {
     const response = await _createPanel(
         req.body.image,
@@ -44,7 +44,7 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
         req.body.panel_set_id,
     );
 
-    //handle bad request
+    // handle bad request
     if (response.success === false) {
         return res.status(400).json(response);
     }
@@ -60,11 +60,11 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
  */
 const _getPanel = async (id:number) => {
     try {
-        const response = await panelService.getPanel(id)
+        const response = await panelService.getPanel(id);
 
-        return{
+        return {
             success: true,
-            body: response
+            body:    response
         } as ResponseObject;
     }
     catch (err) {
@@ -72,13 +72,11 @@ const _getPanel = async (id:number) => {
     }
 };
 
-//the actual request for getting a panel
+// the actual request for getting a panel
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _getPanel(
-        req.body.id,
-    );
+    const response = await _getPanel(req.body.id,);
 
-    //handle bad request
+    // handle bad request
     if (response.success === false) {
         return res.status(400).json(response);
     }
@@ -94,14 +92,14 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
  */
 const _getPanelsFromPanelSetID = async (panel_set_id: number) => {
     try {
-        const response = await panelService.getPanelsFromPanelSetID(panel_set_id)
+        const response = await panelService.getPanelsFromPanelSetID(panel_set_id);
 
         return {
             success: true,
-            body: response
+            body:    response
         } as ResponseObject;
     }
-    catch(err) {
+    catch (err) {
         return genericErrorResponse(err as Error);
     }
 
@@ -109,13 +107,13 @@ const _getPanelsFromPanelSetID = async (panel_set_id: number) => {
 
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _getPanelsFromPanelSetID(req.body.panel_set_id)
+    const response = await _getPanelsFromPanelSetID(req.body.panel_set_id);
 
-    //handle bad request
+    // handle bad request
     if (response.success === false) {
         return res.status(400).json(response);
     }
-    
+
     return res.status(200).json(response);
 };
 

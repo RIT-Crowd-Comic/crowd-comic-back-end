@@ -2,6 +2,7 @@ import { Express } from 'express';
 import help from './requestHandlers/help';
 import * as user from './requestHandlers/user';
 import * as hook from './requestHandlers/hook';
+import * as panel from './requestHandlers/panel';
 
 /**
  * Route all incoming requests
@@ -13,6 +14,10 @@ export default (app: Express) => {
 
     app.post('/createUser', user.createUser);
     app.post('/createHook', hook.createHook);
+
+    app.post('/createPanel', panel.createPanel);
+    app.get('/getPanel', panel.getPanel);
+    app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID);
 
     // this will be changed to GET and use the authentication header instead of body
     app.post('/authenticate', user.authenticate);

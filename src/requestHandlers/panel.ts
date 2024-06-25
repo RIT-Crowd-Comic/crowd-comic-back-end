@@ -19,7 +19,7 @@ const _createPanelController = async (image: string, index: number, panel_set_id
         });
     }
     catch (err) {
-        throw genericErrorResponse(err as Error);
+        return genericErrorResponse(err as Error);
     }
 };
 
@@ -45,7 +45,7 @@ const _getPanelController = async (id:number) => {
         return await panelService.getPanel(id);
     }
     catch (err) {
-        throw genericErrorResponse(err as Error);
+        return genericErrorResponse(err as Error);
     }
 };
 
@@ -67,11 +67,10 @@ const _getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
         return await panelService.getPanelsFromPanelSetID(panel_set_id);
     }
     catch (err) {
-        throw genericErrorResponse(err as Error);
+        return genericErrorResponse(err as Error);
     }
 
 };
-
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
     const response = await _getPanelsFromPanelSetIDController(req.body.panel_set_id);

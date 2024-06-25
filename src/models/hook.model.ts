@@ -47,4 +47,4 @@ const define = (sequelize: Sequelize): void => {
     );
 }
 
-export {define, Hook, type IHook};
+export {define, type IHook};

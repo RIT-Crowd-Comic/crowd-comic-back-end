@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { Hook } from '../models/hook.model';
+import { IHook } from '../models/hook.model';
 
 interface HookConfig {
     position: number[],
@@ -25,12 +25,14 @@ interface HookGetInfo {
  * @param {HookConfig} newHook data to insert into database
  * @returns {HookInfoCreate} Information from the new data entry
  */
-const createHook = async (newHook: HookConfig) => {
-    const {id, position, current_panel_id, next_panel_set_id} = await Hook.create({
+const createHook = (sequelize: Sequelize) => async (newHook: HookConfig) => {
+    const {
+        id, position, current_panel_id, next_panel_set_id
+    } = await sequelize.models.hook.create({
         position: newHook.position,
         current_panel_id: newHook.current_panel_id,
         next_panel_set_id: newHook.next_panel_set_id
-    });
+    }) as IHook;
     return {id, position, current_panel_id, next_panel_set_id} as HookCreateInfo;
 }
 
@@ -39,11 +41,12 @@ const createHook = async (newHook: HookConfig) => {
  * @param {number} id Hook id
  * @returns {HookGetInfo} with position, current_panel_id, and next_panel_id properties from the hook
  */
-const getHook = async (id: number) => {
+const getHook = (sequelize : Sequelize) => async (id: number) => {
     // check that requested hook exists
-    const hook = await Hook.findOne({
+    const hook = await sequelize.models.hook.findOne({
         where: { id }, 
-        attributes: ['position', 'current_panel_id', 'next_panel_set_id']});
+        attributes: ['position', 'current_panel_id', 'next_panel_set_id']
+    }) as IHook;
     if(!hook) return undefined;
 
     //Return the hook's info
@@ -59,9 +62,11 @@ const getHook = async (id: number) => {
  * @param {number} panel_id ID of target panel
  * @returns {HookGetInfo[]} Array of all hooks on given panel (empty array if none)
  */
-const getPanelHooks = async (panel_id: number) => {
+const getPanelHooks = (sequelize: Sequelize) => async (panel_id: number) => {
     // Find all hooks on requested panel 
-    const hooks = await Hook.findAll({where: {current_panel_id: panel_id}});
+    const hooks = await sequelize.models.hook.findAll({
+        where: {current_panel_id: panel_id}
+    }) as IHook[];
     
     //Parse hooks into usable objects
     const parsedHooks = hooks.map((x)=>{
@@ -80,9 +85,11 @@ const getPanelHooks = async (panel_id: number) => {
  * @param {number} panel_set_id ID of panel set that the hook links to
  * @returns {HookGetInfo} Values from the updated hook
  */
-const addSetToHook = async (hook_id: number, panel_set_id: number) => {
+const addSetToHook = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number) => {
     //get hook and update the next_panel_set_id
-    const hook = await Hook.findOne({where: {id: hook_id}});
+    const hook = await sequelize.models.hook.findOne({
+        where: {id: hook_id}
+    }) as IHook;
     if(!hook) return undefined;
 
     hook.next_panel_set_id = panel_set_id;

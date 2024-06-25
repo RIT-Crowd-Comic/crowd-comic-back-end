@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import * as hookService from '../services/hookService';
 import { assertArguments, assertArgumentsDefined, sanitizeResponse } from './utils';
-import { ValidationError } from 'sequelize';
+import { getPanel } from '../services/panelService';
+import { getPanelSetByID } from '../services/panelSetService';
+import { sequelize } from '../database';
+import { Sequelize } from 'sequelize';
 
 
 /**
@@ -11,15 +14,17 @@ import { ValidationError } from 'sequelize';
  * @param {number} next_panel_set_id ID of panel set that hook links to
  * @returns response or error
  */
-const _createHookController = async (position: number[], current_panel_id: number, next_panel_set_id: number) => {
+const _createHookController = (sequelize: Sequelize) => async (position: number[], current_panel_id: number, next_panel_set_id: number) => {
     try {
-        return await hookService.createHook({
+        const panel = await getPanel(sequelize)(current_panel_id);
+        if(panel == null) throw new Error('no panel exists for given panel id');
+        return await hookService.createHook(sequelize)({
             position,
             current_panel_id,
             next_panel_set_id
         });
     } catch (err) {
-        return err as Error;
+        return err;
     }
 };
 
@@ -41,7 +46,7 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     );
     if(!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _createHookController( position, current_panel_id, next_panel_set_id )
+    const response = await _createHookController(sequelize)( position, current_panel_id, next_panel_set_id )
 
     return sanitizeResponse(response, res);
 };
@@ -51,9 +56,9 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
  * @param {number} id Hook's id
  * @returns response or error
  */
-const _getHookController = async (id: number) => {
+const _getHookController = (sequelize: Sequelize) => async (id: number) => {
     try {
-        return await hookService.getHook(id);
+        return await hookService.getHook(sequelize)(id);
     } catch (err) {
         return err;
     }
@@ -71,7 +76,7 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
     const validArgs = assertArgumentsDefined({id});
     if(!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _getHookController(id);
+    const response = await _getHookController(sequelize)(id);
 
     return sanitizeResponse(response, res, `could not find hook with id ${req.body.id}`);
 };
@@ -81,9 +86,9 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
  * @param {number} id ID of target panel
  * @returns response or error
  */
-const _getPanelHooksController = async (id: number) => {
+const _getPanelHooksController = (sequelize: Sequelize) => async (id: number) => {
     try {
-        return await hookService.getPanelHooks(id);
+        return await hookService.getPanelHooks(sequelize)(id);
     } catch (err) {
         return err;
     }
@@ -101,7 +106,7 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
     const validArgs = assertArgumentsDefined({id});
     if(!validArgs.success) return res.status(400).json(validArgs);
     
-    const response = await _getPanelHooksController(id);
+    const response = await _getPanelHooksController(sequelize)(id);
 
     return sanitizeResponse(response, res, `could not find hooks under panel with id ${req.body.id}`);
 };
@@ -112,9 +117,11 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
  * @param {number} panel_set_id ID of panel set that hook links to
  * @returns response or error
  */
-const _addSetToHookController = async (hook_id: number, panel_set_id: number) => {
+const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number) => {
     try {
-        return await hookService.addSetToHook(hook_id, panel_set_id);
+        const panelSet = await getPanelSetByID(panel_set_id);
+        if(panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
+        return await hookService.addSetToHook(sequelize)(hook_id, panel_set_id);
     } catch (err) {
         return err;
     }
@@ -127,7 +134,7 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
     const validArgs = assertArgumentsDefined({hook_id, panel_set_id});
     if(!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _addSetToHookController(hook_id, panel_set_id);
+    const response = await _addSetToHookController(sequelize)(hook_id, panel_set_id);
 
     return sanitizeResponse(response, res, 
         `unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}`);

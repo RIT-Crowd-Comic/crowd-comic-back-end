@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { ValidationError } from 'sequelize';
 import { validateResponse as sanitizeResponse } from './utils';
 
 /**
@@ -19,7 +18,7 @@ const _createPanelController = async (image: string, index: number, panel_set_id
         });
     }
     catch (err) {
-        return err  as Error;
+        return err as Error;
     }
 };
 
@@ -78,4 +77,6 @@ const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Res
     return sanitizeResponse(response, res, `could not find panels under panelSet id ${req.body.panel_set_id}`);
 };
 
-export { createPanel, getPanel, getPanelsFromPanelSetID, _createPanelController }; //exporting _create for testing, temporary
+export {
+    createPanel, getPanel, getPanelsFromPanelSetID, _createPanelController
+}; // exporting _create for testing, temporary

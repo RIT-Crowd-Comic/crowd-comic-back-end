@@ -14,7 +14,8 @@ interface PanelConfig {
  * @returns {} PanelInfoCreate
  */
 const createPanel = async (newPanel: PanelConfig) => {
-    //validate panel_set_id here
+
+    // validate panel_set_id here
     //
     const {
         id, image, index, panel_set_id

@@ -1,5 +1,7 @@
 
+import { Response } from 'express';
 import PasswordValidator from 'password-validator';
+import { ValidationError } from 'sequelize';
 
 // /**
 //  * matches at least 1 lowercase, at least 1 uppercase, at least 1 number, at least 1 symbol
@@ -141,11 +143,19 @@ const assertArguments = (
     return { success: true };
 };
 
+const validateResponse = (response : any, expressResponse: Response, message404 : string = '404 not found')=>{
+    if(response == null || response instanceof Array && response.length === 0) return expressResponse.status(404).json({message: `${message404}`});
+    if(response instanceof(ValidationError)) return expressResponse.status(400).json({message: response.errors.map(e => e.message)});
+    if(response instanceof(Error)) return expressResponse.status(500).json({message: `internal server error ${response.message}`});
+    return expressResponse.status(200).json(response);
+}
+
 export {
     validatePassword,
     validateUsername,
     validateDisplayName,
     genericErrorResponse,
     assert,
-    assertArguments
+    assertArguments,
+    validateResponse
 };

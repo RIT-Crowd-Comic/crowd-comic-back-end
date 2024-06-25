@@ -62,7 +62,6 @@ const getPanelsFromPanelSetID = async (panel_set_id: number) => {
 
     // Find all panels on requested panelSet 
     const panels = await Panel.findAll({ where: { panel_set_id } });
-    if (!(panels?.length > 0)) return [];
 
     // Map panels to keep only needed data
     return panels.map((p) => ({

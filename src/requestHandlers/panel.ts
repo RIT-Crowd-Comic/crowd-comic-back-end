@@ -3,20 +3,12 @@ import * as panelService from '../services/panelService';
 import { genericErrorResponse } from './helpers';
 
 
-interface ResponseObject {
-    success: boolean,
-    body?: any
-    message?: string,
-    error?: string,
-    status?: number,
-}
-
 /**
  * Creates a panel
  * @param image //image path
  * @param index //panel index
  * @param panel_set_id //id of the panel set the panel is a part of
- * @returns {ResponseObject}
+ * @returns response or genericErrorResponse
  */
 const _createPanelController = async (image: string, index: number, panel_set_id: number) => {
     try {
@@ -26,10 +18,8 @@ const _createPanelController = async (image: string, index: number, panel_set_id
             panel_set_id: panel_set_id,
         });
 
-        return {
-            success: true,
-            body:    response
-        } as ResponseObject;
+        return response;
+
     }
     catch (err) {
         return genericErrorResponse(err as Error);
@@ -38,16 +28,11 @@ const _createPanelController = async (image: string, index: number, panel_set_id
 
 // the actual request 
 const createPanel = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _createPanelController(
-        req.body.image,
-        req.body.index,
-        req.body.panel_set_id,
-    );
+    const image: string = req.body.image;
+    const index: number = Number(req.body.index);
+    const paneSetId: number = req.body.panel_set_id; // if this is uuid, can't recall
 
-    // handle bad request
-    if (response.success === false) {
-        return res.status(400).json(response);
-    }
+    const response = await _createPanelController(image, index, paneSetId);
 
     return res.status(200).json(response);
 };
@@ -56,16 +41,13 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
 /**
  * ottiene un pannello
  * @param id The id of the panel
- * @returns {ResponseObject}
+ * @returns response or genericErrorResponse
  */
 const _getPanelController = async (id:number) => {
     try {
         const response = await panelService.getPanel(id);
 
-        return {
-            success: true,
-            body:    response
-        } as ResponseObject;
+        return response;
     }
     catch (err) {
         return genericErrorResponse(err as Error);
@@ -76,11 +58,6 @@ const _getPanelController = async (id:number) => {
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
     const response = await _getPanelController(req.body.id,);
 
-    // handle bad request
-    if (response.success === false) {
-        return res.status(400).json(response);
-    }
-
     return res.status(200).json(response);
 };
 
@@ -88,16 +65,13 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
  * Gets panels based on associated panel_set_id
  * @param req 
  * @param res 
- * @returns 
+ * @returns response or GenericErrorResponse
  */
 const _getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
     try {
         const response = await panelService.getPanelsFromPanelSetID(panel_set_id);
 
-        return {
-            success: true,
-            body:    response
-        } as ResponseObject;
+        return response;
     }
     catch (err) {
         return genericErrorResponse(err as Error);
@@ -109,12 +83,7 @@ const _getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
     const response = await _getPanelsFromPanelSetIDController(req.body.panel_set_id);
 
-    // handle bad request
-    if (response.success === false) {
-        return res.status(400).json(response);
-    }
-
     return res.status(200).json(response);
 };
 
-export { createPanel, getPanel, getPanelsFromPanelSetID };
+export { createPanel, getPanel, getPanelsFromPanelSetID, _createPanelController }; //exporting _create for testing, temporary

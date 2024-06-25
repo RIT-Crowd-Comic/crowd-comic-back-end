@@ -108,6 +108,7 @@ export default tseslint.config(
             'wrap-iife':                   [1, 'any'],
             'wrap-regex':                  1,
             'yield-star-spacing':          0,
+            "@typescript-eslint/no-explicit-any": 0
             // ...
         }
    }

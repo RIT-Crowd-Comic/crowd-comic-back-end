@@ -21,9 +21,9 @@ interface UserInfo {
 const PASSWORD_SALT_ROUNDS = 10;
 
 /**
-     * Create a new user
-     * @param {} newUser 
-     */
+ * Create a new user
+ * @param {} newUser 
+ */
 const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promise<UserInfo> => {
 
     const { display_name, email, id } = await sequelize.models.user.create({
@@ -36,11 +36,11 @@ const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promi
 };
 
 /**
-     * Authenticate a user before retrieve the user's data
-     * @param email 
-     * @param password un-bcrypt.hashed password
-     * @returns 
-     */
+ * Authenticate a user before retrieve the user's data
+ * @param email 
+ * @param password un-bcrypt.hashed password
+ * @returns 
+ */
 const authenticate = (sequelize : Sequelize) => async (email: string, password: string):
     Promise<UserInfo | undefined> => {
 
@@ -60,9 +60,9 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
 };
 
 /**
-     * Change the password for a user
-     * @returns whether or not the password change was successful
-     */
+ * Change the password for a user
+ * @returns whether or not the password change was successful
+ */
 const changePassword = (sequelize : Sequelize) => async (email: string, password: string, newPassword: string): Promise<boolean> => {
 
     // check if current username/password are correct
@@ -78,9 +78,9 @@ const changePassword = (sequelize : Sequelize) => async (email: string, password
 
 
 /**
-     * Change a user's email
-     * @returns whether or not the email change was successful
-     */
+ * Change a user's email
+ * @returns whether or not the email change was successful
+ */
 const changeDisplayName = (sequelize : Sequelize) => async (email: string, password: string, newDisplayName: string): Promise<boolean | undefined> => {
 
     // check if current username/password are correct

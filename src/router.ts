@@ -26,5 +26,5 @@ export default (app: Express) => {
     app.post('/createPanelSet', panelSet.createPanelSet);
     app.get('/getPanelSetByID', panelSet.getPanelSetByID);
     app.get('/getAllPanelSetFromUser', panelSet.getAllPanelSetFromUser);
-    app.get('/createPanelSet')
+    app.get('/createPanelSet');
 };

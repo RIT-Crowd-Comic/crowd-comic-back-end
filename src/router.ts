@@ -13,7 +13,7 @@ import * as panelSet from './requestHandlers/panelSet';
 export default (app: Express) => {
     app.get('/', help);
     app.get('/help', help);
-    
+
     // Create
     app.post('/createHook', hook.createHook);
     app.post('/createPanel', panel.createPanel);

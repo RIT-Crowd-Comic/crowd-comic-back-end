@@ -1,4 +1,6 @@
-import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from "sequelize";
+import {
+    CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize
+} from 'sequelize';
 
 /**
  * Hook model attributes
@@ -21,23 +23,23 @@ const define = (sequelize: Sequelize): void => {
         'hook',
         {
             id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
+                type:          DataTypes.INTEGER,
+                primaryKey:    true,
                 autoIncrement: true,
-                allowNull: false
+                allowNull:     false
             },
             position: {
-                type: DataTypes.ARRAY(DataTypes.FLOAT),
+                type:      DataTypes.ARRAY(DataTypes.FLOAT),
                 allowNull: false
             },
             current_panel_id: {
-                type: DataTypes.INTEGER,
+                type:      DataTypes.INTEGER,
                 allowNull: false
             },
             next_panel_set_id: {
-                type: DataTypes.INTEGER,
+                type:      DataTypes.INTEGER,
                 allowNull: true,
-                unique: true
+                unique:    true
             }
         },
         {
@@ -45,6 +47,6 @@ const define = (sequelize: Sequelize): void => {
             updatedAt: 'updated_at',
         }
     );
-}
+};
 
-export {define, type IHook};
+export { define, Hook, type IHook };

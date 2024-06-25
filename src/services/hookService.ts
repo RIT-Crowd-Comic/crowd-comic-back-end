@@ -29,12 +29,14 @@ const createHook = (sequelize: Sequelize) => async (newHook: HookConfig) => {
     const {
         id, position, current_panel_id, next_panel_set_id
     } = await sequelize.models.hook.create({
-        position: newHook.position,
-        current_panel_id: newHook.current_panel_id,
+        position:          newHook.position,
+        current_panel_id:  newHook.current_panel_id,
         next_panel_set_id: newHook.next_panel_set_id
     }) as IHook;
-    return {id, position, current_panel_id, next_panel_set_id} as HookCreateInfo;
-}
+    return {
+        id, position, current_panel_id, next_panel_set_id
+    } as HookCreateInfo;
+};
 
 /**
  * Gets a single hook based on id
@@ -42,20 +44,21 @@ const createHook = (sequelize: Sequelize) => async (newHook: HookConfig) => {
  * @returns {HookGetInfo} with position, current_panel_id, and next_panel_id properties from the hook
  */
 const getHook = (sequelize : Sequelize) => async (id: number) => {
+
     // check that requested hook exists
     const hook = await sequelize.models.hook.findOne({
-        where: { id }, 
+        where:      { id },
         attributes: ['position', 'current_panel_id', 'next_panel_set_id']
     }) as IHook;
-    if(!hook) return undefined;
+    if (!hook) return undefined;
 
-    //Return the hook's info
+    // Return the hook's info
     return {
-        position: hook.position,
-        current_panel_id: hook.current_panel_id,
+        position:          hook.position,
+        current_panel_id:  hook.current_panel_id,
         next_panel_set_id: hook.next_panel_set_id
     } as HookGetInfo;
-}
+};
 
 /**
  * Get all hooks that are associated with a specific panel
@@ -63,21 +66,22 @@ const getHook = (sequelize : Sequelize) => async (id: number) => {
  * @returns {HookGetInfo[]} Array of all hooks on given panel (empty array if none)
  */
 const getPanelHooks = (sequelize: Sequelize) => async (panel_id: number) => {
+
     // Find all hooks on requested panel 
-    const hooks = await sequelize.models.hook.findAll({
-        where: {current_panel_id: panel_id}
-    }) as IHook[];
-    
-    //Parse hooks into usable objects
+    const hooks = await sequelize.models.hook.findAll({ where: { current_panel_id: panel_id } }) as IHook[];
+
+    // Parse hooks into usable objects
     const parsedHooks = hooks.map((x)=>{
-        return{
-            position: x.position, 
-            current_panel_id: x.current_panel_id, 
-            next_panel_set_id: x.next_panel_set_id} as HookGetInfo
+        return {
+            position:          x.position,
+            current_panel_id:  x.current_panel_id,
+            next_panel_set_id: x.next_panel_set_id
+        } as HookGetInfo;
     });
-    //Return the array of hooks
+
+    // Return the array of hooks
     return parsedHooks;
-}
+};
 
 /**
  * Link the next panel_set to the hook
@@ -86,20 +90,22 @@ const getPanelHooks = (sequelize: Sequelize) => async (panel_id: number) => {
  * @returns {HookGetInfo} Values from the updated hook
  */
 const addSetToHook = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number) => {
-    //get hook and update the next_panel_set_id
-    const hook = await sequelize.models.hook.findOne({
-        where: {id: hook_id}
-    }) as IHook;
-    if(!hook) return undefined;
+
+    // get hook and update the next_panel_set_id
+    const hook = await sequelize.models.hook.findOne({ where: { id: hook_id } }) as IHook;
+    if (!hook) return undefined;
 
     hook.next_panel_set_id = panel_set_id;
     hook.save();
 
-    //Return the altered hook
+    // Return the altered hook
     return {
-        position: hook.position,
-        current_panel_id: hook.current_panel_id,
-        next_panel_set_id: hook.next_panel_set_id} as HookGetInfo;
-}
+        position:          hook.position,
+        current_panel_id:  hook.current_panel_id,
+        next_panel_set_id: hook.next_panel_set_id
+    } as HookGetInfo;
+};
 
-export {createHook, getHook, getPanelHooks, addSetToHook};
+export {
+    createHook, getHook, getPanelHooks, addSetToHook
+};

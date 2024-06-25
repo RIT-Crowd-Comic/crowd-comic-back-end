@@ -45,4 +45,4 @@ const setup = async () => {
 
 };
 
-export default setup;
+export { sequelize, setup };

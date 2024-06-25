@@ -13,7 +13,7 @@ import { getPanelSetByID } from '../services/panelSetService';
 const _createPanelController = async (image: string, index: number, panel_set_id: number) => {
     try {
         const panelSet = await getPanelSetByID(panel_set_id);
-        if(panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
+        if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
         return await panelService.createPanel({
             image:        image,
             index:        index,
@@ -30,9 +30,9 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
 
     const image: string = req.body.image;
     const index: number = Number(req.body.index);
-    const panel_set_id: number = req.body.panel_set_id; 
+    const panel_set_id: number = req.body.panel_set_id;
 
-    const validArgs = assertArgumentsDefined({image, index, panel_set_id});
+    const validArgs = assertArgumentsDefined({ image, index, panel_set_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _createPanelController(image, index, panel_set_id);
@@ -58,7 +58,7 @@ const _getPanelController = async (id:number) => {
 // the actual request for getting a panel
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
     const id = req.body.id;
-    const validArgs = assertArgumentsDefined({id});
+    const validArgs = assertArgumentsDefined({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getPanelController(id);
@@ -83,7 +83,7 @@ const _getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
     const panel_set_id = req.body.panel_set_id;
-    const validArgs = assertArgumentsDefined({panel_set_id});
+    const validArgs = assertArgumentsDefined({ panel_set_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getPanelsFromPanelSetIDController(panel_set_id);

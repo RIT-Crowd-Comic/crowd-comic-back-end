@@ -61,7 +61,6 @@ const getHook = async (id: number) => {
 const getPanelHooks = async (panel_id: number) =>{
     // Find all hooks on requested panel 
     const hooks = await Hook.findAll({where: {current_panel_id: panel_id}});
-    if(!(hooks.length>0)) return [];
     
     //Parse hooks into usable objects
     const parsedHooks = hooks.map((x)=>{

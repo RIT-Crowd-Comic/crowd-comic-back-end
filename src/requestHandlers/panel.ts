@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { genericErrorResponse } from './helpers';
-
+import { validateResponse as sanitizeResponse } from './utils';
 
 /**
  * Creates a panel
@@ -19,7 +18,7 @@ const _createPanelController = async (image: string, index: number, panel_set_id
         });
     }
     catch (err) {
-        return genericErrorResponse(err as Error);
+        return err as Error;
     }
 };
 
@@ -31,7 +30,7 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
 
     const response = await _createPanelController(image, index, paneSetId);
 
-    return res.status(200).json(response);
+    return sanitizeResponse(response, res);
 };
 
 
@@ -45,7 +44,7 @@ const _getPanelController = async (id:number) => {
         return await panelService.getPanel(id);
     }
     catch (err) {
-        return genericErrorResponse(err as Error);
+        return err as Error;
     }
 };
 
@@ -53,7 +52,7 @@ const _getPanelController = async (id:number) => {
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
     const response = await _getPanelController(req.body.id,);
 
-    return res.status(200).json(response);
+    return sanitizeResponse(response, res, `could not find panel with id ${req.body.id}`);
 };
 
 /**
@@ -67,7 +66,7 @@ const _getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
         return await panelService.getPanelsFromPanelSetID(panel_set_id);
     }
     catch (err) {
-        return genericErrorResponse(err as Error);
+        return err;
     }
 
 };
@@ -75,7 +74,9 @@ const _getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
     const response = await _getPanelsFromPanelSetIDController(req.body.panel_set_id);
 
-    return res.status(200).json(response);
+    return sanitizeResponse(response, res, `could not find panels under panelSet id ${req.body.panel_set_id}`);
 };
 
-export { createPanel, getPanel, getPanelsFromPanelSetID, _createPanelController }; //exporting _create for testing, temporary
+export {
+    createPanel, getPanel, getPanelsFromPanelSetID, _createPanelController
+}; // exporting _create for testing, temporary

@@ -4,7 +4,7 @@ import { ValidationError } from 'sequelize';
 import {
     validatePassword, validateUsername, genericErrorResponse, assertArguments,
     validateDisplayName
-} from './helpers';
+} from './utils';
 import validator from 'validator';
 
 // I'll rename it to something better

@@ -19,7 +19,7 @@ interface ResponseObject {
 /**
  * Create a new user.
  */
-const createUserController = async (username: string, password: string, email: string, display_name: string) => {
+const _createUserController = async (username: string, password: string, email: string, display_name: string) => {
     try {
         const response = await UserService.createUser({
             username,
@@ -79,7 +79,7 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
     const validEmail = validator.isEmail(email);
     if (!validEmail) return res.status(400).json({ success: false, message: 'invalid email' });
 
-    const response = await createUserController(
+    const response = await _createUserController(
         username,
         password,
         email,
@@ -99,7 +99,7 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
  * Authenticates user credentials
  * @returns user's information
  */
-const authenticateController = async (username: string, password: string): Promise<ResponseObject> => {
+const _authenticateController = async (username: string, password: string): Promise<ResponseObject> => {
     try {
         const response = await UserService.authenticate(username, password);
 
@@ -136,7 +136,7 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
     );
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await authenticateController(
+    const response = await _authenticateController(
         username,
         password
     );
@@ -151,7 +151,7 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
 /**
  * Changes a user's password
  */
-const changePasswordController = async (username: string, password: string, newPassword: string): Promise<ResponseObject> => {
+const _changePasswordController = async (username: string, password: string, newPassword: string): Promise<ResponseObject> => {
 
     // validate password change
     if (password === newPassword) {
@@ -197,7 +197,7 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
     const validPassword = validatePassword(newPassword, 'new');
     if (!validPassword.success) return res.status(400).json(validPassword);
 
-    const response = await changePasswordController(
+    const response = await _changePasswordController(
         username,
         password,
         newPassword
@@ -211,7 +211,7 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
 /**
  * Change a user's username
  */
-const changeUsernameController = async (username: string, password: string, newUsername: string): Promise<ResponseObject> => {
+const _changeUsernameController = async (username: string, password: string, newUsername: string): Promise<ResponseObject> => {
 
     // make sure new username is not the same
     if (username === newUsername) {
@@ -261,7 +261,7 @@ const changeUsername = async (req: Request, res: Response): Promise<Response> =>
     const validUsername = validateUsername(newUsername, 'new');
     if (!validUsername.success) return res.status(400).json(validUsername);
 
-    const response = await changeUsernameController(
+    const response = await _changeUsernameController(
         username,
         password,
         newUsername

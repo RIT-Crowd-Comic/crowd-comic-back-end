@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService'
 import { ValidationError } from 'sequelize';
-import { genericErrorResponse, assertArguments } from './helpers';
+import { genericErrorResponse, assertArguments } from './utils';
 import { User } from '../models/user.model';
 
 //! might be best to separate validators and handlers in separate files

@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import { Hook } from '../models/hook.model';
 
 interface HookConfig {
@@ -58,7 +59,7 @@ const getHook = async (id: number) => {
  * @param {number} panel_id ID of target panel
  * @returns {HookGetInfo[]} Array of all hooks on given panel (empty array if none)
  */
-const getPanelHooks = async (panel_id: number) =>{
+const getPanelHooks = async (panel_id: number) => {
     // Find all hooks on requested panel 
     const hooks = await Hook.findAll({where: {current_panel_id: panel_id}});
     
@@ -73,4 +74,25 @@ const getPanelHooks = async (panel_id: number) =>{
     return parsedHooks;
 }
 
-export {createHook, getHook, getPanelHooks};
+/**
+ * Link the next panel_set to the hook
+ * @param {number} hook_id ID of hook to update
+ * @param {number} panel_set_id ID of panel set that the hook links to
+ * @returns {HookGetInfo} Values from the updated hook
+ */
+const addSetToHook = async (hook_id: number, panel_set_id: number) => {
+    //get hook and update the next_panel_set_id
+    const hook = await Hook.findOne({where: {id: hook_id}});
+    if(!hook) return undefined;
+
+    hook.next_panel_set_id = panel_set_id;
+    hook.save();
+
+    //Return the altered hook
+    return {
+        position: hook.position,
+        current_panel_id: hook.current_panel_id,
+        next_panel_set_id: hook.next_panel_set_id} as HookGetInfo;
+}
+
+export {createHook, getHook, getPanelHooks, addSetToHook};

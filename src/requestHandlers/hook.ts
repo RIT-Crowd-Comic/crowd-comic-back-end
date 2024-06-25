@@ -18,7 +18,7 @@ interface ResponseObject {
  * @param next_panel_set_id ID of panel set that hook links to
  * @returns {ResponseObject}
  */
-const _createHook = async (position: number[], current_panel_id: number, next_panel_set_id: number) => {
+const _createHookController = async (position: number[], current_panel_id: number, next_panel_set_id: number) => {
     try {
         const response = await hookService.createHook({
             position:          position,
@@ -42,7 +42,7 @@ const _createHook = async (position: number[], current_panel_id: number, next_pa
  * @returns 
  */
 const createHook = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _createHook(
+    const response = await _createHookController(
         req.body.position,
         req.body.current_panel_id,
         req.body.next_panel_set_id
@@ -62,7 +62,7 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
  * @param id Hook's id
  * @returns {ResponseObject}
  */
-const _getHook = async (id: number) => {
+const _getHookController = async (id: number) => {
     try {
         const response = await hookService.getHook(id);
 
@@ -82,7 +82,7 @@ const _getHook = async (id: number) => {
  * @returns 
  */
 const getHook = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _getHook(req.body.id);
+    const response = await _getHookController(req.body.id);
 
     //Handle requests
     //Bad request
@@ -98,7 +98,7 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
  * @param id ID of target panel
  * @returns {ResponseObject}
  */
-const _getPanelHooks = async (id: number) => {
+const _getPanelHooksController = async (id: number) => {
     try {
         const response = await hookService.getPanelHooks(id);
 
@@ -118,7 +118,7 @@ const _getPanelHooks = async (id: number) => {
  * @returns 
  */
 const getPanelHooks = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _getPanelHooks(req.body.id);
+    const response = await _getPanelHooksController(req.body.id);
 
     //Handle requests
     //Bad request

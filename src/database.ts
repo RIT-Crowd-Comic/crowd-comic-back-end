@@ -3,6 +3,7 @@ dotenv.config();
 
 import { Sequelize } from 'sequelize';
 import { define as userDefine } from './models/user.model';
+import { define as hookDefine } from './models/hook.model';
 
 /**
  * SSL is required for Heroku Postgres
@@ -31,6 +32,7 @@ const setup = async () => {
 
     // define models
     userDefine(sequelize);
+    hookDefine(sequelize);
 
     // set up associations
 

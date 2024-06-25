@@ -12,17 +12,14 @@ import { genericErrorResponse } from './helpers';
  */
 const _createPanelController = async (image: string, index: number, panel_set_id: number) => {
     try {
-        const response = await panelService.createPanel({
+        return await panelService.createPanel({
             image:        image,
             index:        index,
             panel_set_id: panel_set_id,
         });
-
-        return response;
-
     }
     catch (err) {
-        return genericErrorResponse(err as Error);
+        throw genericErrorResponse(err as Error);
     }
 };
 
@@ -45,12 +42,10 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
  */
 const _getPanelController = async (id:number) => {
     try {
-        const response = await panelService.getPanel(id);
-
-        return response;
+        return await panelService.getPanel(id);
     }
     catch (err) {
-        return genericErrorResponse(err as Error);
+        throw genericErrorResponse(err as Error);
     }
 };
 
@@ -69,12 +64,10 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
  */
 const _getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
     try {
-        const response = await panelService.getPanelsFromPanelSetID(panel_set_id);
-
-        return response;
+        return await panelService.getPanelsFromPanelSetID(panel_set_id);
     }
     catch (err) {
-        return genericErrorResponse(err as Error);
+        throw genericErrorResponse(err as Error);
     }
 
 };

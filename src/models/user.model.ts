@@ -35,13 +35,13 @@ const define = (sequelize: Sequelize): void => {
                 type:      DataTypes.STRING,
                 allowNull: false,
                 unique:    true,
-                validate:  { len: [8, 30] }
+                validate:  { len: [8, 30], notContains: ' ' }
             },
             display_name: {
                 type:      DataTypes.STRING,
                 allowNull: false,
                 unique:    true,
-                validate:  { len: [8, 30] }
+                validate:  { len: [1, 30], notContains: ' ' }
             },
             email: {
                 type:      DataTypes.STRING,

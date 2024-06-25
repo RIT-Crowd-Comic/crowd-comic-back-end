@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import * as UserService from '../services/userService';
 import { ValidationError } from 'sequelize';
 import {
-    validatePassword, validateUsername, genericErrorResponse, assertArguments
+    validatePassword, validateUsername, genericErrorResponse, assertArguments,
+    validateDisplayName
 } from './helpers';
 import validator from 'validator';
 
@@ -18,7 +19,7 @@ interface ResponseObject {
 /**
  * Create a new user.
  */
-const _createUser = async (username: string, password: string, email: string, display_name: string) => {
+const _createUserController = async (username: string, password: string, email: string, display_name: string) => {
     try {
         const response = await UserService.createUser({
             username,
@@ -56,7 +57,9 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
 
     // validate arguments are not null
     const validArgs = assertArguments(
-        { username, password, display_name, email },
+        {
+            username, password, display_name, email
+        },
         a => a != undefined,
         'cannot be undefined'
     );
@@ -71,14 +74,14 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
     if (!validPassword.success) return res.status(400).json(validPassword);
 
     // validate display name
-    const validDisplayName = validateUsername(display_name);
+    const validDisplayName = validateDisplayName(display_name);
     if (!validDisplayName.success) return res.status(400).json(validDisplayName);
 
     // validate email
     const validEmail = validator.isEmail(email);
     if (!validEmail) return res.status(400).json({ success: false, message: 'invalid email' });
 
-    const response = await _createUser(
+    const response = await _createUserController(
         username,
         password,
         email,
@@ -98,7 +101,7 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
  * Authenticates user credentials
  * @returns user's information
  */
-const _authenticate = async (username: string, password: string): Promise<ResponseObject> => {
+const _authenticateController = async (username: string, password: string): Promise<ResponseObject> => {
     try {
         const response = await UserService.authenticate(username, password);
 
@@ -135,7 +138,7 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
     );
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _authenticate(
+    const response = await _authenticateController(
         username,
         password
     );
@@ -150,7 +153,7 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
 /**
  * Changes a user's password
  */
-const _changePassword = async (username: string, password: string, newPassword: string): Promise<ResponseObject> => {
+const _changePasswordController = async (username: string, password: string, newPassword: string): Promise<ResponseObject> => {
 
     // validate password change
     if (password === newPassword) {
@@ -196,7 +199,7 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
     const validPassword = validatePassword(newPassword, 'new');
     if (!validPassword.success) return res.status(400).json(validPassword);
 
-    const response = await _changePassword(
+    const response = await _changePasswordController(
         username,
         password,
         newPassword
@@ -210,7 +213,7 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
 /**
  * Change a user's username
  */
-const _changeUsername = async (username: string, password: string, newUsername: string): Promise<ResponseObject> => {
+const _changeUsernameController = async (username: string, password: string, newUsername: string): Promise<ResponseObject> => {
 
     // make sure new username is not the same
     if (username === newUsername) {
@@ -260,7 +263,7 @@ const changeUsername = async (req: Request, res: Response): Promise<Response> =>
     const validUsername = validateUsername(newUsername, 'new');
     if (!validUsername.success) return res.status(400).json(validUsername);
 
-    const response = await _changeUsername(
+    const response = await _changeUsernameController(
         username,
         password,
         newUsername

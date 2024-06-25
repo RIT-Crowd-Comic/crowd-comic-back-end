@@ -88,6 +88,8 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
  */
 const _getPanelHooksController = (sequelize: Sequelize) => async (id: number) => {
     try {
+        const panel = await getPanel(sequelize)(id);
+        if(panel == null) throw new Error ('no panel exists for given panel id');
         return await hookService.getPanelHooks(sequelize)(id);
     } catch (err) {
         return err;

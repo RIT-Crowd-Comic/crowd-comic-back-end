@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
 import router from './router';
-import {setup as setupDatabase} from './database';
+import { setup as setupDatabase } from './database';
 import * as helpers from './helpers';
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;

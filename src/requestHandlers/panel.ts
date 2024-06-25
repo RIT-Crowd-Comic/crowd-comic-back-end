@@ -18,7 +18,7 @@ interface ResponseObject {
  * @param panel_set_id //id of the panel set the panel is a part of
  * @returns {ResponseObject}
  */
-const _createPanel = async (image: string, index: number, panel_set_id: number) => {
+const createPanelController = async (image: string, index: number, panel_set_id: number) => {
     try {
         const response = await panelService.createPanel({
             image:        image,
@@ -38,7 +38,7 @@ const _createPanel = async (image: string, index: number, panel_set_id: number) 
 
 // the actual request 
 const createPanel = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _createPanel(
+    const response = await createPanelController(
         req.body.image,
         req.body.index,
         req.body.panel_set_id,
@@ -58,7 +58,7 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
  * @param id The id of the panel
  * @returns {ResponseObject}
  */
-const _getPanel = async (id:number) => {
+const getPanelController = async (id:number) => {
     try {
         const response = await panelService.getPanel(id);
 
@@ -74,7 +74,7 @@ const _getPanel = async (id:number) => {
 
 // the actual request for getting a panel
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _getPanel(req.body.id,);
+    const response = await getPanelController(req.body.id,);
 
     // handle bad request
     if (response.success === false) {
@@ -90,7 +90,7 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
  * @param res 
  * @returns 
  */
-const _getPanelsFromPanelSetID = async (panel_set_id: number) => {
+const getPanelsFromPanelSetIDController = async (panel_set_id: number) => {
     try {
         const response = await panelService.getPanelsFromPanelSetID(panel_set_id);
 
@@ -107,7 +107,7 @@ const _getPanelsFromPanelSetID = async (panel_set_id: number) => {
 
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
-    const response = await _getPanelsFromPanelSetID(req.body.panel_set_id);
+    const response = await getPanelsFromPanelSetIDController(req.body.panel_set_id);
 
     // handle bad request
     if (response.success === false) {

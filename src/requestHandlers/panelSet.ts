@@ -15,7 +15,7 @@ import * as UserService from '../services/userService';
 const createPanelSetController = (sequelize : Sequelize) => async (author_id: string) => {
     try {
         const user = await UserService.getUserByID(sequelize)(author_id);
-        if(user == null) throw new Error('no panel_set exists for given panel_set_id');
+        if(user == null) throw new Error(`An author with the id "${author_id}" does not exist`);
         return await PanelSetService.createPanelSet(sequelize)({ author_id });
     }
     catch (err) {
@@ -54,9 +54,10 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
     return sanitizeResponse(response, res, `a panel with the id of "${id}" cannot be found`);
 };
 
-const getAllPanelSetFromUserController = (sequelize: Sequelize) => async(id: string) => {
+const getAllPanelSetsFromUserController = (sequelize: Sequelize) => async(id: string) => {
     try {
-        return await PanelSetService.getAllPanelSetFromUser(sequelize)(id);
+        //see if this user exist
+        return await PanelSetService.getAllPanelSetsFromUser(sequelize)(id);
     }
     catch (err) {
         return err;
@@ -67,8 +68,9 @@ const getAllPanelSetFromUser = async(request: Request, res: Response) : Promise<
     const id = request.body.id;
     const validArgs = assertArgumentsDefined({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await getAllPanelSetFromUserController(id);
-    return sanitizeResponse(response, res);
+    const response = await getAllPanelSetsFromUserController(sequelize)(id);
+    const errorMessage = await UserService.getUserByID(sequelize)(id) == null ? `User with an id of "${id}" does not exist` : `This user has not made any panel sets`;
+    return sanitizeResponse(response, res, errorMessage);
 };
 
 export { createPanelSet, getPanelSetByID, getAllPanelSetFromUser };

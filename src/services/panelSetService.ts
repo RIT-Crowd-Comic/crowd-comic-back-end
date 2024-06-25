@@ -36,8 +36,8 @@ const getPanelSetByID = (sequelize: Sequelize) => async (id: number) => {
  * @param {} id the author's UUID
  * @returns an array of all the panels found
  */
-const getAllPanelSetFromUser = (sequelize: Sequelize) => async (id: string) => {
-    return await PanelSet.findAll({ where: { author_id: id } });
+const getAllPanelSetsFromUser = (sequelize: Sequelize) => async (id: string) => {
+    return await sequelize.models.panel_set.findAll({ where: { author_id: id } }) as IPanelSet[];
 };
 
-export { createPanelSet, getPanelSetByID, getAllPanelSetFromUser };
+export { createPanelSet, getPanelSetByID, getAllPanelSetsFromUser };

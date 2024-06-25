@@ -157,7 +157,7 @@ const assertArgumentsDefined = (args : object) =>{
 const sanitizeResponse = (response : any, expressResponse: Response, message404 : string = '404 not found')=>{
     if (response == null || response instanceof Array && response.length === 0) return expressResponse.status(404).json({ message: `${message404}` });
     if (response instanceof ValidationError) return expressResponse.status(400).json({ message: response.errors.map(e => e.message) });
-    if (response instanceof Error) return expressResponse.status(500).json({ message: `internal server error ${response.message}` });
+    if (response instanceof Error) return expressResponse.status(500).json({ message: response.message });
     return expressResponse.status(200).json(response);
 };
 

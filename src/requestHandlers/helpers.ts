@@ -39,10 +39,10 @@ displayNameSchema
         .spaces();
 
 /**
- * 
- * @param value 
- * @param validator 
- * @param errorPrefix 
+ * Validate a specified value
+ * @param value value to check
+ * @param validator validator schema
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new username/password
  * @param errorMessage 
  * @param details show details
  * @returns 
@@ -75,7 +75,7 @@ const _validate = (validator: PasswordValidator, value: string, errorPrefix?: st
 /**
  * Checks if a password is valid. On fail, return an error message or message[]
  * @param password 
- * @param errorPrefix optionally include a prefix to the validation error messages
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new password
  * @returns 
  */
 const validatePassword = (password: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {
@@ -85,7 +85,7 @@ const validatePassword = (password: string, errorPrefix?: string): { success: bo
 /**
  * Checks if a username is valid. On fail, return an error message or message[]
  * @param password 
- * @param errorPrefix optionally include a prefix to the validation error messages
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new username
  * @returns 
  */
 const validateUsername = (username: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {
@@ -95,7 +95,7 @@ const validateUsername = (username: string, errorPrefix?: string): { success: bo
 /**
  * Checks if a display name is valid. On fail, return an error message or message[]
  * @param password 
- * @param errorPrefix optionally include a prefix to the validation error messages
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new display name
  * @returns 
  */
 const validateDisplayName = (displayName: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {

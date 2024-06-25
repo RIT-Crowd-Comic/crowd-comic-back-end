@@ -57,7 +57,9 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
 
     // validate arguments are not null
     const validArgs = assertArguments(
-        { username, password, display_name, email },
+        {
+            username, password, display_name, email
+        },
         a => a != undefined,
         'cannot be undefined'
     );

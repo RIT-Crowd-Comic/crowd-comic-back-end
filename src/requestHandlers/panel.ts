@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
+import { genericErrorResponse } from './helpers';
 
 
-const genericErrorResponse = (error: Error) => ({
-    success: false,
-    error: error.name ?? '',
-    status: 500,
-    message: 'Something went wrong'
-});
+interface ResponseObject {
+    success: boolean,
+    body?: any
+    message?: string,
+    error?: string,
+    status?: number,
+}
 
 /**
  * Creates a panel
@@ -27,7 +29,7 @@ const _createPanel = async (image: string, index: number, panel_set_id: number) 
         return {
             success: true,
             body: response
-        };
+        } as ResponseObject;
     }
     catch (err) {
         return genericErrorResponse(err as Error);
@@ -63,7 +65,7 @@ const _getPanel = async (id:number) => {
         return{
             success: true,
             body: response
-        };
+        } as ResponseObject;
     }
     catch (err) {
         return genericErrorResponse(err as Error);
@@ -97,7 +99,7 @@ const _getPanelsFromPanelSetID = async (panel_set_id: number) => {
         return {
             success: true,
             body: response
-        };
+        } as ResponseObject;
     }
     catch(err) {
         return genericErrorResponse(err as Error);

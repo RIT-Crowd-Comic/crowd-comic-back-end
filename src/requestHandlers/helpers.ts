@@ -106,7 +106,7 @@ const genericErrorResponse = (error: Error) => ({
     success: false,
     error:   error.name ?? '',
     status:  500,
-    message: 'Something went wrong'
+    message: error.message
 });
 
 const assert = (condition: boolean, message: string) => {

@@ -1,4 +1,5 @@
-import { Panel } from '../models/panel.model';
+import { Sequelize } from 'sequelize';
+import { IPanel } from '../models/panel.model';
 
 interface PanelConfig {
     image: string,
@@ -6,24 +7,22 @@ interface PanelConfig {
     panel_set_id: number,
 }
 
-
-
 /**
  * Create a new Panel
  * @param {} newPanel
  * @returns {} PanelInfoCreate
  */
-const createPanel = async (newPanel: PanelConfig) => {
+const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
 
     // validate panel_set_id here
     //
     const {
         id, image, index, panel_set_id
-    } = await Panel.create({
+    } = await sequelize.models.panel.create({
         image:        newPanel.image,
         index:        newPanel.index,
         panel_set_id: newPanel.panel_set_id,
-    });
+    }) as IPanel;
     return {
         id, image, index, panel_set_id
     } as {
@@ -39,13 +38,13 @@ const createPanel = async (newPanel: PanelConfig) => {
  * @param id 
  * @returns PanelInfoGet
  */
-const getPanel = async (id: number) => {
+const getPanel = (sequelize : Sequelize) => async(id: number) => {
 
     // make sure the panel actually exists
-    const panel = await Panel.findOne({
+    const panel = await sequelize.models.panel.findOne({
         where:      { id },
         attributes: ['image', 'index', 'panel_set_id']
-    });
+    }) as IPanel;
 
     if (!panel) return undefined;
 
@@ -61,10 +60,10 @@ const getPanel = async (id: number) => {
  * @param {number} panel_set_id ID of panelSet
  * @returns {object[]} An array of objects with id, image, index properties
  */
-const getPanelsFromPanelSetID = async (panel_set_id: number) => {
+const getPanelsFromPanelSetID = (sequelize : Sequelize) => async (panel_set_id: number) => {
 
     // Find all panels on requested panelSet 
-    const panels = await Panel.findAll({ where: { panel_set_id } });
+    const panels = await sequelize.models.panel.findAll({ where: { panel_set_id } }) as IPanel[];
 
     // Map panels to keep only needed data
     return panels.map((p) => ({

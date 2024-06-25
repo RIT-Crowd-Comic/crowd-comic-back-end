@@ -144,14 +144,15 @@ const assertArguments = (
 };
 
 const assertArgumentsDefined = (args : object) =>{
-     // validate arguments
-     const validArgs = assertArguments(
+
+    // validate arguments
+    const validArgs = assertArguments(
         args,
         a => a != undefined,
         'cannot be undefined'
     );
-   return validArgs;
-}
+    return validArgs;
+};
 
 const sanitizeResponse = (response : any, expressResponse: Response, message404 : string = '404 not found')=>{
     if (response == null || response instanceof Array && response.length === 0) return expressResponse.status(404).json({ message: `${message404}` });

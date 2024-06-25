@@ -44,4 +44,4 @@ const define = (sequelize: Sequelize): void => {
     );
 };
 
-export { define, Panel, type IPanel };
+export { define, type IPanel };

@@ -36,7 +36,7 @@ displayNameSchema
         .max(30, 'display name has a maximum of 30 characters')
         .has()
         .not()
-        .spaces();
+        .spaces(0, 'display name cannot have spaces');
 
 /**
  * Validate a specified value

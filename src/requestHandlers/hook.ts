@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as hookService from '../services/hookService';
 import { genericErrorResponse } from './helpers';
+import { ValidationError } from 'sequelize';
 
 
 /**
@@ -12,13 +13,11 @@ import { genericErrorResponse } from './helpers';
  */
 const _createHookController = async (position: number[], current_panel_id: number, next_panel_set_id: number) => {
     try {
-        const response = await hookService.createHook({
+        return await hookService.createHook({
             position:          position,
             current_panel_id:  current_panel_id,
             next_panel_set_id: next_panel_set_id
         });
-
-        return response;
     } catch (err) {
         return genericErrorResponse(err as Error);
     }
@@ -47,9 +46,7 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
  */
 const _getHookController = async (id: number) => {
     try {
-        const response = await hookService.getHook(id);
-
-        return response;
+        return await hookService.getHook(id);
     } catch (err) {
         return genericErrorResponse(err as Error);
     }
@@ -74,9 +71,7 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
  */
 const _getPanelHooksController = async (id: number) => {
     try {
-        const response = await hookService.getPanelHooks(id);
-
-        return response;
+        return await hookService.getPanelHooks(id);
     } catch (err) {
         return genericErrorResponse(err as Error);
     }

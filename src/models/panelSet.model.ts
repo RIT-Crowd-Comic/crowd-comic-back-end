@@ -1,4 +1,6 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from "sequelize";
+import {
+    CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize
+} from 'sequelize';
 
 interface IPanelSet extends Model<InferAttributes<IPanelSet>, InferCreationAttributes<IPanelSet>> {
     id: CreationOptional<number>,
@@ -11,12 +13,12 @@ const define = (sequelize: Sequelize): void => {
         'panel_set',
         {
             id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
+                type:          DataTypes.INTEGER,
+                primaryKey:    true,
                 autoIncrement: true
             },
             author_id: {
-                type: DataTypes.UUID,
+                type:      DataTypes.UUID,
                 allowNull: false,
             }
         },
@@ -25,6 +27,6 @@ const define = (sequelize: Sequelize): void => {
             updatedAt: 'updated_at',
         }
     );
-}
+};
 
 export { define, PanelSet, type IPanelSet };

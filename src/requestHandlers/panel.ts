@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
 import { assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './utils';
+import { getPanelSetByID } from '../services/panelSetService';
 
 /**
  * Creates a panel
@@ -11,6 +12,8 @@ import { assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './
  */
 const _createPanelController = async (image: string, index: number, panel_set_id: number) => {
     try {
+        const panelSet = await getPanelSetByID(panel_set_id);
+        if(panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
         return await panelService.createPanel({
             image:        image,
             index:        index,
@@ -18,12 +21,13 @@ const _createPanelController = async (image: string, index: number, panel_set_id
         });
     }
     catch (err) {
-        return err as Error;
+        return err;
     }
 };
 
 // the actual request 
 const createPanel = async (req: Request, res: Response): Promise<Response> => {
+
     const image: string = req.body.image;
     const index: number = Number(req.body.index);
     const panel_set_id: number = req.body.panel_set_id; 
@@ -47,7 +51,7 @@ const _getPanelController = async (id:number) => {
         return await panelService.getPanel(id);
     }
     catch (err) {
-        return err as Error;
+        return err;
     }
 };
 

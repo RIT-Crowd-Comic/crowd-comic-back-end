@@ -1,6 +1,8 @@
 import { Express } from 'express';
 import help from './requestHandlers/help';
 import * as user from './requestHandlers/user';
+import * as panelSet from './requestHandlers/panelSet';
+
 
 /**
  * Route all incoming requests
@@ -16,4 +18,9 @@ export default (app: Express) => {
     app.post('/authenticate', user.authenticate);
     app.post('/changePassword', user.changePassword);
     app.post('/changeUsername', user.changeUsername);
+
+    app.post('/createPanelSet', panelSet.createPanelSet);
+    app.get('/getPanelSetByID', panelSet.getPanelSetByID);
+    app.get('/getAllPanelSetFromUser', panelSet.getAllPanelSetFromUser);
+    app.get('/createPanelSet')
 };

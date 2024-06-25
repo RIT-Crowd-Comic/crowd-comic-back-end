@@ -1,5 +1,5 @@
 import {
-    CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize
+    CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, Sequelize
 } from 'sequelize';
 
 /**
@@ -12,14 +12,12 @@ interface IHook extends Model<InferAttributes<IHook>, InferCreationAttributes<IH
     next_panel_set_id: ForeignKey<number>
 }
 
-let Hook: ModelStatic<IHook>;
-
 /**
  * Initialize hook model
  * @param sequelize 
  */
 const define = (sequelize: Sequelize): void => {
-    Hook = sequelize.define<IHook>(
+    sequelize.define<IHook>(
         'hook',
         {
             id: {
@@ -49,4 +47,4 @@ const define = (sequelize: Sequelize): void => {
     );
 };
 
-export { define, Hook, type IHook };
+export { define, type IHook };

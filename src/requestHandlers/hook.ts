@@ -124,7 +124,7 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
  */
 const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number) => {
     try {
-        const panelSet = await getPanelSetByID(panel_set_id);
+        const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
         return await hookService.addSetToHook(sequelize)(hook_id, panel_set_id);
     }

@@ -98,5 +98,5 @@
       "skipLibCheck": true,
       "sourceMap": true                               /* Skip type checking all .d.ts files. */
     },
-    "include": ["src/**/*.ts", "src/tests/panel.test.ts"],
+    "include": ["src/**/*.ts"],
 }

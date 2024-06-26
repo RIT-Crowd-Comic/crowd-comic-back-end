@@ -1,19 +1,17 @@
 import { Sequelize } from 'sequelize';
-import { IUser, User } from '../models/user.model';
+import { IUser } from '../models/user.model';
 import bcrypt from 'bcrypt';
 
 /**
  * Information required to create a new user
  */
 interface UserConfig {
-    username: string,
     password: string,
     email: string,
     display_name: string,
 }
 
 interface UserInfo {
-    username: string,
     email: string,
     display_name: string,
     id: string,
@@ -23,47 +21,36 @@ interface UserInfo {
 const PASSWORD_SALT_ROUNDS = 10;
 
 /**
-     * Create a new user
-     * @param {} newUser 
-     */
-const createUser = async (newUser: UserConfig): Promise<UserInfo> => {
+ * Create a new user
+ * @param {} newUser 
+ */
+const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promise<UserInfo> => {
 
-    const {
-        username,
-        display_name, email, id
-    } = await User.create({
-        username:     newUser.username,
-        display_name: newUser.display_name,
-        password:     await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
+    const { display_name, email, id } = await sequelize.models.user.create({
         email:        newUser.email,
-    });
+        password:     await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
+        display_name: newUser.display_name,
+    }) as IUser;
 
-    return {
-        username, display_name, email, id
-    };
-};
-
-const getUserByID = (sequelize: Sequelize) => async (id: string) => {
-    return await sequelize.models.user.findByPk(id) as IUser;
+    return { display_name, email, id };
 };
 
 /**
-     * Authenticate a user before retrieve the user's data
-     * @param username 
-     * @param password un-bcrypt.hashed password
-     * @returns 
-     */
-const authenticate = async (username: string, password: string):
+ * Authenticate a user before retrieve the user's data
+ * @param email 
+ * @param password un-bcrypt.hashed password
+ * @returns 
+ */
+const authenticate = (sequelize : Sequelize) => async (email: string, password: string):
     Promise<UserInfo | undefined> => {
 
-    const user = await User.findOne({ where: { username: username } });
+    const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
 
     if (!user) return undefined;
 
     const match = await bcrypt.compare(password, user.password);
 
     if (match) return {
-        username:     user.username,
         email:        user.email,
         display_name: user.display_name,
         id:           user.id
@@ -73,16 +60,16 @@ const authenticate = async (username: string, password: string):
 };
 
 /**
-     * Change the password for a user
-     * @returns whether or not the password change was successful
-     */
-const changePassword = async (username: string, password: string, newPassword: string): Promise<boolean> => {
+ * Change the password for a user
+ * @returns whether or not the password change was successful
+ */
+const changePassword = (sequelize : Sequelize) => async (email: string, password: string, newPassword: string): Promise<boolean> => {
 
     // check if current username/password are correct
-    const auth = await authenticate(username, password);
+    const auth = await authenticate(sequelize)(email, password);
     if (!auth) return false;
 
-    const user = await User.findOne({ where: { username } });
+    const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
     if (!user) return false;
 
     await user.update({ password: await bcrypt.hash(newPassword, PASSWORD_SALT_ROUNDS) });
@@ -91,23 +78,22 @@ const changePassword = async (username: string, password: string, newPassword: s
 
 
 /**
-     * Change a user's username
-     * @returns whether or not the username change was successful
-     */
-const changeUsername = async (username: string, password: string, newUsername: string): Promise<boolean> => {
-
+ * Change a user's email
+ * @returns whether or not the email change was successful
+ */
+const changeDisplayName = (sequelize : Sequelize) => async (email: string, password: string, newDisplayName: string): Promise<boolean | undefined> => {
 
     // check if current username/password are correct
-    const auth = await authenticate(username, password);
+    const auth = await authenticate(sequelize)(email, password);
     if (!auth) return false;
 
-    const user = await User.findOne({ where: { username } });
-    if (!user) return false;
+    const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
+    if (!user) return undefined;
 
-    await user.update({ username: newUsername });
+    await user.update({ display_name: newDisplayName });
     return true;
 };
 
 export {
-    createUser, authenticate, changePassword, changeUsername, getUserByID
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID
 };

@@ -170,7 +170,7 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
 };
 
 /**
- * Change a user's username
+ * Change a user's display name
  */
 const _changeDisplayNameController = (sequelize: Sequelize) => async (email: string, password: string, newDisplayName: string) => {
     try {
@@ -182,8 +182,8 @@ const _changeDisplayNameController = (sequelize: Sequelize) => async (email: str
 };
 
 /**
- * Sends a request to the database to change user's username
- * @returns whether or not the username change was successful
+ * Sends a request to the database to change user's display name
+ * @returns whether or not the display name change was successful
  */
 const changeDisplayName = async (req: Request, res: Response): Promise<Response> => {
 
@@ -199,7 +199,7 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
     );
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    // validate username
+    // validate display name
     const validDisplayName = validateDisplayName(newDisplayName, 'new');
     if (!validDisplayName.success) return res.status(400).json(validDisplayName);
 

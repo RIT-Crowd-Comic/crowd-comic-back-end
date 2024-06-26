@@ -13,9 +13,6 @@ interface PanelConfig {
  * @returns {} PanelInfoCreate
  */
 const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
-
-    // validate panel_set_id here
-    //
     const {
         id, image, index, panel_set_id
     } = await sequelize.models.panel.create({
@@ -23,6 +20,7 @@ const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
         index:        newPanel.index,
         panel_set_id: newPanel.panel_set_id,
     }) as IPanel;
+   
     return {
         id, image, index, panel_set_id
     } as {

@@ -94,5 +94,5 @@ const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Res
 };
 
 export {
-    createPanel, getPanel, getPanelsFromPanelSetID, _createPanelController
+    createPanel, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController
 }; // exporting _create for testing, temporary

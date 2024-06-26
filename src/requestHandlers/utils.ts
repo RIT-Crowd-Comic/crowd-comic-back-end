@@ -33,7 +33,7 @@ displayNameSchema
  * Validate a specified value
  * @param value value to check
  * @param validator validator schema
- * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new username/password
+ * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new email/password
  * @param errorMessage 
  * @param details show details
  * @returns 
@@ -80,7 +80,7 @@ const validatePassword = (password: string, errorPrefix?: string): { success: bo
  * @returns 
  */
 const validateDisplayName = (displayName: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {
-    return _validate(displayNameSchema, displayName, errorPrefix, 'Invalid username');
+    return _validate(displayNameSchema, displayName, errorPrefix, 'Invalid display name');
 };
 
 const genericErrorResponse = (error: Error) => ({

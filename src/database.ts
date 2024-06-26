@@ -6,6 +6,7 @@ import { define as userDefine } from './models/user.model';
 import { define as hookDefine } from './models/hook.model';
 import { define as panelDefine } from './models/panel.model';
 import { define as panelSetDefine } from './models/panelSet.model';
+import { define as panelDefine } from './models/panel.model';
 
 /**
  * SSL is required for Heroku Postgres
@@ -37,7 +38,7 @@ const setup = async () => {
     hookDefine(sequelize);
     panelDefine(sequelize);
     panelSetDefine(sequelize);
-
+    panelDefine(sequelize);
     // set up associations
 
 

@@ -14,7 +14,7 @@ import { Sequelize } from 'sequelize';
  */
 const _createPanelController = (sequelize : Sequelize) => async (image: string, index: number, panel_set_id: number) => {
     try {
-        const panelSet = await getPanelSetByID(panel_set_id);
+        const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
         return await panelService.createPanel(sequelize)({
             image:        image,

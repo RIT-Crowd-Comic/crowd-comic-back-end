@@ -22,6 +22,7 @@ passwordSchema
     .not()
     .spaces(0, 'password cannot have spaces');
 
+
 const displayNameSchema = new PasswordValidator();
 displayNameSchema
     .is().min(1, 'display name has a minimum of 1 character')
@@ -127,7 +128,6 @@ const assertArguments = (
  * @returns 
  */
 const assertArgumentsDefined = (args : object) =>{
-
     // validate arguments
     const validArgs = assertArguments(
         args,

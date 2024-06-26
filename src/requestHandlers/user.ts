@@ -94,7 +94,7 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
 
     const response = await _authenticateController(sequelize)(email, password);
 
-    return sanitizeResponse(response, res);
+    return sanitizeResponse(response, res, 'Incorrect email/password');
 };
 
 /**

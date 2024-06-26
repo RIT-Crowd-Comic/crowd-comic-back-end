@@ -31,6 +31,24 @@ const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
     };
 };
 
+const updatePanel = (sequelize : Sequelize) => async(oldPanel: IPanel, newPanel : PanelConfig) => {
+    const { id, image, index, panel_set_id } = 
+    await oldPanel.update({
+        image:        newPanel.image,
+        index:        newPanel.index,
+        panel_set_id: newPanel.panel_set_id,
+    });
+
+    return {
+        id, image, index, panel_set_id
+    } as {
+        id: number,
+        image: string,
+        index: number,
+        panel_set_id: number
+    };
+};
+
 /**
  * Get a panel before 
  * @param id 
@@ -57,16 +75,12 @@ const getPanelBasedOnPanelSetAndIndex = (sequelize : Sequelize) => async (index 
     // make sure the panel actually exists
     const panel = await sequelize.models.panel.findOne({
         where:      { panel_set_id, index },
-        attributes: ['id','index', 'image']
+        attributes: ['id', 'image']
     }) as IPanel;
 
     if (!panel) return undefined;
 
-    return {
-        id:           panel.id,
-        index:        panel.index,
-        image:        panel.image
-    };
+    return panel;
 };
 
 /**
@@ -88,4 +102,4 @@ const getPanelsFromPanelSetID = (sequelize : Sequelize) => async (panel_set_id: 
 };
 
 
-export { getPanelsFromPanelSetID, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex };
+export { getPanelsFromPanelSetID, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex, updatePanel };

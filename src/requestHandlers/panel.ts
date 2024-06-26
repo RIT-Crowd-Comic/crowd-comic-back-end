@@ -18,11 +18,24 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
         //check if a panel exists
         const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
-        return await panelService.createPanel(sequelize)({
-            image:        image,
-            index:        index,
-            panel_set_id: panel_set_id,
-        });
+
+        //check if existing panel on a panelset based on index
+        const panel = await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(index, panel_set_id);
+
+        if(panel){
+            return await panelService.updatePanel(sequelize)(panel,{
+                image:        image,
+                index:        index,
+                panel_set_id: panel_set_id,
+            });
+        }
+        else{
+            return await panelService.createPanel(sequelize)({
+                image:        image,
+                index:        index,
+                panel_set_id: panel_set_id,
+            });
+        }
     }
     catch (err) {
         return err;

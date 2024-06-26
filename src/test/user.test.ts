@@ -13,7 +13,7 @@ describe('_getUserByIDController', () => {
         sequelizeMock = {} as jest.Mocked<Sequelize>;
     });
 
-    test("If the panel exists, it should be returned", async () => {
+    test("If the user exists, it should be returned", async () => {
         const userData = {
             password: "Password!",
             email: "email@yahoo.com",
@@ -27,7 +27,7 @@ describe('_getUserByIDController', () => {
         expect(response).toEqual(userData);
     });
 
-    test("If the panel does not exist, it should return undefined", async () => {
+    test("If the user does not exist, it should return undefined", async () => {
         (userService.getUserByID as jest.Mock).mockReturnValue(() => Promise.resolve(undefined));
 
         const response = await _getUserByIDController(sequelizeMock)('8c2d50d1-9b1f-483c-b267-cecb929ffb97');

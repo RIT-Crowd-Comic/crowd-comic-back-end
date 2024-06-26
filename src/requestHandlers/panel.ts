@@ -48,7 +48,7 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
 const createPanel = async (req: Request, res: Response): Promise<Response> => {
 
     const image: string = req.body.image;
-    const index: number = Number(req.body.index);
+    const index: number = req.body.index;
     const panel_set_id: number = req.body.panel_set_id;
 
     const validArgs = assertArgumentsDefined({ image, index, panel_set_id });

@@ -1,5 +1,5 @@
-import { IUser } from '../models/user.model';
 import { Sequelize } from 'sequelize';
+import { IUser } from '../models/user.model';
 import bcrypt from 'bcrypt';
 
 /**
@@ -65,7 +65,7 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
  */
 const changePassword = (sequelize : Sequelize) => async (email: string, password: string, newPassword: string): Promise<boolean> => {
 
-    // check if current username/password are correct
+    // check if current email/password are correct
     const auth = await authenticate(sequelize)(email, password);
     if (!auth) return false;
 
@@ -83,7 +83,7 @@ const changePassword = (sequelize : Sequelize) => async (email: string, password
  */
 const changeDisplayName = (sequelize : Sequelize) => async (email: string, password: string, newDisplayName: string): Promise<boolean | undefined> => {
 
-    // check if current username/password are correct
+    // check if current email/password are correct
     const auth = await authenticate(sequelize)(email, password);
     if (!auth) return false;
 
@@ -94,7 +94,10 @@ const changeDisplayName = (sequelize : Sequelize) => async (email: string, passw
     return true;
 };
 
+const getUserByID = (sequelize: Sequelize) => async (id: string) => {
+    return await sequelize.models.user.findByPk(id) as IUser;
+};
 
 export {
-    createUser, authenticate, changePassword, changeDisplayName
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID
 };

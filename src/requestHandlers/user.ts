@@ -4,11 +4,34 @@ import { Sequelize } from 'sequelize';
 import {
     validatePassword, assertArguments,
     validateDisplayName,
-    sanitizeResponse,
-    assertArgumentsDefined
+    assertArgumentsDefined,
+    sanitizeResponse
 } from './utils';
 import validator from 'validator';
 import { sequelize } from '../database';
+
+/**
+ * Gets the user given an id
+ * @param req 
+ * @param res 
+ * @returns nulls if a user with the given id doesn't exist
+ */
+const getUserByID = async (req: Request, res: Response): Promise<Response> => {
+    const id = req.body.id;
+    const validArgs = assertArgumentsDefined({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await _getUserByIDController(sequelize)(id);
+    return sanitizeResponse(response, res, `User with id of "${id}" does not exist`);
+};
+
+const _getUserByIDController = (sequelize: Sequelize) => async(id: string) => {
+    try {
+        return await UserService.getUserByID(sequelize)(id);
+    }
+    catch (err) {
+        return err;
+    }
+};
 
 /**
  * Create a new user.
@@ -147,7 +170,7 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
 };
 
 /**
- * Change a user's username
+ * Change a user's display name
  */
 const _changeDisplayNameController = (sequelize: Sequelize) => async (email: string, password: string, newDisplayName: string) => {
     try {
@@ -159,8 +182,8 @@ const _changeDisplayNameController = (sequelize: Sequelize) => async (email: str
 };
 
 /**
- * Sends a request to the database to change user's username
- * @returns whether or not the username change was successful
+ * Sends a request to the database to change user's display name
+ * @returns whether or not the display name change was successful
  */
 const changeDisplayName = async (req: Request, res: Response): Promise<Response> => {
 
@@ -176,7 +199,7 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
     );
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    // validate username
+    // validate display name
     const validDisplayName = validateDisplayName(newDisplayName, 'new');
     if (!validDisplayName.success) return res.status(400).json(validDisplayName);
 
@@ -196,5 +219,5 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
 
 export {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
-    createUser, authenticate, changePassword, changeDisplayName
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController
 };

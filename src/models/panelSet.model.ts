@@ -1,5 +1,5 @@
 import {
-    CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize
+    CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize
 } from 'sequelize';
 
 interface IPanelSet extends Model<InferAttributes<IPanelSet>, InferCreationAttributes<IPanelSet>> {
@@ -7,9 +7,8 @@ interface IPanelSet extends Model<InferAttributes<IPanelSet>, InferCreationAttri
     author_id: string
 }
 
-let PanelSet: ModelStatic<IPanelSet>;
 const define = (sequelize: Sequelize): void => {
-    PanelSet = sequelize.define<IPanelSet>(
+    sequelize.define<IPanelSet>(
         'panel_set',
         {
             id: {
@@ -29,4 +28,4 @@ const define = (sequelize: Sequelize): void => {
     );
 };
 
-export { define, PanelSet, type IPanelSet };
+export { define, type IPanelSet };

@@ -38,7 +38,6 @@ const setup = async () => {
     panelDefine(sequelize);
     panelSetDefine(sequelize);
 
-
     // set up associations
 
 

@@ -22,6 +22,7 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
         //check if existing panel on a panelset based on index
         const panel = await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(index, panel_set_id);
 
+        //update if exists
         if(panel){
             return await panelService.updatePanel(panel,{
                 image:        image,
@@ -29,6 +30,7 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
                 panel_set_id: panel_set_id,
             });
         }
+        //make new
         else{
             return await panelService.createPanel(sequelize)({
                 image:        image,

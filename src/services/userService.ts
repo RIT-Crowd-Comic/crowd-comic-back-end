@@ -94,6 +94,11 @@ const changeDisplayName = (sequelize : Sequelize) => async (email: string, passw
     return true;
 };
 
+const getUserByID = (sequelize: Sequelize) => async (id: string) => {
+    return await sequelize.models.user.findByPk(id) as IUser;
+    return await sequelize.models.user.findByPk(id) as IUser;
+};
+
 export {
     createUser, authenticate, changePassword, changeDisplayName, getUserByID
 };

@@ -128,6 +128,7 @@ const assertArguments = (
  * @returns 
  */
 const assertArgumentsDefined = (args : object) =>{
+
     // validate arguments
     const validArgs = assertArguments(
         args,

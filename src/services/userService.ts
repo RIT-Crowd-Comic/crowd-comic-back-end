@@ -65,7 +65,7 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
  */
 const changePassword = (sequelize : Sequelize) => async (email: string, password: string, newPassword: string): Promise<boolean> => {
 
-    // check if current username/password are correct
+    // check if current email/password are correct
     const auth = await authenticate(sequelize)(email, password);
     if (!auth) return false;
 
@@ -83,7 +83,7 @@ const changePassword = (sequelize : Sequelize) => async (email: string, password
  */
 const changeDisplayName = (sequelize : Sequelize) => async (email: string, password: string, newDisplayName: string): Promise<boolean | undefined> => {
 
-    // check if current username/password are correct
+    // check if current email/password are correct
     const auth = await authenticate(sequelize)(email, password);
     if (!auth) return false;
 

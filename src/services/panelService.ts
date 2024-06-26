@@ -32,7 +32,7 @@ const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
 };
 
 /**
- * Authenticate a panel before retrieve the panel's data
+ * Get a panel before 
  * @param id 
  * @returns PanelInfoGet
  */
@@ -50,6 +50,22 @@ const getPanel = (sequelize : Sequelize) => async(id: number) => {
         image:        panel.image,
         index:        panel.index,
         panel_set_id: panel.panel_set_id as number
+    };
+};
+
+const getPanelBasedOnPanelSetAndIndex = (sequelize : Sequelize) => async (index : number, panel_set_id : number) => {
+    // make sure the panel actually exists
+    const panel = await sequelize.models.panel.findOne({
+        where:      { panel_set_id, index },
+        attributes: ['id','index', 'image']
+    }) as IPanel;
+
+    if (!panel) return undefined;
+
+    return {
+        id:           panel.id,
+        index:        panel.index,
+        image:        panel.image
     };
 };
 
@@ -72,4 +88,4 @@ const getPanelsFromPanelSetID = (sequelize : Sequelize) => async (panel_set_id: 
 };
 
 
-export { getPanelsFromPanelSetID, createPanel, getPanel };
+export { getPanelsFromPanelSetID, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex };

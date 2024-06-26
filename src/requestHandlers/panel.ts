@@ -14,6 +14,8 @@ import { Sequelize } from 'sequelize';
  */
 const _createPanelController = (sequelize : Sequelize) => async (image: string, index: number, panel_set_id: number) => {
     try {
+
+        //check if a panel exists
         const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
         return await panelService.createPanel(sequelize)({
@@ -44,7 +46,7 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
 
 
 /**
- * ottiene un pannello
+ * gets a panel based on id
  * @param id The id of the panel
  * @returns response or genericErrorResponse
  */
@@ -66,6 +68,34 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
     const response = await _getPanelController(sequelize)(id);
 
     return sanitizeResponse(response, res, `could not find panel with id ${req.body.id}`);
+};
+
+
+/**
+ * gets a panel based on id
+ * @param panel_set_id The id of the panelset
+ * @param panel_set_id The index of the panel
+ * @returns response or error
+ */
+const _getPanelBasedOnPanelSetAndIndexController = (sequelize : Sequelize) => async (panel_set_id:number, index:number) => {
+    try {
+        return await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(index, panel_set_id);
+    }
+    catch (err) {
+        return err;
+    }
+};
+
+// the actual request for getting a panel
+const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Promise<Response> => {
+    const panel_set_id = req.body.panel_set_id;
+    const index = req.body.index;
+    const validArgs = assertArgumentsDefined({ panel_set_id, index });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+
+    const response = await _getPanelBasedOnPanelSetAndIndexController(sequelize)(panel_set_id, index);
+
+    return sanitizeResponse(response, res, `could not find panel with panel_set_id ${panel_set_id} and index of ${index}`);
 };
 
 /**
@@ -94,5 +124,5 @@ const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Res
 };
 
 export {
-    createPanel, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController
+    createPanel,getPanelBasedOnPanelSetAndIndex, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController, _getPanelBasedOnPanelSetAndIndexController
 }; // exporting _create for testing, temporary

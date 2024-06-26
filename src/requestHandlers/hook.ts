@@ -146,5 +146,5 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
 };
 
 export {
-    createHook, getHook, getPanelHooks, addSetToHook
+    createHook, getHook, getPanelHooks, addSetToHook, _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController
 };

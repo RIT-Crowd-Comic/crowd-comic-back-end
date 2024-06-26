@@ -20,7 +20,7 @@ const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
         index:        newPanel.index,
         panel_set_id: newPanel.panel_set_id,
     }) as IPanel;
-   
+
     return {
         id, image, index, panel_set_id
     } as {

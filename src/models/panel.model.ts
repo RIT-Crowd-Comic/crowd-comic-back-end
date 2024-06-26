@@ -1,5 +1,5 @@
 import {
-    CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize
+    CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, Sequelize
 } from 'sequelize';
 
 interface IPanel extends Model<InferAttributes<IPanel>, InferCreationAttributes<IPanel>> {
@@ -10,12 +10,8 @@ interface IPanel extends Model<InferAttributes<IPanel>, InferCreationAttributes<
 }
 
 
-
-let Panel: ModelStatic<IPanel>;
-
-
 const define = (sequelize: Sequelize): void => {
-    Panel = sequelize.define<IPanel>(
+    sequelize.define<IPanel>(
         'panel',
         {
             id: {

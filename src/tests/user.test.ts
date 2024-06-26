@@ -1,3 +1,4 @@
+
 import { Sequelize, ValidationError } from 'sequelize';
 import {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,

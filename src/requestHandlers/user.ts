@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as UserService from '../services/userService';
-import { Sequelize, ValidationError } from 'sequelize';
+import { Sequelize } from 'sequelize';
 import {
     validatePassword, assertArguments,
     validateDisplayName,

@@ -22,7 +22,7 @@ export default (app: Express) => {
     // this will be changed to GET and use the authentication header instead of body
     app.post('/authenticate', user.authenticate);
     app.post('/changePassword', user.changePassword);
-    app.post('/changeUsername', user.changeUsername);
+    app.post('/changeDisplayName', user.changeDisplayName);
 
     app.post('/createPanelSet', panelSet.createPanelSet);
     app.get('/getPanelSetByID', panelSet.getPanelSetByID);

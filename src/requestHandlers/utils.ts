@@ -22,23 +22,12 @@ passwordSchema
     .not()
     .spaces(0, 'password cannot have spaces');
 
-const usernameSchema = new PasswordValidator();
-usernameSchema
-    .is().min(8, 'username has a minimum of 8 characters')
-    .is()
-    .max(30, 'username has a maximum of 30 characters')
-    .has()
-    .not()
-    .spaces(0, 'username cannot have spaces');
 
 const displayNameSchema = new PasswordValidator();
 displayNameSchema
     .is().min(1, 'display name has a minimum of 1 character')
     .is()
-    .max(30, 'display name has a maximum of 30 characters')
-    .has()
-    .not()
-    .spaces(0, 'display name cannot have spaces');
+    .max(30, 'display name has a maximum of 30 characters');
 
 /**
  * Validate a specified value
@@ -82,16 +71,6 @@ const _validate = (validator: PasswordValidator, value: string, errorPrefix?: st
  */
 const validatePassword = (password: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {
     return _validate(passwordSchema, password, errorPrefix, 'Invalid password');
-};
-
-/**
- * Checks if a username is valid. On fail, return an error message or message[]
- * @param password 
- * @param errorPrefix Prefix message. Example prefix: 'new' when creating a new username
- * @returns 
- */
-const validateUsername = (username: string, errorPrefix?: string): { success: boolean, message?: string | string[] } => {
-    return _validate(usernameSchema, username, errorPrefix, 'Invalid username');
 };
 
 /**
@@ -143,8 +122,12 @@ const assertArguments = (
     return { success: true };
 };
 
+/**
+ * Assert all arguments are defined
+ * @param args 
+ * @returns 
+ */
 const assertArgumentsDefined = (args : object) =>{
-
     // validate arguments
     const validArgs = assertArguments(
         args,
@@ -154,16 +137,23 @@ const assertArgumentsDefined = (args : object) =>{
     return validArgs;
 };
 
+/**
+ * Parses a database response as an express response, creating the correct HTTP status codes.<br>
+ * - [] | undefined | null => 404
+ * - ValidationError => 400
+ * - Error => 500
+ * - ... => 200
+ * @returns 
+ */
 const sanitizeResponse = (response : any, expressResponse: Response, message404 : string = '404 not found')=>{
     if (response == null || response instanceof Array && response.length === 0) return expressResponse.status(404).json({ message: `${message404}` });
     if (response instanceof ValidationError) return expressResponse.status(400).json({ message: response.errors.map(e => e.message) });
-    if (response instanceof Error) return expressResponse.status(500).json({ message: `internal server error ${response.message}` });
+    if (response instanceof Error) return expressResponse.status(500).json({ message: response.message ?? 'Internal server error.' });
     return expressResponse.status(200).json(response);
 };
 
 export {
     validatePassword,
-    validateUsername,
     validateDisplayName,
     genericErrorResponse,
     assert,

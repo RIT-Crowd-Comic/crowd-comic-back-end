@@ -1,6 +1,7 @@
 import { Sequelize, ValidationError } from 'sequelize';
 import {
-    _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController
+    _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
+    _getUserByIDController
 } from '../requestHandlers/user';
 import {
     describe, test, expect, jest
@@ -138,5 +139,27 @@ describe('Change Display Name', () => {
         (userService.changeDisplayName as jest.Mock).mockReturnValue(() => { throw new Error(); });
         const displayNameChange = await _changeDisplayNameController(sequelizeMock())(undefined as any, 1234 as any, {} as any);
         expect(displayNameChange).toBeInstanceOf(Error);
+    });
+});
+
+
+describe('Get User By ID', () => {
+
+    test('If the user exists, it should be returned', async () => {
+        (userService.getUserByID as jest.Mock).mockReturnValue(() => Promise.resolve(userResponse));
+        const response = await _getUserByIDController(sequelizeMock())(user.id);
+        expect(response).toEqual(userResponse);
+    });
+
+    test('If the user does not exist, it should return undefined', async () => {
+        (userService.getUserByID as jest.Mock).mockReturnValue(() => Promise.resolve(undefined));
+        const response = await _getUserByIDController(sequelizeMock())(undefinedUser.id);
+        expect(response).toBeUndefined();
+    });
+
+    test('Using bad data should throw an error', async () => {
+        (userService.getUserByID as jest.Mock).mockReturnValue(() => {throw new Error()});
+        const response = await _getUserByIDController(sequelizeMock())(undefined as any);
+        expect(response).toBeInstanceOf(Error);
     });
 });

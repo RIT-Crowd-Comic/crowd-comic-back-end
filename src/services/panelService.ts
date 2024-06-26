@@ -31,7 +31,8 @@ const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
     };
 };
 
-const updatePanel = (sequelize : Sequelize) => async(oldPanel: IPanel, newPanel : PanelConfig) => {
+//update panel currently cannot be called independantly of other services
+const updatePanel = async(oldPanel: IPanel, newPanel : PanelConfig) => {
     const { id, image, index, panel_set_id } = 
     await oldPanel.update({
         image:        newPanel.image,

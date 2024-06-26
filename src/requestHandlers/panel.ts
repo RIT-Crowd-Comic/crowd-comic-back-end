@@ -23,7 +23,7 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
         const panel = await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(index, panel_set_id);
 
         if(panel){
-            return await panelService.updatePanel(sequelize)(panel,{
+            return await panelService.updatePanel(panel,{
                 image:        image,
                 index:        index,
                 panel_set_id: panel_set_id,

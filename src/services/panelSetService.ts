@@ -1,7 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { PanelSet } from '../models/panelSet.model';
-import { User } from '../models/user.model';
-
+import { IPanelSet } from '../models/panelSet.model';
 interface PanelSetConfig {
     author_id: string
 }
@@ -13,12 +11,12 @@ interface PanelSetInfo {
 
 
 /**
-     * Create a new panel set
-     * @param {} panelSet 
-    */
-const createPanelSet = async (panelSet: PanelSetConfig): Promise<PanelSetInfo> => {
-    const { id, author_id } = await PanelSet.create({ author_id: panelSet.author_id, });
-
+ * Create a new panel set
+ * @param {} panelSet 
+*/
+const createPanelSet = (sequelize: Sequelize) => async (panelSet: PanelSetConfig): Promise<PanelSetInfo> => {
+    const { id, author_id } =
+    await sequelize.models.panel_set.create({ author_id: panelSet.author_id, }) as IPanelSet;
     return { author_id, id };
 };
 
@@ -27,8 +25,8 @@ const createPanelSet = async (panelSet: PanelSetConfig): Promise<PanelSetInfo> =
  * @param {} id the id of the panel set
  * @returns null if the panel set is not found/exists
  */
-const getPanelSetByID = async (id: number) => {
-    return await PanelSet.findByPk(id);
+const getPanelSetByID = (sequelize: Sequelize) => async (id: number) => {
+    return await sequelize.models.panel_set.findByPk(id) as IPanelSet;
 };
 
 /**
@@ -36,9 +34,8 @@ const getPanelSetByID = async (id: number) => {
  * @param {} id the author's UUID
  * @returns an array of all the panels found
  */
-const getAllPanelSetFromUser = async (id: string) => {
-    const panelSets = await PanelSet.findAll({ where: { author_id: id } });
-    return panelSets;
+const getAllPanelSetsFromUser = (sequelize: Sequelize) => async (id: string) => {
+    return await sequelize.models.panel_set.findAll({ where: { author_id: id } }) as IPanelSet[];
 };
 
-export { createPanelSet, getPanelSetByID, getAllPanelSetFromUser };
+export { createPanelSet, getPanelSetByID, getAllPanelSetsFromUser };

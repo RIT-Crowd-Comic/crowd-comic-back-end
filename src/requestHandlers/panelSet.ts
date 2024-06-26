@@ -1,42 +1,24 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
-import { ValidationError } from 'sequelize';
-import { genericErrorResponse, assertArguments } from './utils';
-import { User } from '../models/user.model';
-
-// ! might be best to separate validators and handlers in separate files
-// ! authenticators in user.ts should not be prepended with "_". Can be confusing
-// ! This object is found in many files, it can possibly put in help
-interface ResponseObject {
-    success: boolean,
-    body?: any
-    message?: string,
-    error?: string,
-    status?: number,
-}
+import { Sequelize } from 'sequelize';
+import { assertArgumentsDefined } from './utils';
+import { sanitizeResponse } from './utils';
+import { sequelize } from '../database';
+import * as UserService from '../services/userService';
 
 /**
  * Create a new panel set
  * @param author_id the id of the author who made the panel set
  * @returns 
  */
-const createPanelSetHandler = async (author_id: string) => {
+const _createPanelSetController = (sequelize : Sequelize) => async (author_id: string) => {
     try {
-        const response = await PanelSetService.createPanelSet({ author_id });
-        return {
-            success: true,
-            body:    response
-        };
+        const user = await UserService.getUserByID(sequelize)(author_id);
+        if (user == null) throw new Error(`An author with the id "${author_id}" does not exist`);
+        return await PanelSetService.createPanelSet(sequelize)({ author_id });
     }
     catch (err) {
-        if (err instanceof ValidationError) {
-            return {
-                success: false,
-                error:   err.name,
-                message: err.errors.map(e => e.message)
-            };
-        }
-        return genericErrorResponse(err as Error);
+        return err;
     }
 };
 
@@ -48,87 +30,49 @@ const createPanelSetHandler = async (author_id: string) => {
  */
 const createPanelSet = async (request: Request, res: Response) : Promise<Response> => {
     const author_id = request.body.author_id;
-
-    // validate arguments are not null
-    const validArgs = assertArguments(
-        { author_id },
-        a => a != undefined,
-        'cannot be undefined'
-    );
-    if (!validArgs.success) {
-        return res.status(400).json(validArgs);
-    }
-
-    // verify that a user with that id exists
-    const user = await User.findByPk(author_id);
-    if (!user) {
-        return res.status(400).json({ messages: `An author with the id of "${author_id}" could not be found` });
-    }
-    const response = await createPanelSetHandler(author_id);
-
-    if (!response.success) {
-        return res.status(400).json(response);
-    }
-
-    return res.status(200).json(response);
+    const validArgs = assertArgumentsDefined({ author_id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await _createPanelSetController(sequelize)(author_id);
+    return sanitizeResponse(response, res);
 };
 
-const getPanelSetByIDHandler = async(id: number) => {
+const _getPanelSetByIDController = (sequelize: Sequelize) => async(id: number) => {
     try {
-        const response = await PanelSetService.getPanelSetByID(id);
-        return {
-            success: true,
-            body:    response
-        };
+        return await PanelSetService.getPanelSetByID(sequelize)(id);
     }
     catch (err) {
-        if (err instanceof ValidationError) {
-            return {
-                success: false,
-                error:   err.name,
-                message: err.errors.map(e => e.message)
-            };
-        }
-        return genericErrorResponse(err as Error);
+        return err;
     }
 };
 
 const getPanelSetByID = async (request: Request, res: Response) : Promise<Response> => {
     const id = request.body.id;
-    const response = await getPanelSetByIDHandler(id);
-    if (!response.success) {
-        return res.status(400).json(response);
-    }
-    return res.status(200).json(response);
+    const validArgs = assertArgumentsDefined({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await _getPanelSetByIDController(sequelize)(id);
+    return sanitizeResponse(response, res, `a panel with the id of "${id}" cannot be found`);
 };
 
-const getAllPanelSetFromUserHandler = async(id: string) => {
+const _getAllPanelSetsFromUserController = (sequelize: Sequelize) => async(id: string) => {
     try {
-        const response = await PanelSetService.getAllPanelSetFromUser(id);
-        return {
-            success: true,
-            body:    response
-        };
+
+        // see if this user exist
+        return await PanelSetService.getAllPanelSetsFromUser(sequelize)(id);
     }
     catch (err) {
-        if (err instanceof ValidationError) {
-            return {
-                success: false,
-                error:   err.name,
-                message: err.errors.map(e => e.message)
-            };
-        }
-        return genericErrorResponse(err as Error);
+        return err;
     }
 };
 
-const getAllPanelSetFromUser = async(request: Request, res: Response) : Promise<Response> => {
+const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise<Response> => {
     const id = request.body.id;
-    const response = await getAllPanelSetFromUserHandler(id);
-    if (!response.success) {
-        return res.status(400).json(response);
-    }
-    return res.status(200).json(response);
+    const validArgs = assertArgumentsDefined({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await _getAllPanelSetsFromUserController(sequelize)(id);
+    const errorMessage = await UserService.getUserByID(sequelize)(id) == null ? `User with an id of "${id}" does not exist` : `This user has not made any panel sets`;
+    return sanitizeResponse(response, res, errorMessage);
 };
 
-export { createPanelSet, getPanelSetByID, getAllPanelSetFromUser };
+export {
+    createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController
+};

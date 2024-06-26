@@ -20,11 +20,11 @@ const getUserByID = async (req: Request, res: Response): Promise<Response> => {
     const id = req.body.id;
     const validArgs = assertArgumentsDefined({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await getUserByIDController(sequelize)(id);
+    const response = await _getUserByIDController(sequelize)(id);
     return sanitizeResponse(response, res, `User with id of "${id}" does not exist`);
 };
 
-const getUserByIDController = (sequelize: Sequelize) => async(id: string) => {
+const _getUserByIDController = (sequelize: Sequelize) => async(id: string) => {
     try {
         return await UserService.getUserByID(sequelize)(id);
     }
@@ -219,5 +219,5 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
 
 export {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController
 };

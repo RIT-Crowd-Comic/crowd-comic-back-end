@@ -2,10 +2,11 @@ import { Request, Response } from 'express';
 import * as UserService from '../services/userService';
 import { Sequelize } from 'sequelize';
 import {
-    validatePassword, assertArguments,
+    validatePassword, 
+    assertArguments,
     validateDisplayName,
-    assertArgumentsDefined,
-    sanitizeResponse
+    sanitizeResponse,
+    assertArgumentsDefined
 } from './utils';
 import validator from 'validator';
 import { sequelize } from '../database';

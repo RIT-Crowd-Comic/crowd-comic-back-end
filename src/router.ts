@@ -23,6 +23,7 @@ export default (app: Express) => {
     // this will be changed to GET and use the authentication header instead of body
     app.post('/authenticate', user.authenticate);
     app.post('/changePassword', user.changePassword);
+    app.post('/changeDisplayName', user.changeDisplayName);
 
     // Get by ID
     app.get('/getHook', hook.getHook);
@@ -36,5 +37,4 @@ export default (app: Express) => {
 
     // Update table values
     app.patch('/addSetToHook', hook.addSetToHook);
-    app.post('/changeDisplayName', user.changeDisplayName);
 };

@@ -31,9 +31,11 @@ const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
     };
 };
 
-//update panel currently cannot be called independantly of other services
+// update panel currently cannot be called independantly of other services
 const updatePanel = async(oldPanel: IPanel, newPanel : PanelConfig) => {
-    const { id, image, index, panel_set_id } = 
+    const {
+        id, image, index, panel_set_id
+    } =
     await oldPanel.update({
         image:        newPanel.image,
         index:        newPanel.index,
@@ -73,6 +75,7 @@ const getPanel = (sequelize : Sequelize) => async(id: number) => {
 };
 
 const getPanelBasedOnPanelSetAndIndex = (sequelize : Sequelize) => async (index : number, panel_set_id : number) => {
+
     // make sure the panel actually exists
     const panel = await sequelize.models.panel.findOne({
         where:      { panel_set_id, index },
@@ -103,4 +106,6 @@ const getPanelsFromPanelSetID = (sequelize : Sequelize) => async (panel_set_id: 
 };
 
 
-export { getPanelsFromPanelSetID, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex, updatePanel };
+export {
+    getPanelsFromPanelSetID, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex, updatePanel
+};

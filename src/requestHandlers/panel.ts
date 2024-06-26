@@ -15,23 +15,24 @@ import { Sequelize } from 'sequelize';
 const _createPanelController = (sequelize : Sequelize) => async (image: string, index: number, panel_set_id: number) => {
     try {
 
-        //check if a panel exists
+        // check if a panel exists
         const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
 
-        //check if existing panel on a panelset based on index
+        // check if existing panel on a panelset based on index
         const panel = await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(index, panel_set_id);
 
-        //update if exists
-        if(panel){
-            return await panelService.updatePanel(panel,{
+        // update if exists
+        if (panel) {
+            return await panelService.updatePanel(panel, {
                 image:        image,
                 index:        index,
                 panel_set_id: panel_set_id,
             });
         }
-        //make new
-        else{
+
+        // make new
+        else {
             return await panelService.createPanel(sequelize)({
                 image:        image,
                 index:        index,
@@ -139,5 +140,5 @@ const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Res
 };
 
 export {
-    createPanel,getPanelBasedOnPanelSetAndIndex, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController, _getPanelBasedOnPanelSetAndIndexController
+    createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController, _getPanelBasedOnPanelSetAndIndexController
 }; // exporting _create for testing, temporary

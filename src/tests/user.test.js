@@ -2,7 +2,7 @@ import {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController
 } from '../requestHandlers/user';
 import {
-    describe, test, expect, jest, beforeAll, beforeEach
+    describe, test, expect, jest, beforeAll
 } from '@jest/globals';
 
 

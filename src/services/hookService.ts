@@ -23,7 +23,7 @@ interface HookGetInfo {
 /**
  * Create a new hook
  * @param {HookConfig} newHook data to insert into database
- * @returns {HookInfoCreate} Information from the new data entry
+ * @returns {HookCreateInfo} Information from the new data entry
  */
 const createHook = (sequelize: Sequelize) => async (newHook: HookConfig) => {
     const {

@@ -8,6 +8,7 @@
     "setup": "git config core.hooksPath ./git_hooks",
     "prestart": "npm run setup",
     "start": "npx ts-node src/server.ts",
+    "prestart-watch": "npm run setup",
     "start-watch": "nodemon --watch src/** --ext ts,js,json --exec ts-node src/server.ts",
     "start-heroku": "",
     "lint": "npx eslint src",

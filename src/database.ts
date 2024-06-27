@@ -37,10 +37,19 @@ const setup = async () => {
     hookDefine(sequelize);
     panelDefine(sequelize);
     panelSetDefine(sequelize);
-    panelDefine(sequelize);
 
     // set up associations
+    sequelize.models.user.hasMany(sequelize.models.panel_set);
+    sequelize.models.panel_set.belongsTo(sequelize.models.user);
 
+    sequelize.models.panel_set.hasMany(sequelize.models.panel);
+    sequelize.models.panel.belongsTo(sequelize.models.panel_set);
+
+    sequelize.models.panel.hasMany(sequelize.models.hook);
+    sequelize.models.hook.hasOne(sequelize.models.panel);
+
+    sequelize.models.panel_set.hasOne(sequelize.models.hook);
+    sequelize.models.hook.belongsTo(sequelize.models.panel_set);
 
     // sync the table columns, create any tables that don't exist
     await sequelize.sync({ force: true });

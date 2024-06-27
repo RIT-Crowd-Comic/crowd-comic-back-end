@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { IHook } from '../models/hook.model';
+import { IHook } from '../models';
 
 interface HookConfig {
     position: number[],

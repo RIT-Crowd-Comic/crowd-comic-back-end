@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
 import { Sequelize } from 'sequelize';
-import { assertArgumentsDefined } from './utils';
-import { sanitizeResponse } from './utils';
+import { assertArgumentsDefined, sanitizeResponse } from './utils';
 import { sequelize } from '../database';
 import * as UserService from '../services/userService';
 

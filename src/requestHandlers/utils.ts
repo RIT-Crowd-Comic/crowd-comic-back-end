@@ -2,6 +2,8 @@
 import { Request, Response } from 'express';
 import PasswordValidator from 'password-validator';
 import { ValidationError } from 'sequelize';
+import * as useless from './help'
+
 
 // /**
 //  * matches at least 1 lowercase, at least 1 uppercase, at least 1 number, at least 1 symbol

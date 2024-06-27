@@ -10,7 +10,6 @@ interface IPanel extends Model<InferAttributes<IPanel>, InferCreationAttributes<
 }
 
 
-
 const define = (sequelize: Sequelize): void => {
     sequelize.define<IPanel>(
         'panel',

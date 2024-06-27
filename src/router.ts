@@ -40,4 +40,8 @@ export default (app: Express) => {
 
     // Update table values
     app.patch('/addSetToHook', hook.addSetToHook);
+    app.post('/createPanel', panel.createPanel);
+    app.get('/getPanel', panel.getPanel);
+    app.get('/getPanelBasedOnPanelSetAndIndex', panel.getPanelBasedOnPanelSetAndIndex);
+    app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID);
 };

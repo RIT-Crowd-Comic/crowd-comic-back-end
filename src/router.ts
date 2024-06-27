@@ -2,6 +2,7 @@ import { Express } from 'express';
 import help from './requestHandlers/help';
 import * as user from './requestHandlers/user';
 import * as panelSet from './requestHandlers/panelSet';
+import * as panel from './requestHandlers/panel';
 
 /**
  * Route all incoming requests
@@ -21,4 +22,9 @@ export default (app: Express) => {
     app.post('/createPanelSet', panelSet.createPanelSet);
     app.get('/getPanelSetByID', panelSet.getPanelSetByID);
     app.get('/getAllPanelSetsFromUser', panelSet.getAllPanelSetsFromUser);
+
+    app.post('/createPanel', panel.createPanel);
+    app.get('/getPanel', panel.getPanel);
+    app.get('/getPanelBasedOnPanelSetAndIndex', panel.getPanelBasedOnPanelSetAndIndex);
+    app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID);
 };

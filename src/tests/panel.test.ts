@@ -151,14 +151,14 @@ describe('_createPanelController', () => {
     });
     //thrown error is thrown by the get panel id
     test('if an error is thrown for getting panel set, that error should be returned', async () =>{
-        (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(new Error("Error Getting  Panel")));
+        (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(new Error("Error Getting Panel")));
         const response = await _createPanelController(sequelizeMock)('image.png',3,-100);
         expect(response).toBeInstanceOf(Error);
     });
     //thrown error for checking panel exist
     test('if an error is thrown attempting to get if the panel exists, that error should be returned', async () =>{
         (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(getPanelSetObj));
-        (panelService.getPanelBasedOnPanelSetAndIndex as jest.Mock).mockReturnValue(() => Promise.resolve(new Error("Error looking for panel")));
+        (panelService.getPanelBasedOnPanelSetAndIndex as jest.Mock).mockImplementation(() => {throw new Error("Error looking for panel")});
         const response = await _createPanelController(sequelizeMock)('image.png',3,-100);
         expect(response).toBeInstanceOf(Error);
     });
@@ -174,8 +174,9 @@ describe('_createPanelController', () => {
     test('if panel update errors, return it', async () =>{
         (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(getPanelSetObj));
         (panelService.getPanelBasedOnPanelSetAndIndex as jest.Mock).mockReturnValue(() => Promise.resolve(getPanelObj));
-        (panelService.updatePanel as jest.Mock).mockReturnValue(() => Promise.resolve(new Error("Error Updating Panel")));
+        (panelService.updatePanel as jest.Mock).mockImplementation(() =>{throw new Error("Error Updating Panel")});
         const response = await _createPanelController(sequelizeMock)('',3,-1);
+        console.log(response);
         expect(response).toBeInstanceOf(Error);
     });
     //if existing panel isn't found  create, return json object

@@ -39,7 +39,7 @@ const undefinedUser = Object.freeze({
     id:          'AAAAAAAA-bbbb-cccc-dddd-eeeeeeeeeeee'
 });
 
-describe('Create User', () => {
+describe('Create User (Controller)', () => {
     test('Creating a user should return the new user', async () => {
         (userService.createUser as jest.Mock).mockReturnValue(() => Promise.resolve(userResponse));
         const newUser = await _createUserController(sequelizeMock())(user.email, user.password, user.displayName);
@@ -71,7 +71,7 @@ describe('Create User', () => {
     });
 });
 
-describe('Authenticate User', () => {
+describe('Authenticate User (Controller)', () => {
     test('Authenticating existing user should return the user', async () => {
         (userService.authenticate as jest.Mock).mockReturnValue(() => Promise.resolve(userResponse));
         const authUser = await _authenticateController(sequelizeMock())(user.email, user.password);
@@ -91,7 +91,7 @@ describe('Authenticate User', () => {
     });
 });
 
-describe('Change Password', () => {
+describe('Change Password (Controller)', () => {
     test('Changing password successfully should return true', async () => {
         (userService.changePassword as jest.Mock).mockReturnValue(() => Promise.resolve(true));
         const passwordChange = await _changePasswordController(sequelizeMock())(user.email, user.password, user.newPassword);
@@ -99,8 +99,6 @@ describe('Change Password', () => {
     });
 
     test('Changing password with invalid authentication should return false', async () => {
-
-        // return doesn't matter since error is thrown before changePassword() is ever called
         (userService.changePassword as jest.Mock).mockReturnValue(() => Promise.resolve(false));
         const passwordChange = await _changePasswordController(sequelizeMock())(undefinedUser.email, undefinedUser.password, user.newPassword);
         expect(passwordChange).toBe(false);
@@ -115,15 +113,13 @@ describe('Change Password', () => {
     });
 
     test('Changing password with bad data should throw an error', async () => {
-
-        // return doesn't matter since error is thrown before changePassword() is ever called
         (userService.changePassword as jest.Mock).mockReturnValue(() => { throw new Error(); });
         const passwordChange = await _changePasswordController(sequelizeMock())(undefined as any, undefined as any, 1234 as any);
         expect(passwordChange).toBeInstanceOf(Error);
     });
 });
 
-describe('Change Display Name', () => {
+describe('Change Display Name (Controller)', () => {
     test('Changing display name successfully should return true', async () => {
         (userService.changeDisplayName as jest.Mock).mockReturnValue(() => Promise.resolve(true));
         const displayNameChange = await _changeDisplayNameController(sequelizeMock())(user.email, user.password, user.newDisplayName);
@@ -144,7 +140,7 @@ describe('Change Display Name', () => {
 });
 
 
-describe('Get User By ID', () => {
+describe('Get User By ID (Controller)', () => {
 
     test('If the user exists, it should be returned', async () => {
         (userService.getUserByID as jest.Mock).mockReturnValue(() => Promise.resolve(userResponse));

@@ -20,7 +20,28 @@ const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
         index:        newPanel.index,
         panel_set_id: newPanel.panel_set_id,
     }) as IPanel;
-   
+
+    return {
+        id, image, index, panel_set_id
+    } as {
+        id: number,
+        image: string,
+        index: number,
+        panel_set_id: number
+    };
+};
+
+// update panel currently cannot be called independantly of other services
+const updatePanel = async(oldPanel: IPanel, newPanel : PanelConfig) => {
+    const {
+        id, image, index, panel_set_id
+    } =
+    await oldPanel.update({
+        image:        newPanel.image,
+        index:        newPanel.index,
+        panel_set_id: newPanel.panel_set_id,
+    });
+
     return {
         id, image, index, panel_set_id
     } as {
@@ -32,7 +53,7 @@ const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
 };
 
 /**
- * Authenticate a panel before retrieve the panel's data
+ * Get a panel before 
  * @param id 
  * @returns PanelInfoGet
  */
@@ -51,6 +72,19 @@ const getPanel = (sequelize : Sequelize) => async(id: number) => {
         index:        panel.index,
         panel_set_id: panel.panel_set_id as number
     };
+};
+
+const getPanelBasedOnPanelSetAndIndex = (sequelize : Sequelize) => async (index : number, panel_set_id : number) => {
+
+    // make sure the panel actually exists
+    const panel = await sequelize.models.panel.findOne({
+        where:      { panel_set_id, index },
+        attributes: ['id', 'image']
+    }) as IPanel;
+
+    if (!panel) return undefined;
+
+    return panel;
 };
 
 /**
@@ -72,4 +106,6 @@ const getPanelsFromPanelSetID = (sequelize : Sequelize) => async (panel_set_id: 
 };
 
 
-export { getPanelsFromPanelSetID, createPanel, getPanel };
+export {
+    getPanelsFromPanelSetID, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex, updatePanel
+};

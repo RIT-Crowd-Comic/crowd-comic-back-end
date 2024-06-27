@@ -17,7 +17,6 @@ export default (app: Express) => {
     app.post('/createHook', hook.createHook);
     app.post('/createPanel', panel.createPanel);
     app.post('/createPanelSet', panelSet.createPanelSet);
-    app.get('/getUserByID', user.getUserByID);
     app.post('/createUser', user.createUser);
 
     // this will be changed to GET and use the authentication header instead of body
@@ -29,13 +28,12 @@ export default (app: Express) => {
     app.get('/getHook', hook.getHook);
     app.get('/getPanel', panel.getPanel);
     app.get('/getPanelSetByID', panelSet.getPanelSetByID);
+    app.get('/getUserByID', user.getUserByID);
 
     // Get from
     app.get('/getPanelHooks', hook.getPanelHooks);
+    app.get('/getPanelBasedOnPanelSetAndIndex', panel.getPanelBasedOnPanelSetAndIndex);
     app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID);
-
-    app.post('/createPanelSet', panelSet.createPanelSet);
-    app.get('/getPanelSetByID', panelSet.getPanelSetByID);
     app.get('/getAllPanelSetsFromUser', panelSet.getAllPanelSetsFromUser);
 
     // Update table values

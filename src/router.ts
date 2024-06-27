@@ -9,7 +9,6 @@ import * as panelSet from './requestHandlers/panelSet';
 
 export default (app: Express) => {
     app.get('/', help);
-    app.get('/help', help);
     app.get('/getUserByID', user.getUserByID);
     app.post('/createUser', user.createUser);
 

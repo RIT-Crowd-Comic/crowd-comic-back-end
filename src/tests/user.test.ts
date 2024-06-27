@@ -1,5 +1,5 @@
 
-import { Sequelize, ValidationError } from 'sequelize';
+import { Sequelize } from 'sequelize';
 import {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
     _getUserByIDController

@@ -31,8 +31,8 @@ export default (app: Express) => {
     app.get('/getUserByID', user.getUserByID);
 
     // Get from
-    app.get('/getPanelHooks', hook.getPanelHooks);
     app.get('/getPanelBasedOnPanelSetAndIndex', panel.getPanelBasedOnPanelSetAndIndex);
+    app.get('/getPanelHooks', hook.getPanelHooks);
     app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID);
     app.get('/getAllPanelSetsFromUser', panelSet.getAllPanelSetsFromUser);
 

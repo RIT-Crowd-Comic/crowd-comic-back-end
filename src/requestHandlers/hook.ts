@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as hookService from '../services/hookService';
-import { assertArguments, assertArgumentsDefined, sanitizeResponse } from './utils';
+import { assertArgumentsDefined, sanitizeResponse } from './utils';
 import { getPanel } from '../services/panelService';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
@@ -40,11 +40,7 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     const current_panel_id : number = req.body.current_panel_id;
     const next_panel_set_id : number = req.body.next_panel_set_id;
 
-    const validArgs = assertArguments(
-        { position, current_panel_id, next_panel_set_id },
-        a => a != undefined || a === null,
-        'position or current_panel_id cannot be undefined'
-    );
+    const validArgs = assertArgumentsDefined({ position, current_panel_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _createHookController(sequelize)(position, current_panel_id, next_panel_set_id);

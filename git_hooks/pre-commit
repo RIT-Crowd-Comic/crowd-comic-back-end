@@ -5,8 +5,9 @@
 ESLINT="npx eslint --fix --color"
 PRINT_FIX_ERROR=false
 
-for file in $(git diff --cached --name-only | grep ".js$"); do
+for file in $(git diff --cached --name-only | grep ".[tj]s$"); do
   # potentially check return result to cancel the commit on error
+  echo "$file"
   if ! $ESLINT "$file"; then
     PRINT_FIX_ERROR=true
   fi

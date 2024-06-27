@@ -26,7 +26,7 @@ describe('_getUserByIDController', () => {
     });
 
     test('If the user does not exist, it should return undefined', async () => {
-        (userService.getUserByID as jest.Mock).mockReturnValue(() => Promise.resolve(undefined));
+        (userService.getUserByID as   jest.Mock).mockReturnValue(() => Promise.resolve(undefined));
 
         const response = await _getUserByIDController(sequelizeMock)('8c2d50d1-9b1f-483c-b267-cecb929ffb97');
 

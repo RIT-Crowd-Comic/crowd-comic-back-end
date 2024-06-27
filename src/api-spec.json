@@ -36,9 +36,83 @@
         }
       }
     },
-    "/getUserByID": {
-      "get": {
+    "/createHook": {
+      "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "example": "any"
+                },
+                "current_panel_id": {
+                  "example": "any"
+                },
+                "next_panel_set_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/createPanel": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "example": "any"
+                },
+                "index": {
+                  "example": "any"
+                },
+                "panel_set_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/createPanelSet": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "author_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "400": {
             "description": "Bad Request"
@@ -53,25 +127,27 @@
           {
             "name": "body",
             "in": "body",
+            "description": "Create a new user",
             "schema": {
-              "type": "object",
-              "properties": {
-                "password": {
-                  "example": "any"
-                },
-                "display_name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/userDefinition"
             }
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/userResponse"
+            }
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -169,23 +245,19 @@
         }
       }
     },
-    "/createPanelSet": {
-      "post": {
+    "/getHook": {
+      "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "author_id": {
-                  "example": "any"
-                }
-              }
-            }
+        "responses": {
+          "400": {
+            "description": "Bad Request"
           }
-        ],
+        }
+      }
+    },
+    "/getPanel": {
+      "get": {
+        "description": "",
         "responses": {
           "400": {
             "description": "Bad Request"
@@ -203,12 +275,62 @@
         }
       }
     },
+    "/getUserByID": {
+      "get": {
+        "description": "",
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/getPanelBasedOnPanelSetAndIndex": {
+      "get": {
+        "description": "",
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/getPanelHooks": {
+      "get": {
+        "description": "",
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/getPanelsFromPanelSetID": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/getAllPanelSetsFromUser": {
       "get": {
         "description": "",
         "responses": {
           "400": {
             "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/addSetToHook": {
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
@@ -246,6 +368,15 @@
         "id": {
           "type": "string",
           "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "string | string[]"
         }
       }
     }

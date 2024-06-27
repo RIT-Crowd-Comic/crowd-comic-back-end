@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as UserService from '../services/userService';
 import { Sequelize } from 'sequelize';
 import {
-    validatePassword, 
+    validatePassword,
     assertArguments,
     validateDisplayName,
     sanitizeResponse,
@@ -56,7 +56,7 @@ const _createUserController = (sequelize: Sequelize) => async (email: string, pa
  */
 const createUser = async (req: Request, res: Response): Promise<Response> => {
 
-    const password: string = req.body.password as string;
+    const password = req.body.password;
     const display_name = req.body.display_name;
     const email = req.body.email;
 
@@ -84,6 +84,23 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
 
     return sanitizeResponse(response, res);
 
+    // API documentation
+    /*  #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Create a new user',
+            schema: { $ref: '#/definitions/userDefinition' }
+        } 
+        #swagger.responses[200] = {
+            description: "Success",
+            schema: { $ref: '#/definitions/userResponse' }
+        }
+        #swagger.responses[500] = {
+            description: "Internal Server Error"
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+    */
 };
 
 /**
@@ -106,7 +123,7 @@ const _authenticateController = (sequelize: Sequelize) => async (email: string, 
 const authenticate = async (req: Request, res: Response): Promise<Response> => {
 
     const email = req.body.email;
-    const password: string = req.body.password;
+    const password = req.body.password;
 
     // validate arguments
     const validArgs = assertArguments(
@@ -145,7 +162,7 @@ const _changePasswordController = (sequelize: Sequelize) => async (email: string
  */
 const changePassword = async (req: Request, res: Response): Promise<Response> => {
     const email = req.body.email;
-    const password: string = req.body.password;
+    const password = req.body.password;
     const newPassword = req.body.newPassword;
 
     // validate arguments are not null
@@ -189,7 +206,7 @@ const _changeDisplayNameController = (sequelize: Sequelize) => async (email: str
 const changeDisplayName = async (req: Request, res: Response): Promise<Response> => {
 
     const email = req.body.email;
-    const password: string = req.body.password;
+    const password = req.body.password;
     const newDisplayName = req.body.newDisplayName;
 
     // validate arguments are not null

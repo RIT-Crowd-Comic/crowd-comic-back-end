@@ -32,6 +32,9 @@ const doc = {
             email: 'example@example.com',
             display_name: 'John Doe',
             id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+        },
+        error:  {
+            message: "string | string[]"
         }
     }
 }

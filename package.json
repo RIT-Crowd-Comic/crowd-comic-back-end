@@ -8,11 +8,18 @@
     "setup": "",
     "prestart": "",
     "start": "npx ts-node src/server.ts",
-    "start-watch": "nodemon --watch src/** --ext ts,js,json --exec ts-node src/server.ts",
+    "start-watch": "nodemon",
     "start-heroku": "",
     "lint": "npx eslint src",
     "lint-fix": "npx eslint src --fix",
     "swagger": "npx ts-node src/swagger-autogen.ts"
+  },
+  "nodemonConfig": {
+    "watch": "src/**",
+    "ext": "ts,js,json",
+    "exec": "npm run swagger & ts-node src/server.ts",
+    "ignore": ["src/api-spec.json"]
+    
   },
   "repository": {
     "type": "git",

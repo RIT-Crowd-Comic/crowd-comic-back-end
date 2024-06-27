@@ -40,7 +40,7 @@ const updatePanel = async(oldPanel: IPanel, newPanel : PanelConfig) => {
         image:        newPanel.image,
         index:        newPanel.index,
         panel_set_id: newPanel.panel_set_id,
-    });
+    }) as IPanel;
 
     return {
         id, image, index, panel_set_id

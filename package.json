@@ -12,7 +12,7 @@
     "start-heroku": "",
     "lint": "npx eslint src",
     "lint-fix": "npx eslint src --fix",
-    "swagger-autogen": "npx ts-node src/swagger-autogen.ts"
+    "swagger": "npx ts-node src/swagger-autogen.ts"
   },
   "repository": {
     "type": "git",

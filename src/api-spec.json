@@ -213,5 +213,41 @@
         }
       }
     }
+  },
+  "definitions": {
+    "userDefinition": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "example@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "asdfASDF1234"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "John Doe"
+        }
+      }
+    },
+    "userResponse": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "example@example.com"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "id": {
+          "type": "string",
+          "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        }
+      }
+    }
   }
 }

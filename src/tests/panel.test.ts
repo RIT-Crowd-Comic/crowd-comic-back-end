@@ -175,7 +175,6 @@ describe('_createPanelController', () => {
         (panelService.getPanelBasedOnPanelSetAndIndex as jest.Mock).mockReturnValue(() => Promise.resolve(getPanelObj));
         (panelService.updatePanel as jest.Mock).mockResolvedValue(updateAndCreatePanelObj);
         const response = await _createPanelController(sequelizeMock)('image.png', 3, 1);
-        console.log(response);
         expect(response).toBe(updateAndCreatePanelObj);
     });
 

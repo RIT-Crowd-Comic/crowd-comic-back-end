@@ -133,11 +133,7 @@ describe('_createHookController', () => {
             index:        0,
             panel_set_id: 1
         };
-        // const panelSetData = {
-        //     author_id: "abc123-efg456-hij789"
-        // };
-
-        // (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSetData));
+        
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
         (hookService.createHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
@@ -183,4 +179,53 @@ describe('_createHookController', () => {
 
         expect(response).toBeInstanceOf(Error);
     });
-})
+});
+
+describe('_addSetToHookController', () => {
+    let sequelizeMock: jest.Mocked<Sequelize>;
+
+    beforeEach(() => {
+        sequelizeMock = {} as jest.Mocked<Sequelize>;
+    })
+
+    test('If hook is successfully added, return it', async () => {
+        const hookData = {
+            position: [1,1],
+            current_panel_id: 1,
+            next_panel_set_id: 2
+        };
+        const panelSetData = {
+            author_id: "abc123-efg456-hij789"
+        };
+
+        (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSetData));
+        (hookService.addSetToHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
+
+        const response = await _addSetToHookController(sequelizeMock)(1,2);
+
+        expect(response).toBe(hookData);
+    });
+
+    test('If panel set does not exist, return panel set error', async () => {
+        const error = new Error('no panel_set exists for given panel_set_id');
+
+        (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(null));
+
+        const response = await _addSetToHookController(sequelizeMock)(1,2);
+
+        expect(response).toEqual(error);
+    });
+
+    test('If an error occurs, the error should be returned', async () => {
+        const panelSetData = {
+            author_id: "abc123-efg456-hij789"
+        };
+
+        (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSetData));
+        (hookService.addSetToHook as jest.Mock).mockReturnValue(() => Promise.resolve(new Error('Error Messgage')));
+
+        const response = await _addSetToHookController(sequelizeMock)(1,2);
+
+        expect(response).toBeInstanceOf(Error);
+    });
+});

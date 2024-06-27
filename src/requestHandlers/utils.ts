@@ -1,5 +1,5 @@
 
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import PasswordValidator from 'password-validator';
 import { ValidationError } from 'sequelize';
 
@@ -152,6 +152,10 @@ const sanitizeResponse = (response : any, expressResponse: Response, message404 
     return expressResponse.status(200).json(response);
 };
 
+const notFound = (req: Request, res: Response): Response => {
+    return res.status(404).json({message: `'${req.method} ${req.originalUrl}' is not a valid request`});
+};
+
 export {
     validatePassword,
     validateDisplayName,
@@ -159,5 +163,6 @@ export {
     assert,
     assertArguments,
     assertArgumentsDefined,
-    sanitizeResponse
+    sanitizeResponse,
+    notFound
 };

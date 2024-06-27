@@ -1,4 +1,6 @@
-import { _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController } from '../requestHandlers/hook';
+import {
+    _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController
+} from '../requestHandlers/hook';
 import * as hookService from '../services/hookService';
 import * as panelService from '../services/panelService';
 import * as panelSetService from '../services/panelSetService';
@@ -7,19 +9,19 @@ jest.mock('../services/hookService');
 jest.mock('../services/panelService');
 jest.mock('../services/panelSetService');
 
-const sequelizeMock = {} as jest.Mocked<Sequelize>;
-    
-describe('_getHookController', () => {
+const sequelizeMock = () => ({} as jest.Mocked<Sequelize>);
+
+describe('Get Hook Controller', () => {
     test('If hook exists, it should be returned', async () => {
         const hookData = {
-            position: [1,1],
-            current_panel_id: 1,
+            position:          [1, 1],
+            current_panel_id:  1,
             next_panel_set_id: 2
         };
 
         (hookService.getHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
-        const response = await _getHookController(sequelizeMock)(1);
+        const response = await _getHookController(sequelizeMock())(1);
 
         expect(response).toEqual(hookData);
     });
@@ -27,32 +29,33 @@ describe('_getHookController', () => {
     test('If the hook does not exists, it should return undefined', async () => {
         (hookService.getHook as jest.Mock).mockReturnValue(() => Promise.resolve(undefined));
 
-        const response = await _getHookController(sequelizeMock)(1);
+        const response = await _getHookController(sequelizeMock())(1);
 
         expect(response).toBeUndefined();
     });
 
     test('If an error occurs, it should return the error', async () => {
-        (hookService.getHook as jest.Mock).mockReturnValue(() => Promise.reject(new Error('Error Message')));
+        (hookService.getHook as jest.Mock).mockReturnValue(() => { throw new Error('Error Message'); });
 
-        const response = await _getHookController(sequelizeMock)(1);
+        const response = await _getHookController(sequelizeMock())(1);
 
         expect(response).toBeInstanceOf(Error);
     });
 });
 
-describe('_getPanelHooksController', () => {
-    test('If the panel has associated hooks, they should fill the array',
+describe('Get Panel Hooks Controller', () => {
+    test(
+        'If the panel has associated hooks, they should fill the array',
         async () => {
             const panelHookData = [
                 {
-                    position: [1,1],
-                    current_panel_id: 1,
+                    position:          [1, 1],
+                    current_panel_id:  1,
                     next_panel_set_id: 2
                 },
                 {
-                    position: [2,2],
-                    current_panel_id: 1,
+                    position:          [2, 2],
+                    current_panel_id:  1,
                     next_panel_set_id: 3
                 }
             ];
@@ -61,14 +64,15 @@ describe('_getPanelHooksController', () => {
                 index:        0,
                 panel_set_id: 1
             };
-    
+
             (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
             (hookService.getPanelHooks as jest.Mock).mockReturnValue(() => Promise.resolve(panelHookData));
 
-            const response = await _getPanelHooksController(sequelizeMock)(1);
+            const response = await _getPanelHooksController(sequelizeMock())(1);
 
             expect(response).toEqual(panelHookData);
-    });
+        }
+    );
 
     test('If the panel has no associated hooks, return empty array', async () => {
         const panelHookData = [] as number[];
@@ -81,7 +85,7 @@ describe('_getPanelHooksController', () => {
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
         (hookService.getPanelHooks as jest.Mock).mockReturnValue(() => Promise.resolve(panelHookData));
 
-        const response = await _getPanelHooksController(sequelizeMock)(1);
+        const response = await _getPanelHooksController(sequelizeMock())(1);
 
         expect(response).toEqual([] as number[]);
     });
@@ -90,26 +94,26 @@ describe('_getPanelHooksController', () => {
         const error = new Error('no panel exists for given panel id');
 
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(null));
-        
-        const response = await _getPanelHooksController(sequelizeMock)(1);
+
+        const response = await _getPanelHooksController(sequelizeMock())(1);
 
         expect(response).toEqual(error);
     });
 
     test('If an error occurs, the error should be returned', async () => {
-        (hookService.getPanelHooks as jest.Mock).mockReturnValue(() => Promise.reject(new Error('Error Message')));
+        (hookService.getPanelHooks as jest.Mock).mockReturnValue(() => { throw new Error('Error Message'); });
 
-        const response = await _getPanelHooksController(sequelizeMock)(1);
+        const response = await _getPanelHooksController(sequelizeMock())(1);
 
         expect(response).toBeInstanceOf(Error);
     });
 });
 
-describe('_createHookController', () => {
+describe('Create Hook Controller', () => {
     test('If hook is created, hook info is returned', async () => {
         const hookData = {
-            position: [1,1],
-            current_panel_id: 1,
+            position:          [1, 1],
+            current_panel_id:  1,
             next_panel_set_id: 2
         };
         const panelData = {
@@ -117,19 +121,19 @@ describe('_createHookController', () => {
             index:        0,
             panel_set_id: 1
         };
-        
+
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
         (hookService.createHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
-        const response = await _createHookController(sequelizeMock)([1,1], 1, 2);
+        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
 
         expect(response).toBe(hookData);
     });
 
     test('If hook (with null next panel set) is created, hook info is returned', async () => {
         const hookData = {
-            position: [1,1],
-            current_panel_id: 1,
+            position:          [1, 1],
+            current_panel_id:  1,
             next_panel_set_id: null
         };
         const panelData = {
@@ -141,7 +145,7 @@ describe('_createHookController', () => {
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
         (hookService.createHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
-        const response = await _createHookController(sequelizeMock)([1,1], 1, null);
+        const response = await _createHookController(sequelizeMock())([1, 1], 1, null);
 
         expect(response).toBe(hookData);
     });
@@ -150,36 +154,34 @@ describe('_createHookController', () => {
         const error = new Error('no panel exists for given panel id');
 
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(null));
-        
-        const response = await _createHookController(sequelizeMock)([1,1],1,2);
+
+        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
 
         expect(response).toEqual(error);
     });
 
     test('If an error occurs, error should be returned', async () => {
-        (hookService.createHook as jest.Mock).mockReturnValue(() => Promise.reject(new Error('Error Message')));
+        (hookService.createHook as jest.Mock).mockReturnValue(() => { throw new Error('Error Message'); });
 
-        const response = await _createHookController(sequelizeMock)([1,1],1,2);
+        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
 
         expect(response).toBeInstanceOf(Error);
     });
 });
 
-describe('_addSetToHookController', () => {
+describe('Add Set To Hook Controller', () => {
     test('If hook is successfully added, return it', async () => {
         const hookData = {
-            position: [1,1],
-            current_panel_id: 1,
+            position:          [1, 1],
+            current_panel_id:  1,
             next_panel_set_id: 2
         };
-        const panelSetData = {
-            author_id: "abc123-efg456-hij789"
-        };
+        const panelSetData = { author_id: 'abc123-efg456-hij789' };
 
         (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSetData));
         (hookService.addSetToHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
-        const response = await _addSetToHookController(sequelizeMock)(1,2);
+        const response = await _addSetToHookController(sequelizeMock())(1, 2);
 
         expect(response).toBe(hookData);
     });
@@ -189,20 +191,18 @@ describe('_addSetToHookController', () => {
 
         (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(null));
 
-        const response = await _addSetToHookController(sequelizeMock)(1,2);
+        const response = await _addSetToHookController(sequelizeMock())(1, 2);
 
         expect(response).toEqual(error);
     });
 
     test('If an error occurs, the error should be returned', async () => {
-        const panelSetData = {
-            author_id: "abc123-efg456-hij789"
-        };
+        const panelSetData = { author_id: 'abc123-efg456-hij789' };
 
         (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSetData));
-        (hookService.addSetToHook as jest.Mock).mockReturnValue(() => Promise.resolve(new Error('Error Messgage')));
+        (hookService.addSetToHook as jest.Mock).mockReturnValue(() => { throw new Error('Error Messgage'); });
 
-        const response = await _addSetToHookController(sequelizeMock)(1,2);
+        const response = await _addSetToHookController(sequelizeMock())(1, 2);
 
         expect(response).toBeInstanceOf(Error);
     });

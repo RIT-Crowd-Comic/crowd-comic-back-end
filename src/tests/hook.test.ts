@@ -7,13 +7,9 @@ jest.mock('../services/hookService');
 jest.mock('../services/panelService');
 jest.mock('../services/panelSetService');
 
+const sequelizeMock = {} as jest.Mocked<Sequelize>;
+    
 describe('_getHookController', () => {
-    let sequelizeMock: jest.Mocked<Sequelize>;
-
-    beforeEach(() => {
-        sequelizeMock = {} as jest.Mocked<Sequelize>;
-    });
-
     test('If hook exists, it should be returned', async () => {
         const hookData = {
             position: [1,1],
@@ -46,12 +42,6 @@ describe('_getHookController', () => {
 });
 
 describe('_getPanelHooksController', () => {
-    let sequelizeMock: jest.Mocked<Sequelize>;
-
-    beforeEach(() => {
-        sequelizeMock = {} as jest.Mocked<Sequelize>;
-    });
-
     test('If the panel has associated hooks, they should fill the array',
         async () => {
             const panelHookData = [
@@ -116,12 +106,6 @@ describe('_getPanelHooksController', () => {
 });
 
 describe('_createHookController', () => {
-    let sequelizeMock: jest.Mocked<Sequelize>;
-
-    beforeEach(() => {
-        sequelizeMock = {} as jest.Mocked<Sequelize>;
-    });
-
     test('If hook is created, hook info is returned', async () => {
         const hookData = {
             position: [1,1],
@@ -182,12 +166,6 @@ describe('_createHookController', () => {
 });
 
 describe('_addSetToHookController', () => {
-    let sequelizeMock: jest.Mocked<Sequelize>;
-
-    beforeEach(() => {
-        sequelizeMock = {} as jest.Mocked<Sequelize>;
-    })
-
     test('If hook is successfully added, return it', async () => {
         const hookData = {
             position: [1,1],

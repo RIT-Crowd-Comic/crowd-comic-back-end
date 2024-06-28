@@ -23,6 +23,21 @@ const getUserByID = async (req: Request, res: Response): Promise<Response> => {
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getUserByIDController(sequelize)(id);
     return sanitizeResponse(response, res, `User with id of "${id}" does not exist`);
+    
+    // API documentation
+    /*  #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Get a user by their UUID',
+        } 
+        #swagger.responses[200] = {
+            description: 'Success',
+            schema: { $ref: '#/definitions/userResponse' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 const _getUserByIDController = (sequelize: Sequelize) => async(id: string) => {

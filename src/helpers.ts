@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import swaggerUI from 'swagger-ui-express';
 
 /**
  * Set the content security policy for our server.

@@ -36,6 +36,16 @@
         }
       }
     },
+    "/help": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/createHook": {
       "post": {
         "description": "",

@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { IHook } from '../models/hook.model';
-import { IPanel } from '../models/panel.model';
+import { IHook, IPanel } from '../models';
 
 interface HookConfig {
     position: number[],

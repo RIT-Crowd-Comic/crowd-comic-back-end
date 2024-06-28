@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { IPanelSet } from '../models/panelSet.model';
-import { IUser } from '../models/user.model';
+import { IPanelSet, IUser } from '../models';
 interface PanelSetConfig {
     author_id: string
 }

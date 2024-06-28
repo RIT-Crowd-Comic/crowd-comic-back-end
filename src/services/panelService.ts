@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { IPanel } from '../models/panel.model';
-import { IPanelSet } from '../models/panelSet.model';
+import { IPanel, IPanelSet } from '../models';
 
 interface PanelConfig {
     image: string,

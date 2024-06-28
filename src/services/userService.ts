@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { IUser } from '../models/user.model';
+import { IUser } from '../models';
 import bcrypt from 'bcrypt';
 
 /**

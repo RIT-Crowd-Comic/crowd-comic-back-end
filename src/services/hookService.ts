@@ -4,20 +4,20 @@ import { IHook } from '../models/hook.model';
 interface HookConfig {
     position: number[],
     current_panel_id: number,
-    next_panel_set_id: number
+    next_panel_set_id: number|null
 }
 
 interface HookCreateInfo {
     id: number,
     position: number[],
     current_panel_id: number,
-    next_panel_set_id: number
+    next_panel_set_id: number|null
 }
 
 interface HookGetInfo {
     position: number[],
     current_panel_id: number,
-    next_panel_set_id: number
+    next_panel_set_id: number|null
 }
 
 /**

@@ -14,7 +14,7 @@ import * as helpers from './helpers';
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, './api-spec.json'), 'utf-8'));
+const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, './api-autogen-spec.json'), 'utf-8'));
 
 // set up database before connecting server
 setupDatabase().then(() => {
@@ -37,10 +37,10 @@ setupDatabase().then(() => {
 
     // we could probably use sessions to secure user logins
 
-    router(app);
-
     // host swagger OAS spec file
     app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
+    router(app);
 
     // start the server
 

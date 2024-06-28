@@ -12,7 +12,6 @@ import * as utils from './requestHandlers/utils';
 
 export default (app: Express) => {
     app.get('/', help);
-    app.get('/help', help);
 
     // Create
     app.post('/createHook', hook.createHook);

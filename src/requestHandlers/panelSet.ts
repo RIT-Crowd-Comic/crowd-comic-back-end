@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
 import { Sequelize } from 'sequelize';
-import { assertArgumentsDefined, sanitizeResponse } from './utils';
+import { assertArguments, assertArgumentsDefined, sanitizeResponse } from './utils';
 import { sequelize } from '../database';
 import * as UserService from '../services/userService';
 
@@ -33,6 +33,21 @@ const createPanelSet = async (request: Request, res: Response) : Promise<Respons
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _createPanelSetController(sequelize)(author_id);
     return sanitizeResponse(response, res);
+
+    // API documentation
+    /*  #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Create a new panel set',
+        } 
+        #swagger.responses[200] = {
+            description: 'Returns the new panel set',
+            schema: { id: 0, author_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 const _getPanelSetByIDController = (sequelize: Sequelize) => async(id: number) => {
@@ -45,15 +60,41 @@ const _getPanelSetByIDController = (sequelize: Sequelize) => async(id: number) =
 };
 
 const getPanelSetByID = async (request: Request, res: Response) : Promise<Response> => {
-    const id = request.body.id;
-    const validArgs = assertArgumentsDefined({ id });
+    const id = Number(request.query.id);
+    const validArgs = assertArguments(
+        { id },
+        arg => !isNaN(arg),
+        'must be a valid number'
+    );
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getPanelSetByIDController(sequelize)(id);
     return sanitizeResponse(response, res, `a panel with the id of "${id}" cannot be found`);
+
+    // API documentation
+    /*  
+        #swagger.parameters['id'] = {
+            in: 'query',
+            type: 'number'
+        }
+        #swagger.responses[200] = {
+            description: 'Returns the panel set',
+            schema: { id: 0, author_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'a panel with the id of "${id}" cannot be found' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 const _getAllPanelSetsFromUserController = (sequelize: Sequelize) => async(id: string) => {
     try {
+
+        const getUser = await UserService.getUserByID(sequelize)(id ?? '');
+        if (getUser == null) throw new Error(`User with an id of "${id}" does not exist`);
 
         // see if this user exist
         return await PanelSetService.getAllPanelSetsFromUser(sequelize)(id);
@@ -64,12 +105,31 @@ const _getAllPanelSetsFromUserController = (sequelize: Sequelize) => async(id: s
 };
 
 const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise<Response> => {
-    const id = request.body.id;
-    const validArgs = assertArgumentsDefined({ id });
+    const id = (typeof request.query.id === 'string') ? request.query.id : '';
+    const validArgs = assertArguments(
+        { id },
+        arg => arg !== '',
+        'must be typeof string'
+    );
     if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _getAllPanelSetsFromUserController(sequelize)(id);
-    const errorMessage = await UserService.getUserByID(sequelize)(id) == null ? `User with an id of "${id}" does not exist` : `This user has not made any panel sets`;
-    return sanitizeResponse(response, res, errorMessage);
+    const response = await _getAllPanelSetsFromUserController(sequelize)(id ?? '');
+    return sanitizeResponse(response, res, 'This user has not made any panel sets');
+
+    // API documentation
+    /*  
+        #swagger.responses[200] = {
+            description: 'Get all panel sets from a user',
+            schema: [{ id: 0, author_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }]
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'User with an id of "${id}" does not exist' }
+        }
+        #swagger.responses[500] = {}
+    */
+
 };
 
 export {

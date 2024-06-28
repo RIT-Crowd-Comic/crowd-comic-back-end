@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './utils';
+import { assertArguments, assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './utils';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
@@ -77,13 +77,35 @@ const _getPanelController = (sequelize : Sequelize) => async (id:number) => {
 
 // the actual request for getting a panel
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
-    const id = req.body.id;
-    const validArgs = assertArgumentsDefined({ id });
+    const id = Number(req.query.id);
+    const validArgs = assertArguments(
+        { id },
+        arg => !isNaN(arg),
+        'must be a valid number'
+    );
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getPanelController(sequelize)(id);
 
     return sanitizeResponse(response, res, `could not find panel with id ${req.body.id}`);
+
+    /*
+        #swagger.parameters['id'] = {
+            in: 'query',
+            type: 'number'
+        }
+        #swagger.responses[200] = {
+            description: 'A panel',
+            schema: { id: 0, image: 'path/to/image' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'could not find panel with id ${req.body.id}' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 
@@ -104,14 +126,40 @@ const _getPanelBasedOnPanelSetAndIndexController = (sequelize : Sequelize) => as
 
 // the actual request for getting a panel
 const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Promise<Response> => {
-    const panel_set_id = req.body.panel_set_id;
-    const index = req.body.index;
-    const validArgs = assertArgumentsDefined({ panel_set_id, index });
+    const panel_set_id = Number(req.query.panel_set_id);
+    const index = Number(req.query.index);
+    const validArgs = assertArguments(
+        { panel_set_id, index },
+        arg => !isNaN(arg),
+        'must be a valid number'
+    );
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getPanelBasedOnPanelSetAndIndexController(sequelize)(panel_set_id, index);
 
     return sanitizeResponse(response, res, `could not find panel with panel_set_id ${panel_set_id} and index of ${index}`);
+
+    /*
+        #swagger.parameters['panel_set_id'] = {
+            in: 'query',
+            type: 'number'
+        }
+            #swagger.parameters['id'] = {
+            in: 'query',
+            type: 'number'
+        }
+        #swagger.responses[200] = {
+            description: 'A panel',
+            schema: { id: 0, image: 'path/to/image' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'could not find panel with panel_set_id ${panel_set_id} and index of ${index}' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**

@@ -18,23 +18,28 @@ import { sequelize } from '../database';
  * @returns nulls if a user with the given id doesn't exist
  */
 const getUserByID = async (req: Request, res: Response): Promise<Response> => {
-    const id = req.body.id;
-    const validArgs = assertArgumentsDefined({ id });
+    const id = (typeof req.query.id === 'string') ? req.query.id : '';
+    const validArgs = assertArguments(
+        { id },
+        arg => arg !== '',
+        'must be typeof string'
+    );
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getUserByIDController(sequelize)(id);
     return sanitizeResponse(response, res, `User with id of "${id}" does not exist`);
 
     // API documentation
-    /*  #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'Get a user by their UUID',
-        } 
+    /*  
+        #swagger.tags = ['users']
         #swagger.responses[200] = {
             description: 'Success',
             schema: { $ref: '#/definitions/userResponse' }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'User with id of "${id}" does not exist' }
         }
         #swagger.responses[500] = {}
     */
@@ -100,7 +105,9 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
     return sanitizeResponse(response, res);
 
     // API documentation
-    /*  #swagger.parameters['body'] = {
+    /*  
+        #swagger.tags = ['users']
+        #swagger.parameters['body'] = {
             in: 'body',
             description: 'Create a new user',
             schema: { $ref: '#/definitions/userDefinition' }
@@ -151,7 +158,9 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
     return sanitizeResponse(response, res, 'Could not find user with provided email/password');
 
     // API documentation
-    /*  #swagger.parameters['body'] = {
+    /*  
+        #swagger.tags = ['users']
+        #swagger.parameters['body'] = {
             in: 'body',
             description: 'Authenticate a user. This is likely to change when when we start using sessions for authentication.',
         } 
@@ -218,7 +227,9 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
     return sanitizeResponse(response, res);
 
     // API documentation
-    /*  #swagger.parameters['body'] = {
+    /*  
+        #swagger.tags = ['users']
+        #swagger.parameters['body'] = {
             in: 'body',
             description: 'Change the password for a user',
         } 
@@ -285,7 +296,9 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
     return sanitizeResponse(response, res);
 
     // API documentation
-    /*  #swagger.parameters['body'] = {
+    /*  
+        #swagger.tags = ['users']
+        #swagger.parameters['body'] = {
             in: 'body',
             description: 'Change the display name for a user',
         } 

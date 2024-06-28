@@ -19,7 +19,7 @@
     "watch": "src/**",
     "ext": "ts,js,json",
     "exec": "npm run swagger & ts-node src/server.ts",
-    "ignore": ["src/api-spec.json"]
+    "ignore": ["src/api-autogen-spec.json"]
     
   },
   "repository": {

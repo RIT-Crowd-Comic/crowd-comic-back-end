@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { IPanelSet } from '../models/panelSet.model';
+import { IUser } from '../models/user.model';
 interface PanelSetConfig {
     author_id: string
 }
@@ -35,7 +36,8 @@ const getPanelSetByID = (sequelize: Sequelize) => async (id: number) => {
  * @returns an array of all the panels found
  */
 const getAllPanelSetsFromUser = (sequelize: Sequelize) => async (id: string) => {
-    return await sequelize.models.panel_set.findAll({ where: { author_id: id } }) as IPanelSet[];
+    const user = await sequelize.models.user.findByPk(id, { include: sequelize.models.panel_set }) as IUser;
+    return user.panel_sets as IPanelSet[];
 };
 
 export { createPanelSet, getPanelSetByID, getAllPanelSetsFromUser };

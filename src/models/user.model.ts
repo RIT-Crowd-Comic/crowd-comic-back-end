@@ -1,6 +1,7 @@
 import {
-    CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize
+    CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize
 } from 'sequelize';
+import { IPanelSet } from './panelSet.model';
 
 /**
  * user model attributes
@@ -10,6 +11,7 @@ interface IUser extends Model<InferAttributes<IUser>, InferCreationAttributes<IU
     display_name: string,
     email: string,
     password: string,
+    panel_sets?: NonAttribute<IPanelSet[]>
 }
 
 /**

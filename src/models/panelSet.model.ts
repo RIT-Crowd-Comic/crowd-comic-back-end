@@ -1,10 +1,14 @@
 import {
-    CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize
+    CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize
 } from 'sequelize';
+import { IPanel } from './panel.model';
+import { IHook } from './hook.model';
 
 interface IPanelSet extends Model<InferAttributes<IPanelSet>, InferCreationAttributes<IPanelSet>> {
     id: CreationOptional<number>,
-    author_id: string
+    author_id: string,
+    panels?: NonAttribute<IPanel[]>,
+    hooks?: NonAttribute<IHook[]>
 }
 
 const define = (sequelize: Sequelize): void => {

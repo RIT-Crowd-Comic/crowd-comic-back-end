@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { IPanel } from '../models/panel.model';
+import { IPanelSet } from '../models/panelSet.model';
 
 interface PanelConfig {
     image: string,
@@ -93,9 +94,9 @@ const getPanelBasedOnPanelSetAndIndex = (sequelize : Sequelize) => async (index 
  * @returns {object[]} An array of objects with id, image, index properties
  */
 const getPanelsFromPanelSetID = (sequelize : Sequelize) => async (panel_set_id: number) => {
-
     // Find all panels on requested panelSet 
-    const panels = await sequelize.models.panel.findAll({ where: { panel_set_id } }) as IPanel[];
+    const panel_set = await sequelize.models.panel_set.findByPk(panel_set_id, {include: sequelize.models.panel}) as IPanelSet;
+    const panels = panel_set.panels as IPanel[];
 
     // Map panels to keep only needed data
     return panels.map((p) => ({

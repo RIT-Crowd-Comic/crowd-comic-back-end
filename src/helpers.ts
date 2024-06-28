@@ -1,12 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 
-
 /**
  * Set the content security policy for our server.
  * @returns 
  */
 const setCSP = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 'default-src *');
+    return next();
+};
+
+const swaggerCSP = (req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Content-Security-Policy', "default-src *; style-src * 'unsafe-inline'; img-src * data:");
     return next();
 };
 
@@ -24,4 +28,4 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 };
 
 
-export { setCSP, errorHandler };
+export { setCSP, swaggerCSP, errorHandler };

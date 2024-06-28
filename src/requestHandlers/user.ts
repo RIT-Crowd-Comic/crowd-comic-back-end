@@ -5,8 +5,8 @@ import {
     validatePassword,
     assertArguments,
     validateDisplayName,
-    sanitizeResponse,
-    assertArgumentsDefined
+    assertArgumentsDefined,
+    sanitizeResponse
 } from './utils';
 import validator from 'validator';
 import { sequelize } from '../database';
@@ -18,11 +18,31 @@ import { sequelize } from '../database';
  * @returns nulls if a user with the given id doesn't exist
  */
 const getUserByID = async (req: Request, res: Response): Promise<Response> => {
-    const id = req.body.id;
-    const validArgs = assertArgumentsDefined({ id });
+    const id = (typeof req.query.id === 'string') ? req.query.id : '';
+    const validArgs = assertArguments(
+        { id },
+        arg => arg !== '',
+        'must be typeof string'
+    );
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getUserByIDController(sequelize)(id);
     return sanitizeResponse(response, res, `User with id of "${id}" does not exist`);
+
+    // API documentation
+    /*  
+        #swagger.tags = ['user']
+        #swagger.responses[200] = {
+            description: 'Success',
+            schema: { $ref: '#/definitions/userResponse' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'User with id of "${id}" does not exist' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 const _getUserByIDController = (sequelize: Sequelize) => async(id: string) => {
@@ -84,6 +104,23 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
 
     return sanitizeResponse(response, res);
 
+    // API documentation
+    /*  
+        #swagger.tags = ['user']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Create a new user',
+            schema: { $ref: '#/definitions/userDefinition' }
+        } 
+        #swagger.responses[200] = {
+            description: "Success",
+            schema: { $ref: '#/definitions/userResponse' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**
@@ -118,7 +155,27 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
 
     const response = await _authenticateController(sequelize)(email, password);
 
-    return sanitizeResponse(response, res, 'Incorrect email/password');
+    return sanitizeResponse(response, res, 'Could not find user with provided email/password');
+
+    // API documentation
+    /*  
+        #swagger.tags = ['user']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Authenticate a user. This is likely to change when when we start using sessions for authentication.',
+        } 
+        #swagger.responses[200] = {
+            description: 'Success',
+            schema: { $ref: '#/definitions/userResponse' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'could not find user with provided email/password' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**
@@ -164,10 +221,31 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
 
     // false means failed to authenticate
     // true means successfully changed password
-    if (response === false) return res.status(400).json({ message: 'email/password is incorrect' });
+    if (response === false) return res.status(404).json({ message: 'could not find user with provided email/password' });
     if (response === true) return res.status(200).json({ message: 'password successfully changed' });
 
     return sanitizeResponse(response, res);
+
+    // API documentation
+    /*  
+        #swagger.tags = ['user']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Change the password for a user',
+        } 
+        #swagger.responses[200] = {
+            description: 'Success',
+            schema: { message: 'Successfully changed password' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            description: 'Response code is likely to change when we start using sessions to authenticate',
+            schema: {  message: 'could not find user with provided email/password'  }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**
@@ -212,10 +290,31 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
 
     // false means failed to authenticate
     // true means successfully changed display name
-    if (response === false) return res.status(400).json({ message: 'email/password is incorrect' });
+    if (response === false) return res.status(404).json({ message: 'could not find user with specified email/password' });
     if (response === true) return res.status(200).json({ message: `display name successfully changed to ${newDisplayName}` });
 
     return sanitizeResponse(response, res);
+
+    // API documentation
+    /*  
+        #swagger.tags = ['user']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Change the display name for a user',
+        } 
+        #swagger.responses[200] = {
+            description: 'Success',
+            schema: { message: 'display name successfully changed to Jane Smith' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            description: 'Response code is likely to change when we start using sessions to authenticate',
+            schema: { message: 'could not find user with specified email/password' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 export {

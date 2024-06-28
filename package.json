@@ -9,10 +9,18 @@
     "prestart": "npm run setup",
     "start": "npx ts-node src/server.ts",
     "prestart-watch": "npm run setup",
-    "start-watch": "nodemon --watch src/** --ext ts,js,json --exec ts-node src/server.ts",
+    "start-watch": "nodemon",
     "start-heroku": "",
     "lint": "npx eslint src",
-    "lint-fix": "npx eslint src --fix"
+    "lint-fix": "npx eslint src --fix",
+    "swagger": "npx ts-node src/swagger-autogen.ts"
+  },
+  "nodemonConfig": {
+    "watch": "src/**",
+    "ext": "ts,js,json",
+    "exec": "npm run swagger & ts-node src/server.ts",
+    "ignore": ["src/api-autogen-spec.json"]
+    
   },
   "repository": {
     "type": "git",
@@ -35,9 +43,11 @@
     "@types/compression": "^1.7.5",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
+    "@types/swagger-ui-express": "^4.1.6",
     "babel-jest": "^29.7.0",
     "eslint": "^8.57.0",
     "nodemon": "^3.1.4",
+    "swagger-autogen": "^2.23.7",
     "ts-node": "^10.9.2",
     "typescript-eslint": "^7.13.1"
   },
@@ -51,10 +61,11 @@
     "jest": "^29.7.0",
     "password-validator": "^5.3.0",
     "pg": "^8.12.0",
-    "sequelize": "^6.37.3"
+    "sequelize": "^6.37.3",
+    "swagger-ui-express": "^5.0.1"
   },
-  "jest":{
-    "transform":{
+  "jest": {
+    "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     }
   }

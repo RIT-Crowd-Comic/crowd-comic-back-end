@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as hookService from '../services/hookService';
-import { assertArgumentsDefined, sanitizeResponse } from './utils';
+import { assertArguments, assertArgumentsDefined, sanitizeResponse } from './utils';
 import { getPanel } from '../services/panelService';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
@@ -46,6 +46,18 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     const response = await _createHookController(sequelize)(position, current_panel_id, next_panel_set_id);
 
     return sanitizeResponse(response, res);
+
+    /*
+        #swagger.tags = ['hook']
+        #swagger.responses[200] = {
+            description: 'A hook',
+            schema: { $ref: '#/definitions/hook' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**
@@ -69,14 +81,36 @@ const _getHookController = (sequelize: Sequelize) => async (id: number) => {
  * @returns 
  */
 const getHook = async (req: Request, res: Response): Promise<Response> => {
-    const id = req.body.id;
-
-    const validArgs = assertArgumentsDefined({ id });
+    const id = Number(req.query.id);
+    const validArgs = assertArguments(
+        { id },
+        arg => !isNaN(arg),
+        'must be a valid number'
+    );
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getHookController(sequelize)(id);
 
     return sanitizeResponse(response, res, `could not find hook with id ${req.body.id}`);
+
+    /*
+        #swagger.tags = ['hook']
+        #swagger.parameters['id'] = {
+            in: 'query',
+            type: 'number'
+        }
+        #swagger.responses[200] = {
+            description: 'A hook',
+            schema: { $ref: '#/definitions/hook' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'could not find hook with id ${req.body.id}' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**
@@ -102,14 +136,36 @@ const _getPanelHooksController = (sequelize: Sequelize) => async (id: number) =>
  * @returns 
  */
 const getPanelHooks = async (req: Request, res: Response): Promise<Response> => {
-    const id = req.body.id;
-
-    const validArgs = assertArgumentsDefined({ id });
+    const id = Number(req.query.id);
+    const validArgs = assertArguments(
+        { id },
+        arg => !isNaN(arg),
+        'must be a valid number'
+    );
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getPanelHooksController(sequelize)(id);
 
-    return sanitizeResponse(response, res, `could not find hooks under panel with id ${req.body.id}`);
+    return sanitizeResponse(response, res, `could not find hooks under panel with id ${id}`);
+
+    /*
+        #swagger.tags = ['hook']
+        #swagger.parameters['id'] = {
+            in: 'query',
+            type: 'number'
+        }
+        #swagger.responses[200] = {
+            description: 'An array of hooks',
+            schema: [{ $ref: '#/definitions/hook' }]
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'could not find hooks under panel with id ${id}' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**
@@ -139,6 +195,21 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
     const response = await _addSetToHookController(sequelize)(hook_id, panel_set_id);
 
     return sanitizeResponse(response, res, `unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}`);
+
+    /*
+        #swagger.tags = ['hook']
+        #swagger.responses[200] = {
+            description: 'The altered hook',
+            schema: { $ref: '#/definitions/hook' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+            #swagger.responses[404] = {
+            schema: { message: 'unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 export {

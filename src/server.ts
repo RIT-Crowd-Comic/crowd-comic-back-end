@@ -5,11 +5,16 @@ import express from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
+import swaggerUI from 'swagger-ui-express';
+import fs from 'fs';
+import path from 'path';
 import router from './router';
 import { setup as setupDatabase } from './database';
 import * as helpers from './helpers';
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
+
+const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, './api-autogen-spec.json'), 'utf-8'));
 
 // set up database before connecting server
 setupDatabase().then(() => {
@@ -31,6 +36,9 @@ setupDatabase().then(() => {
     app.use(helpers.errorHandler);
 
     // we could probably use sessions to secure user logins
+
+    // host swagger OAS spec file
+    app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
     router(app);
 

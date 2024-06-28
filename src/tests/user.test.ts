@@ -69,6 +69,7 @@ describe('Change Password (Controller)', () => {
     test('Changing password to the same one should return an Error object', async () => {
 
         const errorResponse = new Error('New password must not be the same as the old password');
+
         // return doesn't matter since error is thrown before changePassword() is ever called
         (userService.changePassword as jest.Mock).mockReturnValue(() => Promise.resolve('can be literally anything'));
         const passwordChange = await _changePasswordController(sequelizeMock())(user.email, user.password, user.password);
@@ -106,7 +107,7 @@ describe('Get User By ID (Controller)', () => {
     });
 
     test('Get user using bad data should return an Error object', async () => {
-        (userService.getUserByID as jest.Mock).mockReturnValue(() => {throw new Error()});
+        (userService.getUserByID as jest.Mock).mockReturnValue(() => { throw new Error(); });
         const response = await _getUserByIDController(sequelizeMock())(undefined as any);
         expect(response).toBeInstanceOf(Error);
     });

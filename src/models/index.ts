@@ -1,7 +1,7 @@
-import {IUser, define as userDefine} from './user.model'
-import {IHook, define as hookDefine} from './hook.model'
-import {IPanel, define as panelDefine} from './panel.model'
-import {IPanelSet, define as panelSetDefine} from './panelSet.model'
+import { IUser, define as userDefine } from './user.model';
+import { IHook, define as hookDefine } from './hook.model';
+import { IPanel, define as panelDefine } from './panel.model';
+import { IPanelSet, define as panelSetDefine } from './panelSet.model';
 const modelDefiners = [
     userDefine,
     hookDefine,
@@ -9,4 +9,6 @@ const modelDefiners = [
     panelSetDefine
 ];
 
-export {modelDefiners, type IUser, type IHook, type IPanel, type IPanelSet, } ;
+export {
+    modelDefiners, type IUser, type IHook, type IPanel, type IPanelSet,
+};

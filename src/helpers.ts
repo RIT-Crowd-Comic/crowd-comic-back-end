@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from 'express';
  * @returns 
  */
 const setCSP = (req: Request, res: Response, next: NextFunction) => {
-    res.setHeader('Content-Security-Policy', "default-src *");
+    res.setHeader('Content-Security-Policy', 'default-src *');
     return next();
 };
 

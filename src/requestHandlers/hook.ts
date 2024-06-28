@@ -46,6 +46,18 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     const response = await _createHookController(sequelize)(position, current_panel_id, next_panel_set_id);
 
     return sanitizeResponse(response, res);
+
+    /*
+        #swagger.tags = ['hook']
+        #swagger.responses[200] = {
+            description: 'A hook',
+            schema: { $ref: '#/definitions/hook' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**
@@ -82,6 +94,7 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
     return sanitizeResponse(response, res, `could not find hook with id ${req.body.id}`);
 
     /*
+        #swagger.tags = ['hook']
         #swagger.parameters['id'] = {
             in: 'query',
             type: 'number'
@@ -136,6 +149,7 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
     return sanitizeResponse(response, res, `could not find hooks under panel with id ${id}`);
 
     /*
+        #swagger.tags = ['hook']
         #swagger.parameters['id'] = {
             in: 'query',
             type: 'number'
@@ -181,6 +195,21 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
     const response = await _addSetToHookController(sequelize)(hook_id, panel_set_id);
 
     return sanitizeResponse(response, res, `unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}`);
+
+    /*
+        #swagger.tags = ['hook']
+        #swagger.responses[200] = {
+            description: 'The altered hook',
+            schema: { $ref: '#/definitions/hook' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+            #swagger.responses[404] = {
+            schema: { message: 'unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 export {

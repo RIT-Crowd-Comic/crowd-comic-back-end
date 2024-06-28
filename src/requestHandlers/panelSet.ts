@@ -35,7 +35,9 @@ const createPanelSet = async (request: Request, res: Response) : Promise<Respons
     return sanitizeResponse(response, res);
 
     // API documentation
-    /*  #swagger.parameters['body'] = {
+    /*  
+        #swagger.tags = ['panel-set']
+        #swagger.parameters['body'] = {
             in: 'body',
             description: 'Create a new panel set',
         } 
@@ -72,6 +74,7 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
 
     // API documentation
     /*  
+        #swagger.tags = ['panel-set']
         #swagger.parameters['id'] = {
             in: 'query',
             type: 'number'
@@ -117,6 +120,7 @@ const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise
 
     // API documentation
     /*  
+        #swagger.tags = ['panel-set']
         #swagger.responses[200] = {
             description: 'Get all panel sets from a user',
             schema: [{ id: 0, author_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }]

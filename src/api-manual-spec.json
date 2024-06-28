@@ -32,9 +32,16 @@
         },
         "error": { "message": "string | string[]" },
         "hook": {
+            "id": 0,
             "position": [0, 0],
             "current_panel_id": 0,
             "next_panel_set_id": 0
+        },
+        "panel": {
+            "id": 0,
+            "image": "path/to/image",
+            "index": 0,
+            "panel_set_id": 0
         }
     }
 }

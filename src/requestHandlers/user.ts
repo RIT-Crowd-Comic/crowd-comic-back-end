@@ -30,7 +30,7 @@ const getUserByID = async (req: Request, res: Response): Promise<Response> => {
 
     // API documentation
     /*  
-        #swagger.tags = ['users']
+        #swagger.tags = ['user']
         #swagger.responses[200] = {
             description: 'Success',
             schema: { $ref: '#/definitions/userResponse' }
@@ -106,7 +106,7 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
 
     // API documentation
     /*  
-        #swagger.tags = ['users']
+        #swagger.tags = ['user']
         #swagger.parameters['body'] = {
             in: 'body',
             description: 'Create a new user',
@@ -159,7 +159,7 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
 
     // API documentation
     /*  
-        #swagger.tags = ['users']
+        #swagger.tags = ['user']
         #swagger.parameters['body'] = {
             in: 'body',
             description: 'Authenticate a user. This is likely to change when when we start using sessions for authentication.',
@@ -228,7 +228,7 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
 
     // API documentation
     /*  
-        #swagger.tags = ['users']
+        #swagger.tags = ['user']
         #swagger.parameters['body'] = {
             in: 'body',
             description: 'Change the password for a user',
@@ -297,7 +297,7 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
 
     // API documentation
     /*  
-        #swagger.tags = ['users']
+        #swagger.tags = ['user']
         #swagger.parameters['body'] = {
             in: 'body',
             description: 'Change the display name for a user',

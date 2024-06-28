@@ -5,9 +5,9 @@ import express from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
-import swaggerUI from 'swagger-ui-express'
-import fs from 'fs'
-import path from 'path'
+import swaggerUI from 'swagger-ui-express';
+import fs from 'fs';
+import path from 'path';
 import router from './router';
 import { setup as setupDatabase } from './database';
 import * as helpers from './helpers';

@@ -169,12 +169,40 @@
                   "example": "any"
                 }
               }
-            }
+            },
+            "description": "Authenticate a user. This is likely to change when when we start using sessions for authentication."
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/userResponse"
+            }
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find user with provided email/password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -199,15 +227,49 @@
                   "example": "any"
                 }
               }
-            }
+            },
+            "description": "Change the password for a user"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Successfully changed password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Response code is likely to change when we start using sessions to authenticate",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find user with provided email/password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -232,15 +294,49 @@
                   "example": "any"
                 }
               }
-            }
+            },
+            "description": "Change the display name for a user"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "display name successfully changed to Jane Smith"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Response code is likely to change when we start using sessions to authenticate",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find user with specified email/password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

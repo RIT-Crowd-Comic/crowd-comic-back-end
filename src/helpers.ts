@@ -1,19 +1,19 @@
 import { NextFunction, Request, Response } from 'express';
-import swaggerUI from 'swagger-ui-express'
+import swaggerUI from 'swagger-ui-express';
 
 /**
  * Set the content security policy for our server.
  * @returns 
  */
 const setCSP = (req: Request, res: Response, next: NextFunction) => {
-    res.setHeader('Content-Security-Policy', "default-src *");
+    res.setHeader('Content-Security-Policy', 'default-src *');
     return next();
 };
 
 const swaggerCSP = (req: Request, res: Response, next: NextFunction) => {
-    res.setHeader('Content-Security-Policy', "default-src * style-src 'unsafe-inline'");
+    res.setHeader('Content-Security-Policy', "default-src *; style-src * 'unsafe-inline'; img-src * data:");
     return next();
-}
+};
 
 /**
  * Convert error responses to JSON format

@@ -4,7 +4,7 @@ import swaggerAutogen from 'swagger-autogen';
 const doc = {
     info: {
         title:       'Crowd Comic API',
-        description: 'API endpoints Crowd Comic',
+        description: `API endpoints for Crowd Comic. Keep in mind many of these endpoints are subject to change as the API continues to grow. Authentication is likely the first thing to change when the site implements logging in and session based authentication.`,
         contact:     {
             name:  '',
             email: '',

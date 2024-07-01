@@ -24,7 +24,8 @@ const getImage = async(id : string) =>{
     };
 
     const getImage = new GetObjectCommand(params);
-
+    await s3.send(getImage);
+    
     const url = await getSignedUrl(s3, getImage, { expiresIn: 86400 }); // one day
 
     return { url: url };

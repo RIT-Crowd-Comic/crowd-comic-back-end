@@ -95,6 +95,7 @@ const getPanelBasedOnPanelSetAndIndex = (sequelize : Sequelize) => async (index 
 const getPanelsFromPanelSetID = (sequelize : Sequelize) => async (panel_set_id: number) => {
     // Find all panels on requested panelSet 
     const panel_set = await sequelize.models.panel_set.findByPk(panel_set_id, {include: sequelize.models.panel}) as IPanelSet;
+    if(!panel_set) return [];
     const panels = panel_set.panels as IPanel[];
 
     // Map panels to keep only needed data

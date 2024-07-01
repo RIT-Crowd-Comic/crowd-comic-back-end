@@ -1,7 +1,7 @@
 import {
     CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize
 } from 'sequelize';
-import { IPanelSet } from './panelSet.model';
+import { IPanelSet } from '../models';
 
 /**
  * user model attributes

@@ -1,8 +1,7 @@
 import {
     CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize
 } from 'sequelize';
-import { IPanel } from './panel.model';
-import { IHook } from './hook.model';
+import { IPanel, IHook } from '../models';
 
 interface IPanelSet extends Model<InferAttributes<IPanelSet>, InferCreationAttributes<IPanelSet>> {
     id: CreationOptional<number>,

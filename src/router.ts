@@ -12,12 +12,12 @@ import * as utils from './requestHandlers/utils';
 
 export default (app: Express) => {
     app.get('/', help);
+    app.get('/user/.+', user.getUserByID); 
 
     // Get by ID
     app.get('/getHook', hook.getHook);
     app.get('/getPanel', panel.getPanel);
     app.get('/getPanelSetByID', panelSet.getPanelSetByID);
-    app.get('/getUserByID', user.getUserByID);
     app.get('/getPanelBasedOnPanelSetAndIndex', panel.getPanelBasedOnPanelSetAndIndex);
     app.get('/getPanelHooks', hook.getPanelHooks);
     app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID); // documentation doesn't work for some reason

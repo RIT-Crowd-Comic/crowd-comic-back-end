@@ -19,8 +19,9 @@
     "watch": "src/**",
     "ext": "ts,js,json",
     "exec": "npm run swagger & ts-node src/server.ts",
-    "ignore": ["src/api-autogen-spec.json"]
-    
+    "ignore": [
+      "src/api-autogen-spec.json"
+    ]
   },
   "repository": {
     "type": "git",
@@ -52,6 +53,7 @@
     "typescript-eslint": "^7.13.1"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.606.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
@@ -59,6 +61,7 @@
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "jest": "^29.7.0",
+    "multer": "^1.4.5-lts.1",
     "password-validator": "^5.3.0",
     "pg": "^8.12.0",
     "sequelize": "^6.37.3",

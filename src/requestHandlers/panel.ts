@@ -73,7 +73,7 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
 const _updatePanelController = (sequelize: Sequelize) => async (id :number, image: string) => {
     try {
         //check if existing panel on a panel set based on index
-        const panel = await panelService.getPanel(sequelize)(id) as IPanel;
+        const panel = await sequelize.models.panel.findByPk(id) as IPanel;
         if(!panel) {
             throw new Error(`A panel with an id of ${id} does not exist`)
         }

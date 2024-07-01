@@ -19,6 +19,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 export default (app: Express) => {
     app.get('/', help);
 
+    app.post('/api/upload', upload.single('image'), image.saveImage);
+
     // Get by ID
     app.get('/getHook', hook.getHook);
     app.get('/getPanel', panel.getPanel);
@@ -41,7 +43,6 @@ export default (app: Express) => {
     app.post('/changeDisplayName', user.changeDisplayName); // documentation doesn't work for some reason
     app.post('*', utils.notFound);
 
-    app.post('/upload', upload.single('image'), image.saveImage);
     app.patch('/addSetToHook', hook.addSetToHook); // documentation doesn't work for some reason
     app.patch('*', utils.notFound);
 };

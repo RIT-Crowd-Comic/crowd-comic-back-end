@@ -36,6 +36,16 @@
         }
       }
     },
+    "/api/upload": {
+      "post": {
+        "description": "",
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/getHook": {
       "get": {
         "tags": [

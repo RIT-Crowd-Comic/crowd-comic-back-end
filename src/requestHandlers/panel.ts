@@ -12,33 +12,40 @@ import { Sequelize } from 'sequelize';
  * @param panel_set_id //id of the panel set the panel is a part of
  * @returns response or genericErrorResponse
  */
-const _createPanelController = (sequelize : Sequelize) => async (image: string, index: number, panel_set_id: number) => {
+const _createPanelController = (sequelize : Sequelize) => async (image: string, panel_set_id: number) => {
     try {
 
         // check if a panel exists
         const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
 
+        //get all of panels that currently exist within the panel_set
+        let panels = panelSet.panels;
+
+        if(panels == null) {
+            console.log("panels is null")
+            panels = [];
+        }
+        const panelIndex = panels.length 
+
         // check if existing panel on a panelset based on index
-        const panel = await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(index, panel_set_id);
+        //const panel = await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(panelIndex, panel_set_id);
 
         // update if exists
-        if (panel) {
-            return await panelService.updatePanel(panel, {
-                image:        image,
-                index:        index,
-                panel_set_id: panel_set_id,
-            });
-        }
+        // {
+        //     return await panelService.updatePanel(panel, {
+        //         image:        image,
+        //         index:        panelIndex,
+        //         panel_set_id: panel_set_id,
+        //     });
+        // }
 
         // make new
-        else {
-            return await panelService.createPanel(sequelize)({
-                image:        image,
-                index:        index,
-                panel_set_id: panel_set_id,
-            });
-        }
+        return await panelService.createPanel(sequelize)({
+            image:        image,
+            index:        panelIndex,
+            panel_set_id: panel_set_id,
+        });
     }
     catch (err) {
         return err;
@@ -49,13 +56,12 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
 const createPanel = async (req: Request, res: Response): Promise<Response> => {
 
     const image: string = req.body.image;
-    const index: number = req.body.index;
     const panel_set_id: number = req.body.panel_set_id;
 
-    const validArgs = assertArgumentsDefined({ image, index, panel_set_id });
+    const validArgs = assertArgumentsDefined({ image, panel_set_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _createPanelController(sequelize)(image, index, panel_set_id);
+    const response = await _createPanelController(sequelize)(image, panel_set_id);
 
     return sanitizeResponse(response, res);
 

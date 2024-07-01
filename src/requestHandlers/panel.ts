@@ -4,6 +4,7 @@ import { assertArguments, assertArgumentsDefined, sanitizeResponse as sanitizeRe
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
+import { IPanel } from '../models';
 
 /**
  * Creates a panel
@@ -20,13 +21,13 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
 
         //get all of panels that currently exist within the panel_set
-        let panels = panelSet.panels;
+        let panels = panelSet.panels as IPanel[];
 
         if(panels == null) {
             console.log("panels is null")
             panels = [];
         }
-        const panelIndex = panels.length 
+        const panelIndex = panels.length;
 
         // check if existing panel on a panelset based on index
         //const panel = await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(panelIndex, panel_set_id);

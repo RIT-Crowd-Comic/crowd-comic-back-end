@@ -128,8 +128,6 @@ const assertArguments = (
  * @returns 
  */
 const assertArgumentsDefined = (args : object) =>{
-
-    // validate arguments
     const validArgs = assertArguments(
         args,
         a => a != undefined,
@@ -137,6 +135,15 @@ const assertArgumentsDefined = (args : object) =>{
     );
     return validArgs;
 };
+
+const assertArgumentsNumber = (args: object) => {
+    const validArgs = assertArguments(
+        args,
+        a => !isNaN(a),
+        'must be a valid number'
+    );
+    return validArgs;
+}
 
 /**
  * Parses a database response as an express response, creating the correct HTTP status codes.<br>
@@ -172,6 +179,7 @@ export {
     assert,
     assertArguments,
     assertArgumentsDefined,
+    assertArgumentsNumber,
     sanitizeResponse,
     notFound
 };

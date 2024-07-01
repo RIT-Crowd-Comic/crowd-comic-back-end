@@ -33,7 +33,17 @@ const setup = async () => {
     modelDefiners.forEach(define => define(sequelize));
 
     // set up associations
+    sequelize.models.user.hasMany(sequelize.models.panel_set, { foreignKey: { name: 'author_id' } });
+    sequelize.models.panel_set.belongsTo(sequelize.models.user, { foreignKey: { name: 'author_id' } });
 
+    sequelize.models.panel_set.hasMany(sequelize.models.panel, { foreignKey: 'panel_set_id' });
+    sequelize.models.panel.belongsTo(sequelize.models.panel_set, { foreignKey: 'panel_set_id' });
+
+    sequelize.models.panel.hasMany(sequelize.models.hook, { foreignKey: 'current_panel_id' });
+    sequelize.models.hook.belongsTo(sequelize.models.panel, { foreignKey: 'current_panel_id' });
+
+    sequelize.models.panel_set.hasOne(sequelize.models.hook, { foreignKey: 'next_panel_set_id' });
+    sequelize.models.hook.belongsTo(sequelize.models.panel_set, { foreignKey: 'next_panel_set_id' });
 
     // sync the table columns, create any tables that don't exist
     await sequelize.sync({ force: true });

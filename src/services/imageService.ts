@@ -1,12 +1,12 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import {s3, bucketName} from './init';
+import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import {s3, bucketName} from '../s3Init';
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
-const saveImage = async(name : string, buffer: Buffer, mimetype : string)=>{
+const saveImage = async(id : string, buffer: Buffer, mimetype : string)=>{
 
     const params = {
         Bucket: bucketName,
-        Key: name,
+        Key: id,
         Body: buffer,
         ContentType: mimetype
     }
@@ -14,7 +14,7 @@ const saveImage = async(name : string, buffer: Buffer, mimetype : string)=>{
 
     await s3.send(saveImage);
 
-    return {name: name};
+    return {id: id};
 }
 
 const getImage = async(id : string) =>{
@@ -25,7 +25,7 @@ const getImage = async(id : string) =>{
 
     const getImage = new GetObjectCommand(params);
 
-    const url = await getSignedUrl(s3, getImage, {expiresIn: 3600});
+    const url = await getSignedUrl(s3, getImage, {expiresIn: 86400}); //one day
 
     return {url: url};
 }

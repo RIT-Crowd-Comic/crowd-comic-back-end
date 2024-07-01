@@ -1,4 +1,4 @@
-import * as imageService from "../S3/services";
+import * as imageService from "../services/imageService";
 import { sanitizeResponse, assertArguments, assertArgumentsDefined } from "./utils";
 import { Request, Response } from 'express';
 import crypto from 'crypto'
@@ -32,10 +32,28 @@ const saveImage = async (req: Request , res: Response): Promise<Response> => {
     }
 
     const buffer = req.file.buffer;
-    const id = crypto.randomUUID();
+    const id = crypto.randomUUID(); //generate uuid here for now
 
     const response = await _saveImageController(id, buffer, mimetype);
     return sanitizeResponse(response, res);
+
+     // API documentation
+    /*  
+        #swagger.tags = ['image']
+        #swagger.parameters['image file'] = {
+            in: 'body',
+            description: 'the image to save',
+            schema: {image: 'asdas3dfsdf.png'}
+        } 
+        #swagger.responses[200] = {
+            description: 'Returns the id of the saved image',
+            schema: { id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 /**
@@ -63,6 +81,23 @@ const getImage = async (req: Request , res: Response): Promise<Response> => {
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getImageController(id);
     return sanitizeResponse(response, res);
+
+    // API documentation
+    /*  
+        #swagger.tags = ['image']
+        #swagger.parameters['id'] = {
+            in: 'body',
+            description: 'the id of the image to load',
+        } 
+        #swagger.responses[200] = {
+            description: 'Returns the link to the image',
+            schema: { id: 'link-to-image' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
-export {saveImage, getImage};
+export {saveImage, getImage, _saveImageController, _getImageController};

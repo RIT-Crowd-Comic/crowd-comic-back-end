@@ -1,7 +1,7 @@
-import * as imageService from "../services/imageService";
-import { sanitizeResponse, assertArguments, assertArgumentsDefined } from "./utils";
+import * as imageService from '../services/imageService';
+import { sanitizeResponse, assertArguments } from './utils';
 import { Request, Response } from 'express';
-import crypto from 'crypto'
+import crypto from 'crypto';
 
 /**
  * saves an image in s3
@@ -18,12 +18,12 @@ const _saveImageController = async (id : string, buffer: Buffer, mimetype: strin
 };
 
 // save an image request
-const saveImage = async (req: Request , res: Response): Promise<Response> => {
+const saveImage = async (req: Request, res: Response): Promise<Response> => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    //validate that file has valid information
+    // validate that file has valid information
     const mimetype = typeof req.file.mimetype === 'string' ? req.file.mimetype : '';
     const isValidMimetype = mimetype.includes('image');
 
@@ -32,12 +32,12 @@ const saveImage = async (req: Request , res: Response): Promise<Response> => {
     }
 
     const buffer = req.file.buffer;
-    const id = crypto.randomUUID(); //generate uuid here for now
+    const id = crypto.randomUUID(); // generate uuid here for now
 
     const response = await _saveImageController(id, buffer, mimetype);
     return sanitizeResponse(response, res);
 
-     // API documentation
+    // API documentation
     /*  
         #swagger.tags = ['image']
         #swagger.parameters['image file'] = {
@@ -71,7 +71,7 @@ const _getImageController = async (id : string) => {
 };
 
 // save an image request
-const getImage = async (req: Request , res: Response): Promise<Response> => {
+const getImage = async (req: Request, res: Response): Promise<Response> => {
     const id = (typeof req.query.id === 'string') ? req.query.id : '';
     const validArgs = assertArguments(
         { id },
@@ -100,4 +100,6 @@ const getImage = async (req: Request , res: Response): Promise<Response> => {
     */
 };
 
-export {saveImage, getImage, _saveImageController, _getImageController};
+export {
+    saveImage, getImage, _saveImageController, _getImageController
+};

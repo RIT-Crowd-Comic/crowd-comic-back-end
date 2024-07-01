@@ -143,7 +143,7 @@ const assertArgumentsNumber = (args: object) => {
         'must be a valid number'
     );
     return validArgs;
-}
+};
 
 /**
  * Parses a database response as an express response, creating the correct HTTP status codes.<br>

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { assertArguments, assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse as sanitizeResponse } from './utils';
+import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse as sanitizeResponse } from './utils';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
@@ -20,13 +20,14 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
         const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
 
-        //get all of panels that currently exist within the panel_set
+        // get all of panels that currently exist within the panel_set
         let panels = panelSet.panels as IPanel[];
 
-        if(panels == null) {
+        if (panels == null) {
             panels = [];
         }
         const panelIndex = panels.length;
+
         // make new
         return await panelService.createPanel(sequelize)({
             image:        image,
@@ -72,10 +73,11 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
  */
 const _updatePanelController = (sequelize: Sequelize) => async (id :number, image: string) => {
     try {
-        //check if existing panel on a panel set based on index
+
+        // check if existing panel on a panel set based on index
         const panel = await sequelize.models.panel.findByPk(id) as IPanel;
-        if(!panel) {
-            throw new Error(`A panel with an id of ${id} does not exist`)
+        if (!panel) {
+            throw new Error(`A panel with an id of ${id} does not exist`);
         }
 
         return await panelService.updatePanel(panel, {
@@ -87,18 +89,18 @@ const _updatePanelController = (sequelize: Sequelize) => async (id :number, imag
     catch (err) {
         return err;
     }
-}
+};
 
 const updatePanel = async (req: Request, res: Response): Promise<Response> => {
-    const id = Number(req.body.id)
+    const id = Number(req.body.id);
     const image = req.body.image;
-    let validArgs = assertArgumentsNumber({id});
+    let validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
-    validArgs = assertArgumentsDefined({image});
+    validArgs = assertArgumentsDefined({ image });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _updatePanelController(sequelize)(id, image);
     return sanitizeResponse(response, res);
-}
+};
 
 
 /**

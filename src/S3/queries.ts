@@ -1,23 +1,20 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import {s3, bucketName} from './init';
 
-interface imageData{
-    originalname: string;
-    buffer: Buffer;
-    mimetype: string;
-}
 
-const saveImage = async(imageData : imageData)=>{
+const saveImage = async(name : string, buffer: Buffer, mimetype : string)=>{
 
     const params = {
         Bucket: bucketName,
-        Key: imageData.originalname,
-        Body: imageData.buffer,
-        ContentType: imageData.mimetype
+        Key: name,
+        Body: buffer,
+        ContentType: mimetype
     }
-    const saveImage = new PutObjectCommand(params)
+    const saveImage = new PutObjectCommand(params);
 
     await s3.send(saveImage);
+
+    return {status : 'success'};
 }
 
 export {saveImage};

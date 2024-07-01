@@ -1,14 +1,20 @@
 import { Express } from 'express';
 import help from './requestHandlers/help';
+import multer from 'multer';
 import * as user from './requestHandlers/user';
 import * as hook from './requestHandlers/hook';
 import * as panel from './requestHandlers/panel';
 import * as panelSet from './requestHandlers/panelSet';
 import * as utils from './requestHandlers/utils';
+import * as image from './requestHandlers/image';
 
 /**
  * Route all incoming requests
  */
+// Set up multer storage
+
+// Initialize multer with storage and file filter
+const upload = multer({ storage: multer.memoryStorage() });
 
 export default (app: Express) => {
     app.get('/', help);
@@ -35,6 +41,7 @@ export default (app: Express) => {
     app.post('/changeDisplayName', user.changeDisplayName); // documentation doesn't work for some reason
     app.post('*', utils.notFound);
 
+    app.post('/upload', upload.single('image'), image.saveImage);
     app.patch('/addSetToHook', hook.addSetToHook); // documentation doesn't work for some reason
     app.patch('*', utils.notFound);
 };

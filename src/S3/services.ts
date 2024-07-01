@@ -2,8 +2,6 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3
 import {s3, bucketName} from './init';
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
-const url = await getSignedUrl(client, command, { expiresIn: 3600 });
-
 const saveImage = async(name : string, buffer: Buffer, mimetype : string)=>{
 
     const params = {
@@ -19,10 +17,10 @@ const saveImage = async(name : string, buffer: Buffer, mimetype : string)=>{
     return {name: name};
 }
 
-const getImage = async(name : string) =>{
+const getImage = async(id : string) =>{
     const params = {
         Bucket: bucketName,
-        Key: name
+        Key: id
     }
 
     const getImage = new GetObjectCommand(params);

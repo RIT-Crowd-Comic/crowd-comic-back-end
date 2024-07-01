@@ -1,5 +1,5 @@
 import * as imageService from "../S3/services";
-import { sanitizeResponse, assertArguments } from "./utils";
+import { sanitizeResponse, assertArguments, assertArgumentsDefined } from "./utils";
 import { Request, Response } from 'express';
 import crypto from 'crypto'
 
@@ -13,7 +13,7 @@ const _saveImageController = async (id : string, buffer: Buffer, mimetype: strin
         return await imageService.saveImage(id, buffer, mimetype);
     }
     catch (err) {
-        return err as Error;
+        return err;
     }
 };
 
@@ -23,9 +23,18 @@ const saveImage = async (req: Request , res: Response): Promise<Response> => {
         return res.status(400).json({ error: 'No file uploaded' });
     }
 
+    //validate that file has valid information
+    const mimetype = typeof req.file.mimetype === 'string' ? req.file.mimetype : '';
+    const isValidMimetype = mimetype.includes('image');
+
+    if (!isValidMimetype) {
+        return res.status(400).json({ error: 'Uploaded file must be an image' });
+    }
+
+    const buffer = req.file.buffer;
     const id = crypto.randomUUID();
 
-    const response = await _saveImageController(id, req.file.buffer, req.file.mimetype);
+    const response = await _saveImageController(id, buffer, mimetype);
     return sanitizeResponse(response, res);
 };
 
@@ -39,7 +48,7 @@ const _getImageController = async (id : string) => {
         return await imageService.getImage(id);
     }
     catch (err) {
-        return err as Error;
+        return err;
     }
 };
 
@@ -51,8 +60,9 @@ const getImage = async (req: Request , res: Response): Promise<Response> => {
         arg => arg !== '',
         'must be typeof string'
     );
+    if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getImageController(id);
     return sanitizeResponse(response, res);
 };
 
-export {saveImage};
+export {saveImage, getImage};

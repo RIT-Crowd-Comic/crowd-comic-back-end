@@ -19,7 +19,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 export default (app: Express) => {
     app.get('/', help);
 
-    app.post('/api/upload', upload.single('image'), image.saveImage);
+    app.post('/saveImage', upload.single('image'), image.saveImage);
+    app.get('/getImage', image.getImage);
 
     // Get by ID
     app.get('/getHook', hook.getHook);

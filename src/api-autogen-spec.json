@@ -36,12 +36,22 @@
         }
       }
     },
-    "/api/upload": {
+    "/saveImage": {
       "post": {
         "description": "",
         "responses": {
           "400": {
             "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/getImage": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }

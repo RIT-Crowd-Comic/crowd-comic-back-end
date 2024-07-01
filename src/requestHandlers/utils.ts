@@ -128,12 +128,19 @@ const assertArguments = (
  * @returns 
  */
 const assertArgumentsDefined = (args : object) =>{
-
-    // validate arguments
     const validArgs = assertArguments(
         args,
         a => a != undefined,
         'cannot be undefined'
+    );
+    return validArgs;
+};
+
+const assertArgumentsNumber = (args: object) => {
+    const validArgs = assertArguments(
+        args,
+        a => !isNaN(a),
+        'must be a valid number'
     );
     return validArgs;
 };
@@ -172,6 +179,7 @@ export {
     assert,
     assertArguments,
     assertArgumentsDefined,
+    assertArgumentsNumber,
     sanitizeResponse,
     notFound
 };

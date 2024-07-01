@@ -36,7 +36,7 @@ const getPanelSetByID = (sequelize: Sequelize) => async (id: number) => {
  */
 const getAllPanelSetsFromUser = (sequelize: Sequelize) => async (id: string) => {
     const user = await sequelize.models.user.findByPk(id, { include: sequelize.models.panel_set }) as IUser;
-    if(!user) return [];
+    if (!user) return [];
     return user.panel_sets as IPanelSet[];
 };
 

@@ -457,7 +457,17 @@
     },
     "/getAllPanelSetsFromUser": {
       "get": {
+        "tags": [
+          "panel-set"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Get all panel sets from a user",

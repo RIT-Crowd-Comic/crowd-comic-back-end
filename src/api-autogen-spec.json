@@ -375,20 +375,115 @@
     },
     "/getPanelsFromPanelSetID": {
       "get": {
+        "tags": [
+          "panel"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "panel_set_id",
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "A panel",
+            "schema": {
+              "$ref": "#/definitions/panel"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find panels under panelSet id ${panel_set_id}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/getAllPanelSetsFromUser": {
       "get": {
+        "tags": [
+          "panel-set"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Get all panel sets from a user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "author_id": {
+                    "type": "string",
+                    "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User with an id of \"${id}\" does not exist"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -452,9 +547,6 @@
               "type": "object",
               "properties": {
                 "image": {
-                  "example": "any"
-                },
-                "index": {
                   "example": "any"
                 },
                 "panel_set_id": {
@@ -705,6 +797,33 @@
         "responses": {
           "default": {
             "description": ""
+          }
+        }
+      }
+    },
+    "/updatePanel": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "any"
+                },
+                "image": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
           }
         }
       }

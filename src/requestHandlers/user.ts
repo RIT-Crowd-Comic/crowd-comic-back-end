@@ -6,7 +6,8 @@ import {
     assertArguments,
     validateDisplayName,
     assertArgumentsDefined,
-    sanitizeResponse
+    sanitizeResponse,
+    assertArgumentsString
 } from './utils';
 import validator from 'validator';
 import { sequelize } from '../database';
@@ -19,11 +20,7 @@ import { sequelize } from '../database';
  */
 const getUserByID = async (req: Request, res: Response): Promise<Response> => {
     const id = (typeof req.query.id === 'string') ? req.query.id : '';
-    const validArgs = assertArguments(
-        { id },
-        arg => arg !== '',
-        'must be typeof string'
-    );
+    const validArgs = assertArgumentsString({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getUserByIDController(sequelize)(id);
     return sanitizeResponse(response, res, `User with id of "${id}" does not exist`);

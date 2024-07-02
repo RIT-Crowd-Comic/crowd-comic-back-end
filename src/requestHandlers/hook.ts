@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as hookService from '../services/hookService';
-import { assertArguments, assertArgumentsDefined, sanitizeResponse } from './utils';
+import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse } from './utils';
 import { getPanel } from '../services/panelService';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
@@ -83,11 +83,7 @@ const _getHookController = (sequelize: Sequelize) => async (id: number) => {
  */
 const getHook = async (req: Request, res: Response): Promise<Response> => {
     const id = Number(req.query.id);
-    const validArgs = assertArguments(
-        { id },
-        arg => !isNaN(arg),
-        'must be a valid number'
-    );
+    const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getHookController(sequelize)(id);
@@ -138,11 +134,7 @@ const _getPanelHooksController = (sequelize: Sequelize) => async (id: number) =>
  */
 const getPanelHooks = async (req: Request, res: Response): Promise<Response> => {
     const id = Number(req.query.id);
-    const validArgs = assertArguments(
-        { id },
-        arg => !isNaN(arg),
-        'must be a valid number'
-    );
+    const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getPanelHooksController(sequelize)(id);

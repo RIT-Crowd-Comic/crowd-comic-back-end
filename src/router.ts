@@ -33,6 +33,7 @@ export default (app: Express) => {
     app.post('/authenticate', user.authenticate);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName); // documentation doesn't work for some reason
+    app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
     app.patch('/addSetToHook', hook.addSetToHook); // documentation doesn't work for some reason

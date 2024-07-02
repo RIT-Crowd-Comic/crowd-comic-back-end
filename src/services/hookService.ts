@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { IHook, IPanel } from '../models';
 import { Json } from 'sequelize/types/utils';
+import { sequelize } from '../database';
 
 interface HookConfig {
     position: Json,
@@ -107,6 +108,16 @@ const addSetToHook = (sequelize: Sequelize) => async (hook_id: number, panel_set
     } as HookGetInfo;
 };
 
+const getStatus = (sequelize: Sequelize) => async (id: number) => {
+    const hook = await sequelize.models.hook.findByPk(id) as IHook;
+    if(!hook) return undefined;
+
+    return {
+        linked: hook.next_panel_set_id != null,
+        status_message: hook.next_panel_set_id !=null ? `Hook linked to panel_set (id: ${hook.next_panel_set_id})` : 'Hook is empty'
+    }
+}
+
 export {
-    createHook, getHook, getPanelHooks, addSetToHook
+    createHook, getHook, getPanelHooks, addSetToHook, getStatus
 };

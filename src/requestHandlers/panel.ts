@@ -139,8 +139,8 @@ const _getPanelBasedOnPanelSetAndIndexController = (sequelize : Sequelize) => as
 
 // the actual request for getting a panel
 const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Promise<Response> => {
-    const panel_set_id = Number(req.query.panel_set_id);
-    const index = Number(req.query.index);
+    const panel_set_id = Number(req.params.panel_set_id);
+    const index = Number(req.params.index);
     const validArgs = assertArguments(
         { panel_set_id, index },
         arg => !isNaN(arg),

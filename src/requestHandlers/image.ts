@@ -23,13 +23,10 @@ const saveImage = async (req: Request, res: Response): Promise<Response> => {
         return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // validate that file has valid information
-    const mimetype = typeof req.file.mimetype === 'string' ? req.file.mimetype : '';
-    const isValidMimetype = mimetype.includes('image');
-
-    if (!isValidMimetype) {
+    if (!validateImageFile(req.file)) {
         return res.status(400).json({ error: 'Uploaded file must be an image' });
     }
+    const mimetype = req.file.mimetype;
 
     const buffer = req.file.buffer;
     const id = crypto.randomUUID(); // generate uuid here for now
@@ -96,6 +93,12 @@ const getImage = async (req: Request, res: Response): Promise<Response> => {
     */
 };
 
+const validateImageFile = (file: Express.Multer.File | null): boolean => {
+    if (!file) return false;
+    const mimetype = typeof file.mimetype === 'string' ? file.mimetype : '';
+    return mimetype.includes('image');
+};
+
 export {
-    saveImage, getImage, _saveImageController, _getImageController
+    saveImage, getImage, _saveImageController, _getImageController, validateImageFile
 };

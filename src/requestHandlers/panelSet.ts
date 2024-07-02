@@ -30,7 +30,7 @@ const _createPanelSetController = (sequelize : Sequelize) => async (author_id: s
  * @returns 
  */
 const createPanelSet = async (request: Request, res: Response) : Promise<Response> => {
-    const author_id = request.body.author_id;
+    const author_id = (typeof request.body.author_id === 'string') ? request.body.author_id : '';
     const validArgs = assertArgumentsDefined({ author_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _createPanelSetController(sequelize)(author_id);
@@ -64,7 +64,7 @@ const _getPanelSetByIDController = (sequelize: Sequelize) => async(id: number) =
 };
 
 const getPanelSetByID = async (request: Request, res: Response) : Promise<Response> => {
-    const id = Number(request.query.id);
+    const id = Number(request.params.id);
     const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getPanelSetByIDController(sequelize)(id);
@@ -106,7 +106,7 @@ const _getAllPanelSetsFromUserController = (sequelize: Sequelize) => async(id: s
 };
 
 const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise<Response> => {
-    const id = (typeof request.query.id === 'string') ? request.query.id : '';
+    const id = (typeof request.params.id === 'string') ? request.params.id : '';
     const validArgs = assertArgumentsString({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getAllPanelSetsFromUserController(sequelize)(id ?? '');

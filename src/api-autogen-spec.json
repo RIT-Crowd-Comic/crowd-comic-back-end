@@ -36,7 +36,7 @@
         }
       }
     },
-    "/getHook": {
+    "/hook/{id}": {
       "get": {
         "tags": [
           "hook"
@@ -46,6 +46,7 @@
           {
             "name": "id",
             "in": "query",
+            "required": true,
             "type": "number"
           }
         ],
@@ -83,7 +84,7 @@
         }
       }
     },
-    "/getPanel": {
+    "/panel/{id}": {
       "get": {
         "tags": [
           "panel"
@@ -93,6 +94,7 @@
           {
             "name": "id",
             "in": "query",
+            "required": true,
             "type": "number"
           }
         ],
@@ -143,7 +145,61 @@
         }
       }
     },
-    "/getPanelSetByID": {
+    "/panel/{id}/hooks/": {
+      "get": {
+        "tags": [
+          "hook"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of hooks",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/hook"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find hooks under panel with id ${id}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/panel_set/{id}": {
       "get": {
         "tags": [
           "panel-set"
@@ -153,6 +209,7 @@
           {
             "name": "id",
             "in": "query",
+            "required": true,
             "type": "number"
           }
         ],
@@ -203,13 +260,24 @@
         }
       }
     },
-    "/getUserByID": {
+    "/panel_set/{id}/panels/": {
       "get": {
         "tags": [
-          "user"
+          "panel"
         ],
         "description": "",
         "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "panel_set_id",
+            "in": "query",
+            "type": "number"
+          },
           {
             "name": "id",
             "in": "query",
@@ -218,9 +286,9 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "A panel",
             "schema": {
-              "$ref": "#/definitions/userResponse"
+              "$ref": "#/definitions/panel"
             }
           },
           "400": {
@@ -235,7 +303,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "User with id of \"${id}\" does not exist"
+                  "example": "could not find panels under panelSet id ${panel_set_id}"
                 }
               },
               "xml": {
@@ -250,7 +318,7 @@
         }
       }
     },
-    "/getPanelBasedOnPanelSetAndIndex": {
+    "/panel_set/{panel_set_id}/{index}/panel": {
       "get": {
         "tags": [
           "panel"
@@ -260,17 +328,19 @@
           {
             "name": "panel_set_id",
             "in": "query",
+            "required": true,
             "type": "number"
+          },
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "type": "string"
           },
           {
             "name": "id",
             "in": "query",
             "type": "number"
-          },
-          {
-            "name": "index",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
@@ -320,82 +390,25 @@
         }
       }
     },
-    "/getPanelHooks": {
+    "/user/{id}/": {
       "get": {
         "tags": [
-          "hook"
+          "user"
         ],
         "description": "",
         "parameters": [
           {
             "name": "id",
-            "in": "query",
-            "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "An array of hooks",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/hook"
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "could not find hooks under panel with id ${id}"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/getPanelsFromPanelSetID": {
-      "get": {
-        "tags": [
-          "panel"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "panel_set_id",
-            "in": "query",
-            "type": "number"
-          },
-          {
-            "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "A panel",
+            "description": "Success",
             "schema": {
-              "$ref": "#/definitions/panel"
+              "$ref": "#/definitions/userResponse"
             }
           },
           "400": {
@@ -410,7 +423,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find panels under panelSet id ${panel_set_id}"
+                  "example": "User with id of \"${id}\" does not exist"
                 }
               },
               "xml": {
@@ -425,7 +438,7 @@
         }
       }
     },
-    "/getAllPanelSetsFromUser": {
+    "/user/{id}/panel_sets/": {
       "get": {
         "tags": [
           "panel-set"
@@ -434,7 +447,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -793,10 +807,70 @@
     },
     "/changeDisplayName": {
       "post": {
+        "tags": [
+          "user"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "newDisplayName": {
+                  "example": "any"
+                }
+              }
+            },
+            "description": "Change the display name for a user"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "display name successfully changed to Jane Smith"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Response code is likely to change when we start using sessions to authenticate",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find user with specified email/password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

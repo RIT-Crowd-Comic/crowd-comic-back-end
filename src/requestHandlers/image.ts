@@ -1,5 +1,5 @@
 import * as imageService from '../services/imageService';
-import { sanitizeResponse, assertArguments, assertArgumentsString } from './utils';
+import { sanitizeResponse, assertArgumentsString } from './utils';
 import { Request, Response } from 'express';
 import crypto from 'crypto';
 
@@ -73,7 +73,7 @@ const _getImageController = async (id : string) => {
 // save an image request
 const getImage = async (req: Request, res: Response): Promise<Response> => {
     const id = (typeof req.params.id === 'string') ? req.params.id : '';
-    const validArgs = assertArgumentsString({id});
+    const validArgs = assertArgumentsString({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getImageController(id);
     return sanitizeResponse(response, res);

@@ -145,7 +145,7 @@
         }
       }
     },
-    "panel/{id}/hooks/": {
+    "/panel/{id}/hooks/": {
       "get": {
         "tags": [
           "hook"
@@ -262,6 +262,9 @@
     },
     "/panel_set/{id}/panels/": {
       "get": {
+        "tags": [
+          "panel"
+        ],
         "description": "",
         "parameters": [
           {
@@ -269,16 +272,53 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "panel_set_id",
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "A panel",
+            "schema": {
+              "$ref": "#/definitions/panel"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find panels under panelSet id ${panel_set_id}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/panel_set/{panel_set_id}/{index}": {
+    "/panel_set/{panel_set_id}/{index}/panel": {
       "get": {
         "tags": [
           "panel"
@@ -301,11 +341,6 @@
             "name": "id",
             "in": "query",
             "type": "number"
-          },
-          {
-            "name": "index",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
@@ -403,59 +438,7 @@
         }
       }
     },
-    "/user/{id}/panels/": {
-      "get": {
-        "tags": [
-          "panel"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "panel_set_id",
-            "in": "query",
-            "type": "number"
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A panel",
-            "schema": {
-              "$ref": "#/definitions/panel"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "could not find panels under panelSet id ${panel_set_id}"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/getAllPanelSetsFromUser": {
+    "/user/{id}/panel_sets/": {
       "get": {
         "tags": [
           "panel-set"
@@ -464,7 +447,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -823,10 +807,70 @@
     },
     "/changeDisplayName": {
       "post": {
+        "tags": [
+          "user"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "newDisplayName": {
+                  "example": "any"
+                }
+              }
+            },
+            "description": "Change the display name for a user"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "display name successfully changed to Jane Smith"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Response code is likely to change when we start using sessions to authenticate",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find user with specified email/password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

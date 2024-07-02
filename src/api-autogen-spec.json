@@ -36,7 +36,7 @@
         }
       }
     },
-    "/hook/": {
+    "/hook/{id}": {
       "get": {
         "tags": [
           "hook"
@@ -46,20 +46,15 @@
           {
             "name": "id",
             "in": "query",
+            "required": true,
             "type": "number"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of hooks",
+            "description": "A hook",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/hook"
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/hook"
             }
           },
           "400": {
@@ -74,7 +69,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find hooks under panel with id ${id}"
+                  "example": "could not find hook with id ${req.body.id}"
                 }
               },
               "xml": {
@@ -85,72 +80,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/user/{id}": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/userResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "User with id of \"${id}\" does not exist"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/user/{panelid}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "panelid",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }
@@ -202,6 +131,60 @@
                 "message": {
                   "type": "string",
                   "example": "could not find panel with id ${req.body.id}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "panel/{id}/hooks/": {
+      "get": {
+        "tags": [
+          "hook"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of hooks",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/hook"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find hooks under panel with id ${id}"
                 }
               },
               "xml": {
@@ -277,7 +260,7 @@
         }
       }
     },
-    "/panel_set/panel/{id}": {
+    "/panel_set/{id}/panels/": {
       "get": {
         "description": "",
         "parameters": [
@@ -372,25 +355,25 @@
         }
       }
     },
-    "/hook/{id}": {
+    "/user/{id}/": {
       "get": {
         "tags": [
-          "hook"
+          "user"
         ],
         "description": "",
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
             "required": true,
-            "type": "number"
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "A hook",
+            "description": "Success",
             "schema": {
-              "$ref": "#/definitions/hook"
+              "$ref": "#/definitions/userResponse"
             }
           },
           "400": {
@@ -405,7 +388,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find hook with id ${req.body.id}"
+                  "example": "User with id of \"${id}\" does not exist"
                 }
               },
               "xml": {
@@ -416,6 +399,24 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/{id}/panels/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }

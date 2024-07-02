@@ -89,7 +89,7 @@ const _getPanelController = (sequelize : Sequelize) => async (id:number) => {
 
 // the actual request for getting a panel
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
-    const id = Number(req.query.id);
+    const id = Number(req.params.id);
     const validArgs = assertArguments(
         { id },
         arg => !isNaN(arg),
@@ -192,7 +192,8 @@ const _getPanelsFromPanelSetIDController = (sequelize : Sequelize) => async (pan
 };
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
-    const panel_set_id = Number(req.query.id);
+    const panel_set_id = Number(req.params.id);
+    console.log(panel_set_id)
     const validArgs = assertArguments(
         { panel_set_id },
         arg => !isNaN(arg),

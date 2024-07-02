@@ -36,7 +36,7 @@
         }
       }
     },
-    "/getHook": {
+    "/hook/": {
       "get": {
         "tags": [
           "hook"
@@ -51,9 +51,15 @@
         ],
         "responses": {
           "200": {
-            "description": "A hook",
+            "description": "An array of hooks",
             "schema": {
-              "$ref": "#/definitions/hook"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/hook"
+              },
+              "xml": {
+                "name": "main"
+              }
             }
           },
           "400": {
@@ -68,7 +74,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find hook with id ${req.body.id}"
+                  "example": "could not find hooks under panel with id ${id}"
                 }
               },
               "xml": {
@@ -83,7 +89,73 @@
         }
       }
     },
-    "/getPanel": {
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/userResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User with id of \"${id}\" does not exist"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/{panelid}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "panelid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/panel/{id}": {
       "get": {
         "tags": [
           "panel"
@@ -93,6 +165,7 @@
           {
             "name": "id",
             "in": "query",
+            "required": true,
             "type": "number"
           }
         ],
@@ -143,7 +216,7 @@
         }
       }
     },
-    "/getPanelSetByID": {
+    "/panel_set/{id}": {
       "get": {
         "tags": [
           "panel-set"
@@ -153,6 +226,7 @@
           {
             "name": "id",
             "in": "query",
+            "required": true,
             "type": "number"
           }
         ],
@@ -203,54 +277,25 @@
         }
       }
     },
-    "/getUserByID": {
+    "/panel_set/panel/{id}": {
       "get": {
-        "tags": [
-          "user"
-        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/userResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "User with id of \"${id}\" does not exist"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/getPanelBasedOnPanelSetAndIndex": {
+    "/panel_set/{panel_set_id}/{index}": {
       "get": {
         "tags": [
           "panel"
@@ -260,7 +305,14 @@
           {
             "name": "panel_set_id",
             "in": "query",
+            "required": true,
             "type": "number"
+          },
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "type": "string"
           },
           {
             "name": "id",
@@ -320,7 +372,7 @@
         }
       }
     },
-    "/getPanelHooks": {
+    "/hook/{id}": {
       "get": {
         "tags": [
           "hook"
@@ -330,20 +382,15 @@
           {
             "name": "id",
             "in": "query",
+            "required": true,
             "type": "number"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of hooks",
+            "description": "A hook",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/hook"
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/hook"
             }
           },
           "400": {
@@ -358,7 +405,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find hooks under panel with id ${id}"
+                  "example": "could not find hook with id ${req.body.id}"
                 }
               },
               "xml": {
@@ -369,26 +416,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/getPanelsFromPanelSetID": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/getAllPanelSetsFromUser": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }

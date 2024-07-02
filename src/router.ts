@@ -12,16 +12,14 @@ import * as utils from './requestHandlers/utils';
 
 export default (app: Express) => {
     app.get('/', help);
-    app.get('/user/.+', user.getUserByID); 
-
-    // Get by ID
-    app.get('/getHook', hook.getHook);
-    app.get('/getPanel', panel.getPanel);
-    app.get('/getPanelSetByID', panelSet.getPanelSetByID);
-    app.get('/getPanelBasedOnPanelSetAndIndex', panel.getPanelBasedOnPanelSetAndIndex);
-    app.get('/getPanelHooks', hook.getPanelHooks);
-    app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID); // documentation doesn't work for some reason
-    app.get('/getAllPanelSetsFromUser', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+    app.get('/hook/', hook.getPanelHooks);
+    app.get('/user/:id', user.getUserByID);
+    app.get('/user/panel:id', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+    app.get('/panel/:id', panel.getPanel);
+    app.get('/panel_set/:id', panelSet.getPanelSetByID);
+    app.get('/panel_set/panel/:id', panel.getPanelsFromPanelSetID); // documentation doesn't work for some reason
+    app.get('/panel_set/:panel_set_id/:index', panel.getPanelBasedOnPanelSetAndIndex);
+    app.get('/hook/:id', hook.getHook);
     app.get('*', utils.notFound);
 
     app.post('/createHook', hook.createHook);

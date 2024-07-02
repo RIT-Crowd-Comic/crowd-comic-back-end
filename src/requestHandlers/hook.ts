@@ -81,7 +81,7 @@ const _getHookController = (sequelize: Sequelize) => async (id: number) => {
  * @returns 
  */
 const getHook = async (req: Request, res: Response): Promise<Response> => {
-    const id = Number(req.query.id);
+    const id = Number(req.params.id);
     const validArgs = assertArguments(
         { id },
         arg => !isNaN(arg),
@@ -91,7 +91,7 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
 
     const response = await _getHookController(sequelize)(id);
 
-    return sanitizeResponse(response, res, `could not find hook with id ${req.body.id}`);
+    return sanitizeResponse(response, res, `could not find hook with id ${id}`);
 
     /*
         #swagger.tags = ['hook']

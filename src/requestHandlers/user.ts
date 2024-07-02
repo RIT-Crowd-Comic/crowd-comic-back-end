@@ -18,7 +18,7 @@ import { sequelize } from '../database';
  * @returns nulls if a user with the given id doesn't exist
  */
 const getUserByID = async (req: Request, res: Response): Promise<Response> => {
-    const id = (typeof req.query.id === 'string') ? req.query.id : '';
+    const id = (typeof req.params.id === 'string') ? req.params.id : '';
     const validArgs = assertArguments(
         { id },
         arg => arg !== '',

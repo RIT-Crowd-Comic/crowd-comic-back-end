@@ -136,7 +136,7 @@ const _getPanelHooksController = (sequelize: Sequelize) => async (id: number) =>
  * @returns 
  */
 const getPanelHooks = async (req: Request, res: Response): Promise<Response> => {
-    const id = Number(req.query.id);
+    const id = Number(req.params.id);
     const validArgs = assertArguments(
         { id },
         arg => !isNaN(arg),

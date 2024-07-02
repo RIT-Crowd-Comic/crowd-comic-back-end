@@ -2,22 +2,26 @@ import { Request, Response } from 'express';
 import { Sequelize } from 'sequelize';
 import { assertArguments, assertArgumentsDefined, sanitizeResponse } from './utils';
 import { sequelize } from '../database';
+import { _createPanelSetController } from './panelSet';
 
 
 const _publishController = (sequelize : Sequelize) => async (author_id: string) => {
+    //make transaction
+    const t = await sequelize.transaction();
     try {
-       //setup transaction
-       const result = await sequelize.transaction(async t => {
-
         //make panel_set
+        const panel_set = _createPanelSetController(sequelize, t)(author_id);
+
+        //validate panel set creation
+        
 
         //make panels and hooks
+        //validate creation
 
         
 
-       });
 
-       return result;
+
     }
     catch (err) {
         return err;
@@ -32,19 +36,30 @@ const _publishController = (sequelize : Sequelize) => async (author_id: string) 
  */
 const publish = async (request: Request, res: Response) : Promise<Response> => {
 
-    //get the data
-    const author
+    //get the author data
+    const author_id = request.body.author_id;
+    //validate
+    const validArgs = assertArgumentsDefined({ author_id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+
+
+    //get panel data
+    const panel1 = request.body.image1.file;
+    //validate
+    //generate id
+
+    //get the panel(s) data
+
+    //validate
+
 
     //create panel set
 
     //create panels of panelset
 
     //create hooks on each panel
-    const author_id = request.body.author_id;
-    const validArgs = assertArgumentsDefined({ author_id });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _createPanelSetController(sequelize)(author_id);
-    return sanitizeResponse(response, res);
+
+   // return sanitizeResponse(response, res);
 };
 
 

@@ -145,6 +145,15 @@ const assertArgumentsNumber = (args: object) => {
     return validArgs;
 };
 
+const assertArgumentsString = (args: object) => {
+    const validArgs = assertArguments(
+        args,
+        arg => arg !== '',
+        'must be typeof string'
+    );
+    return validArgs;
+};
+
 /**
  * Parses a database response as an express response, creating the correct HTTP status codes.<br>
  * - [] | undefined | null => 404
@@ -180,6 +189,7 @@ export {
     assertArguments,
     assertArgumentsDefined,
     assertArgumentsNumber,
+    assertArgumentsString,
     sanitizeResponse,
     notFound
 };

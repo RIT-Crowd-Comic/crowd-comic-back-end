@@ -20,17 +20,17 @@ export default (app: Express) => {
     app.get('/', help);
 
     app.post('/saveImage', upload.single('image'), image.saveImage);
-    app.get('/getImage', image.getImage);
+    app.get('/getImage/:id', image.getImage);
 
-    // Get by ID
-    app.get('/getHook', hook.getHook);
-    app.get('/getPanel', panel.getPanel);
-    app.get('/getPanelSetByID', panelSet.getPanelSetByID);
-    app.get('/getUserByID', user.getUserByID);
-    app.get('/getPanelBasedOnPanelSetAndIndex', panel.getPanelBasedOnPanelSetAndIndex);
-    app.get('/getPanelHooks', hook.getPanelHooks);
-    app.get('/getPanelsFromPanelSetID', panel.getPanelsFromPanelSetID); // documentation doesn't work for some reason
-    app.get('/getAllPanelSetsFromUser', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+    app.get('/hook/:id', hook.getHook);
+    app.get('/panel/:id', panel.getPanel);
+    app.get('/panel/:id/hooks/', hook.getPanelHooks);
+    app.get('/panel_set/:id', panelSet.getPanelSetByID);
+    app.get('/panel_set/:id/panels/', panel.getPanelsFromPanelSetID); // documentation doesn't work for some reason
+    app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
+    app.get('/user/:id/', user.getUserByID);
+    app.get('/user/:id/panel_sets/', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+
     app.get('*', utils.notFound);
 
     app.post('/createHook', hook.createHook);
@@ -42,6 +42,7 @@ export default (app: Express) => {
     app.post('/authenticate', user.authenticate);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName); // documentation doesn't work for some reason
+    app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
     app.patch('/addSetToHook', hook.addSetToHook); // documentation doesn't work for some reason

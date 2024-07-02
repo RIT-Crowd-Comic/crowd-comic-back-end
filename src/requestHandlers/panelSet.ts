@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
 import { Sequelize } from 'sequelize';
-import { assertArguments, assertArgumentsDefined, sanitizeResponse } from './utils';
+import {
+    assertArgumentsDefined, assertArgumentsNumber, assertArgumentsString, sanitizeResponse
+} from './utils';
 import { sequelize } from '../database';
 import * as UserService from '../services/userService';
 
@@ -28,7 +30,7 @@ const _createPanelSetController = (sequelize : Sequelize) => async (author_id: s
  * @returns 
  */
 const createPanelSet = async (request: Request, res: Response) : Promise<Response> => {
-    const author_id = request.body.author_id;
+    const author_id = (typeof request.body.author_id === 'string') ? request.body.author_id : '';
     const validArgs = assertArgumentsDefined({ author_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _createPanelSetController(sequelize)(author_id);
@@ -62,12 +64,8 @@ const _getPanelSetByIDController = (sequelize: Sequelize) => async(id: number) =
 };
 
 const getPanelSetByID = async (request: Request, res: Response) : Promise<Response> => {
-    const id = Number(request.query.id);
-    const validArgs = assertArguments(
-        { id },
-        arg => !isNaN(arg),
-        'must be a valid number'
-    );
+    const id = Number(request.params.id);
+    const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getPanelSetByIDController(sequelize)(id);
     return sanitizeResponse(response, res, `a panel with the id of "${id}" cannot be found`);
@@ -108,12 +106,8 @@ const _getAllPanelSetsFromUserController = (sequelize: Sequelize) => async(id: s
 };
 
 const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise<Response> => {
-    const id = (typeof request.query.id === 'string') ? request.query.id : '';
-    const validArgs = assertArguments(
-        { id },
-        arg => arg !== '',
-        'must be typeof string'
-    );
+    const id = (typeof request.params.id === 'string') ? request.params.id : '';
+    const validArgs = assertArgumentsString({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getAllPanelSetsFromUserController(sequelize)(id ?? '');
     return sanitizeResponse(response, res, 'This user has not made any panel sets');

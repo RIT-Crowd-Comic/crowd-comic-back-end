@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { assertArguments, assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './utils';
+import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse as sanitizeResponse } from './utils';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
+import { IPanel } from '../models';
 
 /**
  * Creates a panel
@@ -12,33 +13,27 @@ import { Sequelize } from 'sequelize';
  * @param panel_set_id //id of the panel set the panel is a part of
  * @returns response or genericErrorResponse
  */
-const _createPanelController = (sequelize : Sequelize) => async (image: string, index: number, panel_set_id: number) => {
+const _createPanelController = (sequelize : Sequelize) => async (image: string, panel_set_id: number) => {
     try {
 
         // check if a panel exists
         const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
         if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
 
-        // check if existing panel on a panelset based on index
-        const panel = await panelService.getPanelBasedOnPanelSetAndIndex(sequelize)(index, panel_set_id);
+        // get all of panels that currently exist within the panel_set
+        let panels = panelSet.panels as IPanel[];
 
-        // update if exists
-        if (panel) {
-            return await panelService.updatePanel(panel, {
-                image:        image,
-                index:        index,
-                panel_set_id: panel_set_id,
-            });
+        if (panels == null) {
+            panels = [];
         }
+        const panelIndex = panels.length;
 
         // make new
-        else {
-            return await panelService.createPanel(sequelize)({
-                image:        image,
-                index:        index,
-                panel_set_id: panel_set_id,
-            });
-        }
+        return await panelService.createPanel(sequelize)({
+            image:        image,
+            index:        panelIndex,
+            panel_set_id: panel_set_id,
+        });
     }
     catch (err) {
         return err;
@@ -49,13 +44,12 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
 const createPanel = async (req: Request, res: Response): Promise<Response> => {
 
     const image: string = req.body.image;
-    const index: number = req.body.index;
     const panel_set_id: number = req.body.panel_set_id;
 
-    const validArgs = assertArgumentsDefined({ image, index, panel_set_id });
+    const validArgs = assertArgumentsDefined({ image, panel_set_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _createPanelController(sequelize)(image, index, panel_set_id);
+    const response = await _createPanelController(sequelize)(image, panel_set_id);
 
     return sanitizeResponse(response, res);
 
@@ -70,6 +64,42 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
         }
         #swagger.responses[500] = {}
     */
+};
+
+/**
+ * gets a panel based on id
+ * @param id The id of the panel
+ * @param image The new image of the panel
+ */
+const _updatePanelController = (sequelize: Sequelize) => async (id :number, image: string) => {
+    try {
+
+        // check if existing panel on a panel set based on index
+        const panel = await sequelize.models.panel.findByPk(id) as IPanel;
+        if (!panel) {
+            throw new Error(`A panel with an id of ${id} does not exist`);
+        }
+
+        return await panelService.updatePanel(panel, {
+            image:        image,
+            index:        panel.index,
+            panel_set_id: panel.panel_set_id,
+        });
+    }
+    catch (err) {
+        return err;
+    }
+};
+
+const updatePanel = async (req: Request, res: Response): Promise<Response> => {
+    const id = Number(req.body.id);
+    const image = req.body.image;
+    let validArgs = assertArgumentsNumber({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    validArgs = assertArgumentsDefined({ image });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await _updatePanelController(sequelize)(id, image);
+    return sanitizeResponse(response, res);
 };
 
 
@@ -89,17 +119,12 @@ const _getPanelController = (sequelize : Sequelize) => async (id:number) => {
 
 // the actual request for getting a panel
 const getPanel = async (req: Request, res: Response): Promise<Response> => {
-    const id = Number(req.query.id);
-    const validArgs = assertArguments(
-        { id },
-        arg => !isNaN(arg),
-        'must be a valid number'
-    );
+    const id = Number(req.params.id);
+    const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
-
     const response = await _getPanelController(sequelize)(id);
 
-    return sanitizeResponse(response, res, `could not find panel with id ${req.body.id}`);
+    return sanitizeResponse(response, res, `could not find panel with id ${id}`);
 
     /*
         #swagger.tags = ['panel']
@@ -124,7 +149,7 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
 
 /**
  * gets a panel based on id
- * @param panel_set_id The id of the panelset
+ * @param panel_set_id The id of the panel set
  * @param panel_set_id The index of the panel
  * @returns response or error
  */
@@ -139,17 +164,11 @@ const _getPanelBasedOnPanelSetAndIndexController = (sequelize : Sequelize) => as
 
 // the actual request for getting a panel
 const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Promise<Response> => {
-    const panel_set_id = Number(req.query.panel_set_id);
-    const index = Number(req.query.index);
-    const validArgs = assertArguments(
-        { panel_set_id, index },
-        arg => !isNaN(arg),
-        'must be a valid number'
-    );
+    const panel_set_id = Number(req.params.panel_set_id);
+    const index = Number(req.params.index);
+    const validArgs = assertArgumentsNumber({ panel_set_id, index });
     if (!validArgs.success) return res.status(400).json(validArgs);
-
     const response = await _getPanelBasedOnPanelSetAndIndexController(sequelize)(panel_set_id, index);
-
     return sanitizeResponse(response, res, `could not find panel with panel_set_id ${panel_set_id} and index of ${index}`);
 
     /*
@@ -193,15 +212,9 @@ const _getPanelsFromPanelSetIDController = (sequelize : Sequelize) => async (pan
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
     const panel_set_id = Number(req.query.id);
-    const validArgs = assertArguments(
-        { panel_set_id },
-        arg => !isNaN(arg),
-        'must be a valid number'
-    );
+    const validArgs = assertArgumentsNumber({ panel_set_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
-
     const response = await _getPanelsFromPanelSetIDController(sequelize)(panel_set_id);
-
     return sanitizeResponse(response, res, `could not find panels under panelSet id ${panel_set_id}`);
 
     /*
@@ -225,5 +238,5 @@ const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Res
 };
 
 export {
-    createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController, _getPanelBasedOnPanelSetAndIndexController
-}; // exporting _create for testing, temporary
+    createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
+};

@@ -1,13 +1,14 @@
 import {
     CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, Sequelize
 } from 'sequelize';
+import { Json } from 'sequelize/types/utils';
 
 /**
  * Hook model attributes
  */
 interface IHook extends Model<InferAttributes<IHook>, InferCreationAttributes<IHook>> {
     id: CreationOptional<number>,
-    position: number[];
+    position: Json;
     current_panel_id: ForeignKey<number>,
     next_panel_set_id: ForeignKey<number>
 }
@@ -27,7 +28,7 @@ const define = (sequelize: Sequelize): void => {
                 allowNull:     false
             },
             position: {
-                type:      DataTypes.ARRAY(DataTypes.FLOAT),
+                type:      DataTypes.JSONB,
                 allowNull: false
             },
             current_panel_id: {

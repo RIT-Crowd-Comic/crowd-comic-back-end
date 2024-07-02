@@ -26,7 +26,7 @@ const createPanelSet = (sequelize: Sequelize) => async (panelSet: PanelSetConfig
  * @returns null if the panel set is not found/exists
  */
 const getPanelSetByID = (sequelize: Sequelize) => async (id: number) => {
-    return await sequelize.models.panel_set.findByPk(id) as IPanelSet;
+    return await sequelize.models.panel_set.findByPk(id, { include: sequelize.models.panel }) as IPanelSet;
 };
 
 /**

@@ -137,7 +137,8 @@ const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise
 const _getAllTrunkSetsController = async (sequelize: Sequelize) => {
     try {
         return await PanelSetService.getAllTrunkSets(sequelize);
-    } catch (err) {
+    }
+    catch (err) {
         return err;
     }
 };
@@ -160,7 +161,7 @@ const getAllTrunkSets = async(request: Request, res: Response) : Promise<Respons
         }
         #swagger.responses[500] = {}
     */
-}
+};
 
 export {
     createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController

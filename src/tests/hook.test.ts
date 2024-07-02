@@ -168,17 +168,17 @@ describe('Get Status Controller', () => {
     test('If successful, get and return its status object', async () => {
         const statusData = { linked: true, status_message: 'linked' };
         (hookService.getStatus as jest.Mock).mockReturnValue(() => Promise.resolve(statusData));
-        
+
         const response = await _getStatusController(sequelizeMock())(1);
 
         expect(response).toBe(response);
     });
 
     test('If an something goes wrong, an error should be returned', async () => {
-        (hookService.getStatus as jest.Mock).mockReturnValue(() => {throw new Error('Error Message')});
+        (hookService.getStatus as jest.Mock).mockReturnValue(() => { throw new Error('Error Message'); });
 
         const response = await _getStatusController(sequelizeMock())(1);
 
         expect(response).toBeInstanceOf(Error);
-    })
-})
+    });
+});

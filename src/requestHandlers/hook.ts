@@ -4,7 +4,7 @@ import { assertArguments, assertArgumentsDefined, sanitizeResponse } from './uti
 import { getPanel } from '../services/panelService';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
-import { Sequelize } from 'sequelize';
+import { Sequelize, Transaction } from 'sequelize';
 
 
 /**
@@ -14,11 +14,11 @@ import { Sequelize } from 'sequelize';
  * @param {number} next_panel_set_id ID of panel set that hook links to
  * @returns response or error
  */
-const _createHookController = (sequelize: Sequelize) => async (position: number[], current_panel_id: number, next_panel_set_id: number|null) => {
+const _createHookController = (sequelize: Sequelize, transaction?: Transaction) => async (position: number[], current_panel_id: number, next_panel_set_id: number|null) => {
     try {
         const panel = await getPanel(sequelize)(current_panel_id);
         if (panel == null) throw new Error('no panel exists for given panel id');
-        return await hookService.createHook(sequelize)({
+        return await hookService.createHook(sequelize, transaction)({
             position,
             current_panel_id,
             next_panel_set_id

@@ -3,7 +3,7 @@ import * as panelService from '../services/panelService';
 import { assertArguments, assertArgumentsDefined, sanitizeResponse as sanitizeResponse } from './utils';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
-import { Sequelize } from 'sequelize';
+import { Sequelize, Transaction } from 'sequelize';
 
 /**
  * Creates a panel
@@ -12,7 +12,7 @@ import { Sequelize } from 'sequelize';
  * @param panel_set_id //id of the panel set the panel is a part of
  * @returns response or genericErrorResponse
  */
-const _createPanelController = (sequelize : Sequelize) => async (image: string, index: number, panel_set_id: number) => {
+const _createPanelController = (sequelize : Sequelize, transaction?: Transaction) => async (image: string, index: number, panel_set_id: number) => {
     try {
 
         // check if a panel exists
@@ -33,7 +33,7 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
 
         // make new
         else {
-            return await panelService.createPanel(sequelize)({
+            return await panelService.createPanel(sequelize, transaction)({
                 image:        image,
                 index:        index,
                 panel_set_id: panel_set_id,

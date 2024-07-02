@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize, Transaction } from 'sequelize';
 import { IPanelSet, IUser } from '../models';
 interface PanelSetConfig {
     author_id: string
@@ -14,9 +14,9 @@ interface PanelSetInfo {
  * Create a new panel set
  * @param {} panelSet 
 */
-const createPanelSet = (sequelize: Sequelize) => async (panelSet: PanelSetConfig): Promise<PanelSetInfo> => {
+const createPanelSet = (sequelize: Sequelize, transaction? : Transaction  ) => async (panelSet: PanelSetConfig): Promise<PanelSetInfo> => {
     const { id, author_id } =
-    await sequelize.models.panel_set.create({ author_id: panelSet.author_id, }) as IPanelSet;
+    await sequelize.models.panel_set.create({ author_id: panelSet.author_id}, transaction ? { transaction } : {} ) as IPanelSet;
     return { author_id, id };
 };
 

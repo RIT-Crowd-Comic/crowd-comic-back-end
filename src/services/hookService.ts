@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize, Transaction } from 'sequelize';
 import { IHook, IPanel } from '../models';
 
 interface HookConfig {
@@ -25,14 +25,14 @@ interface HookGetInfo {
  * @param {HookConfig} newHook data to insert into database
  * @returns {HookCreateInfo} Information from the new data entry
  */
-const createHook = (sequelize: Sequelize) => async (newHook: HookConfig) => {
+const createHook = (sequelize: Sequelize, transaction?: Transaction) => async (newHook: HookConfig) => {
     const {
         id, position, current_panel_id, next_panel_set_id
     } = await sequelize.models.hook.create({
         position:          newHook.position,
         current_panel_id:  newHook.current_panel_id,
         next_panel_set_id: newHook.next_panel_set_id
-    }) as IHook;
+    }, transaction ? { transaction } : {}) as IHook;
     return {
         id, position, current_panel_id, next_panel_set_id
     } as HookCreateInfo;

@@ -115,19 +115,19 @@ describe('_createPanelController', () => {
 
 describe('_updatePanelController', () => {
     test('if panel does not exist, throw an error', async () => {
-        (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(null));
+        sequelizeMock = { models: { panel: { findByPk: jest.fn(() => Promise.resolve(null)) } } } as unknown as jest.Mocked<Sequelize>;
         const response = await panel._updatePanelController(sequelizeMock)(0, '');
         expect(response).toBeInstanceOf(Error);
     });
     test('if panel does exist, return the updated panel', async () => {
         const panelObj = { a: 'abcd' };
-        (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve('a'));
+        sequelizeMock = { models: { panel: { findByPk: jest.fn(() => Promise.resolve('a')) } } } as unknown as jest.Mocked<Sequelize>;
         (panelService.updatePanel as jest.Mock).mockResolvedValue(panelObj);
         const response = await panel._updatePanelController(sequelizeMock)(0, '');
         expect(response).toBe(panelObj);
     });
     test('if there is an error, return the error', async() => {
-        (panelService.getPanel as jest.Mock).mockReturnValue(() => { throw new Error('I am an error'); });
+        sequelizeMock = { models: { panel: { findByPk: jest.fn(() => { throw new Error('I am an error'); }) } } } as unknown as jest.Mocked<Sequelize>;
         const response = await panel._updatePanelController(sequelizeMock)(0, '');
         expect(response).toBeInstanceOf(Error);
     });

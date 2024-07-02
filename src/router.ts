@@ -1,17 +1,27 @@
 import { Express } from 'express';
 import help from './requestHandlers/help';
+import multer from 'multer';
 import * as user from './requestHandlers/user';
 import * as hook from './requestHandlers/hook';
 import * as panel from './requestHandlers/panel';
 import * as panelSet from './requestHandlers/panelSet';
 import * as utils from './requestHandlers/utils';
+import * as image from './requestHandlers/image';
 
 /**
  * Route all incoming requests
  */
+// Set up multer storage
+
+// Initialize multer with storage and file filter
+const upload = multer({ storage: multer.memoryStorage() });
 
 export default (app: Express) => {
     app.get('/', help);
+
+    app.post('/saveImage', upload.single('image'), image.saveImage);
+    app.get('/getImage/:id', image.getImage);
+
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
     app.get('/panel/:id/hooks/', hook.getPanelHooks);
@@ -20,6 +30,7 @@ export default (app: Express) => {
     app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
     app.get('/user/:id/', user.getUserByID);
     app.get('/user/:id/panel_sets/', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+
     app.get('*', utils.notFound);
 
     app.post('/createHook', hook.createHook);

@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { IPanelSet, IUser } from '../models';
+import { sequelize } from '../database';
 interface PanelSetConfig {
     author_id: string
 }
@@ -40,4 +41,18 @@ const getAllPanelSetsFromUser = (sequelize: Sequelize) => async (id: string) => 
     return user.panel_sets as IPanelSet[];
 };
 
-export { createPanelSet, getPanelSetByID, getAllPanelSetsFromUser };
+/**
+ * Find and return an array of a "trunk" panel_sets in db
+ * @returns {IPanelSet[]}
+ */
+const getAllTrunkSets = async (sequelize: Sequelize)  => {
+    const allSets = await sequelize.models.panel_set.findAll({include: sequelize.models.hook}) as IPanelSet[];
+    const trunks = [] as IPanelSet[];
+    allSets.forEach(set => {
+        if(!set.hook) trunks.push(set);
+    });
+
+    return trunks as IPanelSet[];
+}
+
+export { createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets };

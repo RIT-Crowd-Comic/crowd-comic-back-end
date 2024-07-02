@@ -230,6 +230,10 @@ const getStatus = async (req: Request, res: Response): Promise<Response> => {
 
     /*
         #swagger.tags = ['hook']
+        #swagger.parameters['id'] = {
+            in: 'query',
+            type: 'number'
+        }
         #swagger.responses[200] = {
             description: 'True (has a linked panel_set) or false (no linked panel_set)',
             schema: { $ref: '#/definitions/hook' }

@@ -130,6 +130,38 @@ const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise
 
 };
 
+/**
+ * Finds and returns all "trunk" panel_sets in database
+ * @returns {IPanelSet[]}
+ */
+const _getAllTrunkSetsController = async (sequelize: Sequelize) => {
+    try {
+        return await PanelSetService.getAllTrunkSets(sequelize);
+    } catch (err) {
+        return err;
+    }
+};
+
+const getAllTrunkSets = async(request: Request, res: Response) : Promise<Response> => {
+    const response = await _getAllTrunkSetsController(sequelize);
+    return sanitizeResponse(response, res, 'No trunks were found');
+
+    /*  
+        #swagger.tags = ['panel-set']
+        #swagger.responses[200] = {
+            description: 'Get all trunk panel_sets',
+            schema: [{ id: 0, author_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }]
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'Error occured, no trunks were found' }
+        }
+        #swagger.responses[500] = {}
+    */
+}
+
 export {
-    createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController
+    createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
 };

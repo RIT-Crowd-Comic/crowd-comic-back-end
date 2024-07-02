@@ -1,5 +1,5 @@
 import {
-    _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController
+    _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController, _getStatusController
 } from '../requestHandlers/hook';
 import * as hookService from '../services/hookService';
 import * as panelService from '../services/panelService';
@@ -101,7 +101,7 @@ describe('Create Hook Controller', () => {
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
         (hookService.createHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
-        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
+        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2);
 
         expect(response).toBe(hookData);
     });
@@ -111,7 +111,7 @@ describe('Create Hook Controller', () => {
 
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(null));
 
-        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
+        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2);
 
         expect(response).toEqual(error);
     });
@@ -119,7 +119,7 @@ describe('Create Hook Controller', () => {
     test('If an error occurs, error should be returned', async () => {
         (hookService.createHook as jest.Mock).mockReturnValue(() => { throw new Error('Error Message'); });
 
-        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
+        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2);
 
         expect(response).toBeInstanceOf(Error);
     });
@@ -163,3 +163,22 @@ describe('Add Set To Hook Controller', () => {
         expect(response).toBeInstanceOf(Error);
     });
 });
+
+describe('Get Status Controller', () => {
+    test('If successful, get and return its status object', async () => {
+        const statusData = { linked: true, status_message: 'linked' };
+        (hookService.getStatus as jest.Mock).mockReturnValue(() => Promise.resolve(statusData));
+        
+        const response = await _getStatusController(sequelizeMock())(1);
+
+        expect(response).toBe(response);
+    });
+
+    test('If an something goes wrong, an error should be returned', async () => {
+        (hookService.getStatus as jest.Mock).mockReturnValue(() => {throw new Error('Error Message')});
+
+        const response = await _getStatusController(sequelizeMock())(1);
+
+        expect(response).toBeInstanceOf(Error);
+    })
+})

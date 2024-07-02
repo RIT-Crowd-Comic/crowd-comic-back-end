@@ -208,22 +208,23 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
 /**
  * Checks if a hook is linked to a next panel set
  * @param id ID of hook to check
- * @returns {Boolean} true: hook linked - false: hook empty
+ * @returns {{boolean, string}} Object with linked status and status message
  */
-const _getStatusController = async (id: number) => {
+const _getStatusController = (sequelize: Sequelize) => async (id: number) => {
     try {
         return hookService.getStatus(sequelize)(id);
-    } catch (err) {
+    }
+    catch (err) {
         return err;
     }
 };
 
 const getStatus = async (req: Request, res: Response): Promise<Response> => {
     const id = Number(req.params.id);
-    const validArgs = assertArgumentsNumber({id: id});
+    const validArgs = assertArgumentsNumber({ id: id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _getStatusController(id);
+    const response = await _getStatusController(sequelize)(id);
 
     return sanitizeResponse(response, res, `Could not find hook with id ${id}`);
 
@@ -241,7 +242,7 @@ const getStatus = async (req: Request, res: Response): Promise<Response> => {
         }
         #swagger.responses[500] = {}
     */
-}
+};
 
 export {
     createHook, getHook, getPanelHooks, addSetToHook, getStatus, _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController, _getStatusController

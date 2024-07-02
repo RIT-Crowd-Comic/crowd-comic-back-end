@@ -14,12 +14,12 @@ export default (app: Express) => {
     app.get('/', help);
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
-    app.get('panel/:id/hooks/', hook.getPanelHooks);
+    app.get('/panel/:id/hooks/', hook.getPanelHooks);
     app.get('/panel_set/:id', panelSet.getPanelSetByID);
     app.get('/panel_set/:id/panels/', panel.getPanelsFromPanelSetID); // documentation doesn't work for some reason
-    app.get('/panel_set/:panel_set_id/:index', panel.getPanelBasedOnPanelSetAndIndex);
+    app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
     app.get('/user/:id/', user.getUserByID);
-    app.get('/user/:id/panels/', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+    app.get('/user/:id/panel_sets/', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
     app.get('*', utils.notFound);
 
     app.post('/createHook', hook.createHook);

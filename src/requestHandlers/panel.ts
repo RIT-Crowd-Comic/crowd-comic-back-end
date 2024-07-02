@@ -99,7 +99,7 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
 
     const response = await _getPanelController(sequelize)(id);
 
-    return sanitizeResponse(response, res, `could not find panel with id ${req.body.id}`);
+    return sanitizeResponse(response, res, `could not find panel with id ${id}`);
 
     /*
         #swagger.tags = ['panel']
@@ -193,7 +193,6 @@ const _getPanelsFromPanelSetIDController = (sequelize : Sequelize) => async (pan
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
     const panel_set_id = Number(req.params.id);
-    console.log(panel_set_id)
     const validArgs = assertArguments(
         { panel_set_id },
         arg => !isNaN(arg),

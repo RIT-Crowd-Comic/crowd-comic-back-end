@@ -36,6 +36,74 @@
         }
       }
     },
+    "/saveImage": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "image file",
+            "in": "body",
+            "description": "the image to save",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "type": "string",
+                  "example": "asdas3dfsdf.png"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the id of the saved image",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getImage/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/hook/{id}": {
       "get": {
         "tags": [

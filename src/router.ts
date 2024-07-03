@@ -7,6 +7,7 @@ import * as panel from './requestHandlers/panel';
 import * as panelSet from './requestHandlers/panelSet';
 import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
+import * as publish from './requestHandlers/publish';
 
 /**
  * Route all incoming requests
@@ -14,12 +15,16 @@ import * as image from './requestHandlers/image';
 // Set up multer storage
 
 // Initialize multer with storage and file filter
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage()});
 
 export default (app: Express) => {
     app.get('/', help);
 
-    app.post('/saveImage', upload.single('image'), image.saveImage);
+    //app.post('/saveImage', upload.single('image'), image.saveImage);
+    app.post('/publish', upload.fields([
+        { name: 'image1', maxCount: 1 },
+        { name: 'image2', maxCount: 1 },
+        { name: 'image3', maxCount: 1 }]), publish.publish);
     app.get('/getImage/:id', image.getImage);
 
     app.get('/hook/:id', hook.getHook);

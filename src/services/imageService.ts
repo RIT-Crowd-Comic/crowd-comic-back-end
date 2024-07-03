@@ -14,7 +14,7 @@ const saveImage = async(id : string, buffer: Buffer, mimetype : string)=>{
 
     await s3.send(saveImage);
 
-    return { id: id };
+    return { id: id }; //return id to show valid save
 };
 
 const getImage = async(id : string) =>{

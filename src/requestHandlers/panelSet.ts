@@ -16,7 +16,7 @@ const _createPanelSetController = (sequelize : Sequelize, transaction?: Transact
     try {
         const user = await UserService.getUserByID(sequelize)(author_id);
         if (user == null) throw new Error(`An author with the id "${author_id}" does not exist`);
-        return await PanelSetService.createPanelSet(sequelize, transaction)({ author_id }) as { author_id: string, id : number};
+        return await PanelSetService.createPanelSet(sequelize, transaction)({ author_id });
     }
     catch (err) {
         return err;

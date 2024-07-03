@@ -27,7 +27,6 @@ const saveImage = async (req: Request, res: Response): Promise<Response> => {
         return res.status(400).json({ error: 'Uploaded file must be an image' });
     }
     const mimetype = req.file.mimetype;
-
     const buffer = req.file.buffer;
     const id = crypto.randomUUID(); // generate uuid here for now
 

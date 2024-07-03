@@ -1,5 +1,5 @@
 import {
-    _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController, _getStatusController
+    _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController
 } from '../requestHandlers/hook';
 import * as hookService from '../services/hookService';
 import * as panelService from '../services/panelService';
@@ -159,25 +159,6 @@ describe('Add Set To Hook Controller', () => {
         (hookService.addSetToHook as jest.Mock).mockReturnValue(() => { throw new Error('Error Messgage'); });
 
         const response = await _addSetToHookController(sequelizeMock())(1, 2);
-
-        expect(response).toBeInstanceOf(Error);
-    });
-});
-
-describe('Get Status Controller', () => {
-    test('If successful, get and return its status object', async () => {
-        const statusData = { linked: true, status_message: 'linked' };
-        (hookService.getStatus as jest.Mock).mockReturnValue(() => Promise.resolve(statusData));
-
-        const response = await _getStatusController(sequelizeMock())(1);
-
-        expect(response).toBe(response);
-    });
-
-    test('If an something goes wrong, an error should be returned', async () => {
-        (hookService.getStatus as jest.Mock).mockReturnValue(() => { throw new Error('Error Message'); });
-
-        const response = await _getStatusController(sequelizeMock())(1);
 
         expect(response).toBeInstanceOf(Error);
     });

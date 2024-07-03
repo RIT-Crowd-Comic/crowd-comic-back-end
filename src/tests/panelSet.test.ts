@@ -1,4 +1,6 @@
-import { _createPanelSetController, _getPanelSetByIDController, _getAllPanelSetsFromUserController } from '../requestHandlers/panelSet';
+import {
+    _createPanelSetController, _getPanelSetByIDController, _getAllPanelSetsFromUserController, _getAllTrunkSetsController
+} from '../requestHandlers/panelSet';
 import * as panelSetService from '../services/panelSetService';
 import * as userService from '../services/userService';
 import { Sequelize } from 'sequelize';
@@ -54,6 +56,20 @@ describe('Get Panel Set By ID Controller', () => {
     test('if an error is thrown, that error should be returned', async () =>{
         (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => { throw new Error('I am an error'); });
         const response = await _getPanelSetByIDController(sequelizeMock)(1);
+        expect(response).toBeInstanceOf(Error);
+    });
+});
+
+describe('Get All Trunk Sets', () => {
+    test('if search is successful, return array of trunks', async () => {
+        const trunkData = [panelData, panelData];
+        (panelSetService.getAllTrunkSets as jest.Mock).mockResolvedValue(trunkData);
+        const response = await _getAllTrunkSetsController(sequelizeMock);
+        expect(response).toEqual(trunkData);
+    });
+    test('if error occurs, return an error', async () => {
+        (panelSetService.getAllTrunkSets as jest.Mock).mockRejectedValue(new Error('Error Message'));
+        const response = await _getAllTrunkSetsController(sequelizeMock);
         expect(response).toBeInstanceOf(Error);
     });
 });

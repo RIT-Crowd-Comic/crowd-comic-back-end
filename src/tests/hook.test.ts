@@ -101,7 +101,7 @@ describe('Create Hook Controller', () => {
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
         (hookService.createHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
-        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
+        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2);
 
         expect(response).toBe(hookData);
     });
@@ -111,7 +111,7 @@ describe('Create Hook Controller', () => {
 
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(null));
 
-        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
+        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2);
 
         expect(response).toEqual(error);
     });
@@ -119,7 +119,7 @@ describe('Create Hook Controller', () => {
     test('If an error occurs, error should be returned', async () => {
         (hookService.createHook as jest.Mock).mockReturnValue(() => { throw new Error('Error Message'); });
 
-        const response = await _createHookController(sequelizeMock())([1, 1], 1, 2);
+        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2);
 
         expect(response).toBeInstanceOf(Error);
     });

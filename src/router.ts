@@ -32,6 +32,7 @@ export default (app: Express) => {
     app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
     app.get('/user/:id/', user.getUserByID);
     app.get('/user/:id/panel_sets/', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+    app.get('/trunks', panelSet.getAllTrunkSets);
 
     app.get('*', utils.notFound);
 

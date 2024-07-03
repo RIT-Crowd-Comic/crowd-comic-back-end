@@ -570,6 +570,62 @@
         }
       }
     },
+    "/trunks": {
+      "get": {
+        "tags": [
+          "panel-set"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Get all trunk panel_sets",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "author_id": {
+                    "type": "string",
+                    "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/error"
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Error occured, no trunks were found"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/createHook": {
       "post": {
         "tags": [

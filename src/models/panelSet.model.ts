@@ -7,7 +7,7 @@ interface IPanelSet extends Model<InferAttributes<IPanelSet>, InferCreationAttri
     id: CreationOptional<number>,
     author_id: string,
     panels?: NonAttribute<IPanel[]>,
-    hooks?: NonAttribute<IHook[]>
+    hook?: NonAttribute<IHook[]>
 }
 
 const define = (sequelize: Sequelize): void => {

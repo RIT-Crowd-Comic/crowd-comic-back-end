@@ -55,7 +55,7 @@ const _publishController = (sequelize : Sequelize) => async (
         // create hooks and validate
         await Promise.all(hooks.map(async (hook) => {
             const matchedPanel = [panel1, panel2, panel3].find(panel => panel.index === hook.panel_index);
-            if (matchedPanel === undefined) throw 'Hook panel_index was invalid';
+            if (matchedPanel === undefined) throw new Error('Hook panel_index was invalid');
             await createHook(sequelize, t)({
               position: hook.position,
               current_panel_id: matchedPanel.id,

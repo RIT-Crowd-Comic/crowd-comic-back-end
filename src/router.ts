@@ -7,6 +7,7 @@ import * as panel from './requestHandlers/panel';
 import * as panelSet from './requestHandlers/panelSet';
 import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
+import cors from 'cors';
 
 /**
  * Route all incoming requests
@@ -17,6 +18,7 @@ import * as image from './requestHandlers/image';
 const upload = multer({ storage: multer.memoryStorage() });
 
 export default (app: Express) => {
+    app.use(cors());
     app.get('/', help);
 
     app.post('/saveImage', upload.single('image'), image.saveImage);

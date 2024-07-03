@@ -4,7 +4,7 @@ import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse } from 
 import { getPanel } from '../services/panelService';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
-import { Sequelize, Transaction } from 'sequelize';
+import { Sequelize } from 'sequelize';
 import { Json } from 'sequelize/types/utils';
 
 

@@ -33,7 +33,7 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
             image:        image,
             index:        panelIndex,
             panel_set_id: panel_set_id,
-        }, );
+        },);
     }
     catch (err) {
         return err;

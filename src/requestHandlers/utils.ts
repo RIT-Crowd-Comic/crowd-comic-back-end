@@ -154,6 +154,7 @@ const assertArgumentsString = (args: object) => {
     return validArgs;
 };
 
+
 /**
  * Parses a database response as an express response, creating the correct HTTP status codes.<br>
  * - [] | undefined | null => 404

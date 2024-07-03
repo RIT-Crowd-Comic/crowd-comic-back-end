@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Sequelize } from 'sequelize';
+import { Sequelize, Transaction } from 'sequelize';
 import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse } from './utils';
 import { sequelize } from '../database';
 import { createPanel } from '../services/panelService';
@@ -7,6 +7,7 @@ import { createHook } from '../services/hookService';
 import { Json } from 'sequelize/types/utils';
 import { _saveImageController, validateImageFile } from './image';
 import { _createPanelSetController } from './panelSet';
+import { json } from 'body-parser';
 
 // types 
 type hook = {position : Json, panel_index : number}
@@ -51,18 +52,16 @@ const _publishController = (sequelize : Sequelize) => async (
             panel_set_id: panel_set.id,
         });
 
-        // create hooks
-        await hooks.forEach(async(hook) =>{
-
-            // map the index to one of the three panels
+        // create hooks and validate
+        await Promise.all(hooks.map(async (hook) => {
             const matchedPanel = [panel1, panel2, panel3].find(panel => panel.index === hook.panel_index);
             if (matchedPanel === undefined) throw 'Hook panel_index was invalid';
             await createHook(sequelize, t)({
-                position:          hook.position,
-                current_panel_id:  matchedPanel.id,
-                next_panel_set_id: null
+              position: hook.position,
+              current_panel_id: matchedPanel.id,
+              next_panel_set_id: null
             });
-        });
+        }));
 
         // save to amazon
         const s3Image1 = await _saveImageController(image1Id, panelImage1.buffer, panelImage1.mimetype);
@@ -137,14 +136,13 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
     // validate
     for (let i = 0; i < hooks.length; i++) {
-        let hook;
         try {
-            hook = JSON.parse(hooks[i]);
+            JSON.parse(hooks[i]);
         }
         catch (e) {
             return res.status(400).json({ error: 'Hook data is not valid JSON' });
         }
-        hook = JSON.parse(hooks[i]) as hook;
+        const hook = JSON.parse(hooks[i]) as hook;
         validArgs = assertArgumentsDefined({ position: hook.position });
         if (!validArgs.success) return res.status(400).json(validArgs);
         validArgs = assertArgumentsNumber({ index: hook.panel_index });
@@ -156,9 +154,9 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     // call the controller
     const response = await _publishController(sequelize)(author_id, panelImage1, panelImage2, panelImage3, hooks);
 
-    console.log(response);
     return sanitizeResponse(response, res);
 };
+
 
 
 export { _publishController, publish };

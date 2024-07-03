@@ -626,36 +626,6 @@
         }
       }
     },
-    "/hook/status/{id}": {
-      "get": {
-        "tags": [
-          "hook"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "True (has a linked panel_set) or false (no linked panel_set)",
-            "schema": {
-              "$ref": "#/definitions/hook"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          }
-        }
-      }
-    },
     "/createHook": {
       "post": {
         "tags": [
@@ -1058,57 +1028,10 @@
     },
     "/addSetToHook": {
       "patch": {
-        "tags": [
-          "hook"
-        ],
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "hook_id": {
-                  "example": "any"
-                },
-                "panel_set_id": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
-          "200": {
-            "description": "The altered hook",
-            "schema": {
-              "$ref": "#/definitions/hook"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }

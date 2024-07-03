@@ -107,21 +107,6 @@ const addSetToHook = (sequelize: Sequelize) => async (hook_id: number, panel_set
     } as HookGetInfo;
 };
 
-/**
- * Check if a hook is linked to a panel_set
- * @param {number} id ID of hook to check 
- * @returns {{boolean, string}} Object with linked status and status message
- */
-const getStatus = (sequelize: Sequelize) => async (id: number) => {
-    const hook = await sequelize.models.hook.findByPk(id) as IHook;
-    if (!hook) return undefined;
-
-    return {
-        linked:         hook.next_panel_set_id != null,
-        status_message: hook.next_panel_set_id != null ? `Hook linked to panel_set (id: ${hook.next_panel_set_id})` : 'Hook is empty'
-    };
-};
-
 export {
-    createHook, getHook, getPanelHooks, addSetToHook, getStatus
+    createHook, getHook, getPanelHooks, addSetToHook
 };

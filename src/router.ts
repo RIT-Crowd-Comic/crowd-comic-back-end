@@ -8,6 +8,7 @@ import * as panelSet from './requestHandlers/panelSet';
 import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
 import * as publish from './requestHandlers/publish';
+import cors from 'cors';
 
 /**
  * Route all incoming requests
@@ -18,6 +19,7 @@ import * as publish from './requestHandlers/publish';
 const upload = multer({ storage: multer.memoryStorage() });
 
 export default (app: Express) => {
+    app.use(cors());
     app.get('/', help);
 
     // app.post('/saveImage', upload.single('image'), image.saveImage);
@@ -36,6 +38,7 @@ export default (app: Express) => {
     app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
     app.get('/user/:id/', user.getUserByID);
     app.get('/user/:id/panel_sets/', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+    app.get('/trunks', panelSet.getAllTrunkSets);
 
     app.get('*', utils.notFound);
 

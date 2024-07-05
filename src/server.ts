@@ -12,7 +12,7 @@ import router from './router';
 import { setup as setupDatabase } from './database';
 import * as helpers from './helpers';
 
-const port = process.env.PORT || process.env.NODE_PORT || 3000;
+const port = process.env.PORT || process.env.NODE_PORT || 4000;
 
 const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, './api-autogen-spec.json'), 'utf-8'));
 

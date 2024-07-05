@@ -159,6 +159,58 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     const response = await _publishController(sequelize)(author_id, panelImage1, panelImage2, panelImage3, hooks);
 
     return sanitizeResponse(response, res);
+
+    // API documentation
+    /*
+        #swagger.tags = ['publish']
+
+        #swagger.consumes = ['application/multipart-form-data']
+    
+        #swagger.parameters['image1'] = {
+            in: 'formData',
+            type: 'file',
+            required: true,
+            description: 'The file of the image for panel-1.'
+        }
+        #swagger.parameters['image2'] = {
+            in: 'formData',
+            type: 'file',
+            required: true,
+            description: 'The file of the image for panel-2.'
+        }
+        #swagger.parameters['image3'] = {
+            in: 'formData',
+            type: 'file',
+            required: true,
+            description: 'The file of the image for panel-3.'
+        }
+        #swagger.parameters['author_id'] = {
+            in: 'formData',
+            type: 'string',
+            required: true,
+            description: 'The id of the author the publish is being used by.'
+        }
+        #swagger.parameters['hooks'] = {
+            in: 'formData',
+            type: 'Json',
+            required: true,
+            description: 'A Json array of hooks'
+        }
+
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Publish',
+            schema: { $ref: '#/definitions/publish' }
+        } 
+
+        #swagger.responses[200] = {
+            schema: { $ref: '#/definitions/publishResponse' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 

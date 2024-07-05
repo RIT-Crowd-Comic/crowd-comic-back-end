@@ -92,7 +92,7 @@ const _publishController = (sequelize : Sequelize) => async (
  */
 const publish = async (request: Request, res: Response) : Promise<Response> => {
 
-    //parse the data field
+    // parse the data field
     try {
         JSON.parse(request.body.data);
     }

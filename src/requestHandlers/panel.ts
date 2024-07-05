@@ -105,7 +105,7 @@ const updatePanel = async (req: Request, res: Response): Promise<Response> => {
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _updatePanelController(sequelize)(id, image);
     return sanitizeResponse(response, res);
-    
+
     /*
         #swagger.tags = ['panel']
         #swagger.parameters['body'] = {

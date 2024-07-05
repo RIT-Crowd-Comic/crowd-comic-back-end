@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Sequelize, Transaction } from 'sequelize';
-import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse } from './utils';
+import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, validatePositions } from './utils';
 import { sequelize } from '../database';
 import { createPanel } from '../services/panelService';
 import { createHook } from '../services/hookService';
@@ -147,6 +147,9 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
         if (!validArgs.success) return res.status(400).json(validArgs);
         validArgs = assertArgumentsNumber({ index: hook.panel_index });
         if (!validArgs.success) return res.status(400).json(validArgs);
+
+        //validate position
+        if(!validatePositions(hook.position)) return res.status(400).json('Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects.');
 
         hooks[i] = hook;
     }

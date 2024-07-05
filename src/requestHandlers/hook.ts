@@ -44,7 +44,7 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     const validArgs = assertArgumentsDefined({ position, current_panel_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-   if(!validatePositions(position)) return res.status(400).json('Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects.');;
+   if(!validatePositions(position)) return res.status(400).json('Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects.');
 
     const response = await _createHookController(sequelize)(position, current_panel_id, next_panel_set_id);
 

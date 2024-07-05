@@ -345,11 +345,6 @@
             "name": "panel_set_id",
             "in": "query",
             "type": "number"
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
@@ -622,6 +617,16 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/dumb": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }

@@ -28,7 +28,7 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
         }
         const panelIndex = panels.length;
 
-        // make new
+        // make new hook
         return await panelService.createPanel(sequelize)({
             image:        image,
             index:        panelIndex,
@@ -211,10 +211,10 @@ const _getPanelsFromPanelSetIDController = (sequelize : Sequelize) => async (pan
 };
 
 const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
-    const panel_set_id = Number(req.query.id);
+    const panel_set_id = req.params.id;
     const validArgs = assertArgumentsNumber({ panel_set_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _getPanelsFromPanelSetIDController(sequelize)(panel_set_id);
+    const response = await _getPanelsFromPanelSetIDController(sequelize)(Number(panel_set_id));
     return sanitizeResponse(response, res, `could not find panels under panelSet id ${panel_set_id}`);
 
     /*

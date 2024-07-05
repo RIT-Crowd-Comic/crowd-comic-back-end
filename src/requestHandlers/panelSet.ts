@@ -5,7 +5,10 @@ import {
     assertArgumentsDefined, assertArgumentsNumber, assertArgumentsString, sanitizeResponse
 } from './utils';
 import { sequelize } from '../database';
+import * as PanelService from '../services/panelService'
 import * as UserService from '../services/userService';
+import * as HookService from '../services/hookService';
+import { IPanel, IPanelSet, IUser } from '../models';
 
 /**
  * Create a new panel set
@@ -68,6 +71,7 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
     const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getPanelSetByIDController(sequelize)(id);
+    return res.status(400).json(response);
     return sanitizeResponse(response, res, `a panel with the id of "${id}" cannot be found`);
 
     // API documentation
@@ -163,6 +167,85 @@ const getAllTrunkSets = async(request: Request, res: Response) : Promise<Respons
     */
 };
 
+
+const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
+    try {
+        const response = await _getPanelSetByIDController(sequelize)(id);
+        //if an error or contains not a panelSet return
+        //? the second condition isn't the best way to check if it's a panel set, but unsure of another way
+        if(response instanceof Error || !(response as any).author_id) {
+            return response;
+        }
+        const root = response as IPanelSet;
+        const rootCopy = root;
+        delete rootCopy.panels;
+        
+        const tree = {rootCopy};
+
+        
+
+        
+    }
+    catch (err) {
+        return err;
+    }
+}
+
+//test methods so I don't have to run all of these queries every time I want to test something
+const dumbDumb = async (request: Request, res: Response) => {
+    const response = await _dumbDumbController(sequelize)();
+    return sanitizeResponse(response, res, '');
+}
+
+const _dumbDumbController = (sequelize: Sequelize) => async() => {
+    try {
+        //create a user
+        const user = await UserService.createUser(sequelize)(
+            {
+                password: "Password!",
+                email: "email@yaoo.com",
+                display_name: "display"
+            }
+        ) as IUser;
+
+        //create 3 panel sets
+        const panel_sets = [];
+        for(let i = 0; i < 3; i++) {
+            panel_sets.push(await PanelSetService.createPanelSet(sequelize)({
+                author_id: user.id
+            }) as IPanelSet);
+        }
+
+        //create 2 panels, one for the first two panel sets
+        const panels = [];
+        for(let i = 1; i < 3; i++) {
+            panels.push(await PanelService.createPanel(sequelize)({
+            image: "",
+            index: 0,
+            panel_set_id: i,
+            }) as IPanel);
+        }
+
+        //add a hook from the first panel to the second panel set
+        //add a hook from the first panel to the third panel set
+        for(let i = 2; i < 4; i++) {
+            await HookService.createHook(sequelize)({
+                position: {
+                    conditions: {},
+                    path: '',
+                    value: ''
+                },
+                current_panel_id:  1,
+                next_panel_set_id: i
+            })
+        }
+        return {success: true};
+    } 
+    catch (err) {
+        return err;
+    }
+}
+
 export {
-    createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
+    dumbDumb, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
 };

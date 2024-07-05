@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
-import { Sequelize } from 'sequelize';
+import { Sequelize, QueryTypes, DataTypes } from 'sequelize';
 import {
     assertArgumentsDefined, assertArgumentsNumber, assertArgumentsString, sanitizeResponse
 } from './utils';
@@ -8,7 +8,9 @@ import { sequelize } from '../database';
 import * as PanelService from '../services/panelService'
 import * as UserService from '../services/userService';
 import * as HookService from '../services/hookService';
-import { IPanel, IPanelSet, IUser } from '../models';
+import { IHook, IPanel, IPanelSet, IUser } from '../models';
+import { _getPanelHooksController } from './hook';
+
 
 /**
  * Create a new panel set
@@ -167,24 +169,63 @@ const getAllTrunkSets = async(request: Request, res: Response) : Promise<Respons
     */
 };
 
+interface PanelSetNode {
+    panel_set_id: number,
+    parent_panel_set_id: number | null,
+    author_id: string,
+    level: number,
+    created_at: DataTypes.DateDataType,
+    updated_at: DataTypes.DateDataType,
+    path: string
+}
+
+interface PanelSetFrontEnd {
+    panel_set_id: number,
+    parent_panel_set_id: number | null,
+    author_id: string,
+    created_at: DataTypes.DateDataType,
+    updated_at: DataTypes.DateDataType,
+    childrenIds: number[]
+}
+
+const getTree = async(request: Request, res: Response) : Promise<Response> => {
+    const panel_set_id = request.params.id;
+    const response = await _getTreeController(sequelize)(Number(panel_set_id)) as PanelSetNode[];
+
+    //! calling sanitizeResponse more than once throws an error
+    //! probably not the best way to check if an error is thrown
+    if(!Array.isArray(response)) {
+        return sanitizeResponse(response, res);
+    }
+    response.sort((a : PanelSetNode, b : PanelSetNode) => a.level - b.level)
+    const panel_sets = [] as PanelSetFrontEnd[];
+    for(const panel_set of response) {
+        const children = response.filter(p => p.parent_panel_set_id == panel_set.panel_set_id);
+        panel_sets.push({
+            panel_set_id: panel_set.panel_set_id,
+            author_id: panel_set.author_id,
+            created_at: panel_set.created_at,
+            updated_at: panel_set.updated_at,
+            childrenIds: children.map(p => p.panel_set_id)
+        } as PanelSetFrontEnd)
+    }
+    return sanitizeResponse(panel_sets, res, 'Custom 404 error');;
+}
 
 const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
     try {
         const response = await _getPanelSetByIDController(sequelize)(id);
         //if an error or contains not a panelSet return
-        //? the second condition isn't the best way to check if it's a panel set, but unsure of another way
-        if(response instanceof Error || !(response as any).author_id) {
+        if(response instanceof Error) {
             return response;
         }
+        
+        //? This isn't the best way to check if it's a panel set, but unsure of another way
+        if(!(response as any).author_id) {
+            throw new Error(`A panel set with an id of "${id}" could not be found`)
+        }
         const root = response as IPanelSet;
-        const rootCopy = root;
-        delete rootCopy.panels;
-        
-        const tree = {rootCopy};
-
-        
-
-        
+        return await PanelSetService.getTree(sequelize)(root);
     }
     catch (err) {
         return err;
@@ -199,6 +240,7 @@ const dumbDumb = async (request: Request, res: Response) => {
 
 const _dumbDumbController = (sequelize: Sequelize) => async() => {
     try {
+        
         //create a user
         const user = await UserService.createUser(sequelize)(
             {
@@ -208,37 +250,45 @@ const _dumbDumbController = (sequelize: Sequelize) => async() => {
             }
         ) as IUser;
 
-        //create 3 panel sets
+        //create panel sets
+        const panel_set_count = 10;
         const panel_sets = [];
-        for(let i = 0; i < 3; i++) {
+        for(let i = 0; i < panel_set_count; i++) {
             panel_sets.push(await PanelSetService.createPanelSet(sequelize)({
                 author_id: user.id
             }) as IPanelSet);
         }
-
-        //create 2 panels, one for the first two panel sets
-        const panels = [];
-        for(let i = 1; i < 3; i++) {
-            panels.push(await PanelService.createPanel(sequelize)({
-            image: "",
-            index: 0,
-            panel_set_id: i,
-            }) as IPanel);
+        const panel_data = [1, 2, 3, 4, 4, 4]
+        //create 1 panel for each panel set
+        for(let i = 0; i < panel_data.length; i++){
+            await PanelService.createPanel(sequelize)({
+                image: "",
+                index: 0,
+                panel_set_id: panel_data[i],
+                }) as IPanel
         }
-
-        //add a hook from the first panel to the second panel set
-        //add a hook from the first panel to the third panel set
-        for(let i = 2; i < 4; i++) {
+        
+        const hookConnection = [
+            { panel_id: 1, next_panel_set_id: 2 }, 
+            { panel_id: 1, next_panel_set_id: 3 }, 
+            { panel_id: 2, next_panel_set_id: 4 }, 
+            { panel_id: 4, next_panel_set_id: 5 }, 
+            { panel_id: 5, next_panel_set_id: 6 }, 
+            { panel_id: 6, next_panel_set_id: 7 }
+        ]
+        //add hooks
+        for(const hook of hookConnection) {
             await HookService.createHook(sequelize)({
                 position: {
                     conditions: {},
                     path: '',
                     value: ''
                 },
-                current_panel_id:  1,
-                next_panel_set_id: i
+                current_panel_id:  hook.panel_id,
+                next_panel_set_id: hook.next_panel_set_id
             })
         }
+
         return {success: true};
     } 
     catch (err) {
@@ -247,5 +297,5 @@ const _dumbDumbController = (sequelize: Sequelize) => async() => {
 }
 
 export {
-    dumbDumb, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
+    getTree, dumbDumb, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
 };

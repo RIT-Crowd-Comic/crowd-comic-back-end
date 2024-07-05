@@ -213,7 +213,7 @@
         }
       }
     },
-    "/panel/{id}/hooks/": {
+    "/panel/{id}/hooks": {
       "get": {
         "tags": [
           "hook"
@@ -328,7 +328,7 @@
         }
       }
     },
-    "/panel_set/{id}/panels/": {
+    "/panel_set/{id}/panels": {
       "get": {
         "tags": [
           "panel"
@@ -501,7 +501,7 @@
         }
       }
     },
-    "/user/{id}/panel_sets/": {
+    "/user/{id}/panel_sets": {
       "get": {
         "tags": [
           "panel-set"
@@ -617,6 +617,24 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/tree/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }

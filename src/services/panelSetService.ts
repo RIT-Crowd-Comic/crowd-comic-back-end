@@ -53,7 +53,61 @@ const getAllTrunkSets = async (sequelize: Sequelize) => {
 
     return trunks as IPanelSet[];
 };
+const getTree = (sequelize: Sequelize) => async (panel_set: IPanelSet) => {
+    const [results, metadata]  = await sequelize.query(`WITH RECURSIVE panel_set_tree AS (
+        -- Base case: start with the given panel_set_id
+        SELECT 
+            ps.id AS panel_set_id,
+            ps.author_id,
+            ps.created_at,
+            ps.updated_at,
+            0 AS level,
+            CAST(ps.id AS TEXT) AS path,
+            NULL::INTEGER AS parent_panel_set_id
+        FROM 
+            panel_sets ps
+        WHERE 
+            ps.id = ${panel_set.id}
+    
+        UNION ALL
+    
+        -- Recursive case: find direct child panel_sets
+        SELECT 
+            next_ps.id AS panel_set_id,
+            next_ps.author_id,
+            next_ps.created_at,
+            next_ps.updated_at,
+            pst.level + 1 AS level,
+            pst.path || '->' || CAST(next_ps.id AS TEXT) AS path,
+            pst.panel_set_id AS parent_panel_set_id
+        FROM 
+            panel_set_tree pst
+        JOIN 
+            panels p ON p.panel_set_id = pst.panel_set_id
+        JOIN 
+            hooks h ON h.current_panel_id = p.id
+        JOIN 
+            panel_sets next_ps ON next_ps.id = h.Next_panel_set_id
+        WHERE 
+            h.Next_panel_set_id IS NOT NULL
+    )
+    SELECT 
+        panel_set_id,
+        parent_panel_set_id,
+        author_id,
+        created_at,
+        updated_at,
+        level,
+        path
+    FROM 
+        panel_set_tree
+    ORDER BY 
+        path;`);
+
+    return results;
+    
+}
 
 export {
-    createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets
+    getTree, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets
 };

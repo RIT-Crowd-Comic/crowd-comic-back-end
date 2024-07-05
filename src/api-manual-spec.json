@@ -39,8 +39,7 @@
             "next_panel_set_id": 0
         },
         "publish": {
-            "data": {
-                "author_id": "author_id",
+                "author_id": "fda3215f-51a3-46e7-b1c4-b5c74f931f94",
                 "hooks": [
                     {
                         "position": [
@@ -60,16 +59,11 @@
                             {
                                 "x": 4,
                                 "y": 1
-                            },
-                            {
-                                "x": 1,
-                                "y": 4
                             }
                         ],
                         "panel_index": 0
                     }
                 ]
-            }
         },
         "panel": {
             "id": 0,

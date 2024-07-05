@@ -106,8 +106,18 @@ const _publishController = (sequelize : Sequelize) => async (
  */
 const publish = async (request: Request, res: Response) : Promise<Response> => {
 
+      //parse the data field
+    try {
+        JSON.parse(request.body.data);
+    }
+    catch (e) {
+        return res.status(400).json({ error: 'data is not valid JSON and cannot be accepted' });
+    }
+
+    const data = JSON.parse(request.body.data);
+    
     // get the author data
-    const author_id = request.body.author_id;
+    const author_id = data.author_id;
 
     // validate
     let validArgs = assertArgumentsDefined({ author_id });
@@ -145,31 +155,20 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
 
 
-    // parse the hooks field
-    const hooks = request.body.hooks as hookArray;
+    const hooks = data.hooks;
 
     if (!hooks) return res.status(400).json({ error: 'No hooks uploaded' });
 
     // validate
     for (let i = 0; i < hooks.length; i++) {
-        let hook;
-        try {
-            hook = JSON.parse(request.body.hooks[i]) as hook;
-        }
-        catch (e) {
-            return res.status(400).json({ error: `Hook data at index ${i} is not valid JSON and cannot be accepted`});
-        }
-
-        validArgs = assertArgumentsDefined({ position: hook.position });
+        validArgs = assertArgumentsDefined({ position: hooks[i].position });
         if (!validArgs.success) return res.status(400).json(validArgs);
-        validArgs = assertArgumentsNumber({ index: hook.panel_index });
+        validArgs = assertArgumentsNumber({ index: hooks[i].panel_index });
         if (!validArgs.success) return res.status(400).json(validArgs);
 
         // validate position
-        validArgs = assertArgumentsPosition(hook.position);
+        validArgs = assertArgumentsPosition(hooks[i].position);
         if (!validArgs.success) return res.status(400).json(validArgs);
-    
-        hooks[i] = hook;
     }
 
     // call the controller
@@ -179,48 +178,49 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
     // API documentation
     /*
-        #swagger.tags = ['publish']
+    #swagger.tags = ['publish']
 
-        #swagger.consumes = ['application/multipart-form-data']
-    
-        #swagger.parameters['image1'] = {
-            in: 'formData',
-            type: 'file',
-            required: true,
-            description: 'The file of the image for panel-1.'
-        }
-        #swagger.parameters['image2'] = {
-            in: 'formData',
-            type: 'file',
-            required: true,
-            description: 'The file of the image for panel-2.'
-        }
-        #swagger.parameters['image3'] = {
-            in: 'formData',
-            type: 'file',
-            required: true,
-            description: 'The file of the image for panel-3.'
-        }
-        #swagger.parameters['data'] = {
-            in: 'formData',
-            required: true,
-            description: 'Author Id and the hook data as a JSON string',
-        }
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'The schema for the  data parameter',
-            schema: { $ref: '#/definitions/publish' }
-        } 
-            
+    #swagger.consumes = ['multipart/form-data']
 
-        #swagger.responses[200] = {
-            schema: { $ref: '#/definitions/publishResponse' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[500] = {}
-    */
+    #swagger.parameters['image1'] = {
+        in: 'formData',
+        type: 'file',
+        required: true,
+        description: 'The file of the image for panel-1.'
+    }
+    #swagger.parameters['image2'] = {
+        in: 'formData',
+        type: 'file',
+        required: true,
+        description: 'The file of the image for panel-2.'
+    }
+    #swagger.parameters['image3'] = {
+        in: 'formData',
+        type: 'file',
+        required: true,
+        description: 'The file of the image for panel-3.'
+    }
+    #swagger.parameters['data'] = {
+        in: 'formData',
+        required: true,
+        description: 'author id and hook array'
+    }
+    #swagger.parameters['Data Template'] = {
+        in: 'body',
+        description: 'Schema for the data',
+        schema: { $ref: '#/definitions/publish' }
+    }
+
+
+    #swagger.responses[200] = {
+        schema: { $ref: '#/definitions/publishResponse' }
+    }
+    #swagger.responses[400] = {
+        schema: { $ref: '#/definitions/error' }
+    }
+    #swagger.responses[500] = {}
+*/
+
 };
 
 

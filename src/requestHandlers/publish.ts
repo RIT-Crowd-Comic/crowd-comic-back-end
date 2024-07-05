@@ -92,8 +92,17 @@ const _publishController = (sequelize : Sequelize) => async (
  */
 const publish = async (request: Request, res: Response) : Promise<Response> => {
 
+    //parse the data field
+    try {
+        JSON.parse(request.body.data);
+    }
+    catch (e) {
+        return res.status(400).json({ error: 'Data is not valid JSON and cannot be accepted' });
+    }
+    const data = JSON.parse(request.body.data);
+
     // get the author data
-    const author_id = request.body.author_id;
+    const author_id = data.author_id;
 
     // validate
     let validArgs = assertArgumentsDefined({ author_id });
@@ -132,18 +141,12 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
 
     // get the hooks data
-    const hooks = request.body.hooks;
+    const hooks = data.hooks;
     if (!hooks) return res.status(400).json({ error: 'No hooks uploaded' });
 
     // validate
     for (let i = 0; i < hooks.length; i++) {
-        try {
-            JSON.parse(hooks[i]);
-        }
-        catch (e) {
-            return res.status(400).json({ error: 'Hook data is not valid JSON' });
-        }
-        const hook = JSON.parse(hooks[i]) as hook;
+        const hook = hooks[i] as hook;
         validArgs = assertArgumentsDefined({ position: hook.position });
         if (!validArgs.success) return res.status(400).json(validArgs);
         validArgs = assertArgumentsNumber({ index: hook.panel_index });
@@ -184,22 +187,9 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
             required: true,
             description: 'The file of the image for panel-3.'
         }
-        #swagger.parameters['author_id'] = {
+        #swagger.parameters['data'] = {
             in: 'formData',
-            type: 'string',
-            required: true,
-            description: 'The id of the author the publish is being used by.'
-        }
-        #swagger.parameters['hooks'] = {
-            in: 'formData',
-            type: 'Json',
-            required: true,
-            description: 'A Json array of hooks'
-        }
-
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'Publish',
+            description: 'Author Id and the hook data',
             schema: { $ref: '#/definitions/publish' }
         } 
 

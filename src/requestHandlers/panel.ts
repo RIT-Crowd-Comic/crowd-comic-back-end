@@ -57,7 +57,7 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
         #swagger.tags = ['panel']
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Publish',
+            description: 'Create Panel',
             schema: { $ref: '#/definitions/panelCreate' }
         } 
         #swagger.responses[200] = {
@@ -110,7 +110,7 @@ const updatePanel = async (req: Request, res: Response): Promise<Response> => {
         #swagger.tags = ['panel']
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Publish',
+            description: 'Update Panel',
             schema: { $ref: '#/definitions/panelUpdate' }
         } 
         #swagger.responses[200] = {

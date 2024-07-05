@@ -9,9 +9,10 @@
         },
         "version": "1.0.0"
     },
+    "host": "localhost:4000",
     "servers": [
         {
-            "url":         "http://localhost:3000/",
+            "url":         "http://localhost:4000/",
             "description": "Local server"
         },
         {
@@ -90,6 +91,9 @@
         },
         "publishResponse": {
             "success": "Panel_Set successfully published."
+        },
+        "getImage":{
+            "id": "asdsdfwdf6sdf8e"
         }
     }
 }

@@ -189,9 +189,15 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
         }
         #swagger.parameters['data'] = {
             in: 'formData',
-            description: 'Author Id and the hook data',
+            required: true,
+            description: 'Author Id and the hook data as a JSON string',
+        }
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'The schema for the  data parameter',
             schema: { $ref: '#/definitions/publish' }
         } 
+            
 
         #swagger.responses[200] = {
             schema: { $ref: '#/definitions/publishResponse' }

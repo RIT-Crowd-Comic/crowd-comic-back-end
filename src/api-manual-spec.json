@@ -39,36 +39,37 @@
             "next_panel_set_id": 0
         },
         "publish": {
-            "author_id" : "12323wsfsdft5ewer3",
-            "hooks": [
-                {
-                    "position": [
-                        {
-                            "x": 1,
-                            "y": 1
-                        },
-                        {
-                            "x": 1,
-                            "y": 1
-                        }
-                    ],
-                    "panel_index": 0
-                },
-                {
-                    "position": [
-                        {
-                            "x": 1,
-                            "y": 1
-                        },
-                        {
-                            "x": 1,
-                            "y": 1
-                        }
-                    ],
-                    "panel_index": 0
-                }
-
-            ]
+            "data": {
+                "author_id": "author_id",
+                "hooks": [
+                    {
+                        "position": [
+                            {
+                                "x": 1,
+                                "y": 1
+                            },
+                            {
+                                "x": 2,
+                                "y": 2
+                            }
+                        ],
+                        "panel_index": 0
+                    },
+                    {
+                        "position": [
+                            {
+                                "x": 4,
+                                "y": 1
+                            },
+                            {
+                                "x": 1,
+                                "y": 4
+                            }
+                        ],
+                        "panel_index": 0
+                    }
+                ]
+            }
         },
         "panel": {
             "id": 0,

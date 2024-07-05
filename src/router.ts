@@ -28,6 +28,7 @@ export default (app: Express) => {
         { name: 'image2', maxCount: 1 },
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
+    app.post('/saveimage', upload.single('image'), image.saveImage);
     app.get('/getImage/:id', image.getImage);
 
     app.get('/hook/:id', hook.getHook);

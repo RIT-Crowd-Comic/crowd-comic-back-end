@@ -193,20 +193,33 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
 
     return sanitizeResponse(response, res, `unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}`);
 
-    /*
-        #swagger.tags = ['hook']
-        #swagger.responses[200] = {
-            description: 'The altered hook',
-            schema: { $ref: '#/definitions/hook' }
+/*
+    #swagger.tags = ['hook']
+
+    #swagger.responses[200] = {
+        description: 'The altered hook',
+        schema: { $ref: '#/definitions/hook' }
+    }
+    #swagger.responses[400] = {
+        description: 'Bad Request',
+        schema: { $ref: '#/definitions/error' }
+    }
+    #swagger.responses[404] = {
+        description: 'Not Found',
+        schema: {
+            type: 'object',
+            properties: {
+                message: {
+                    type: 'string',
+                    example: 'unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}'
+                }
+            }
         }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-            #swagger.responses[404] = {
-            schema: { message: 'unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}' }
-        }
-        #swagger.responses[500] = {}
-    */
+    }
+    #swagger.responses[500] = {
+        description: 'Internal Server Error'
+    }
+*/
 };
 
 export {

@@ -185,12 +185,11 @@ const notFound = (req: Request, res: Response): Response => {
 
 
 const validatePositions = (positionsObjects : Json)=>{
-    return Array.isArray(positionsObjects) && positionsObjects.every(item => 
-        typeof item === 'object' && item !== null && 
-        typeof item.x === 'number' && 
-        typeof item.y === 'number'
-    );
-}
+    return Array.isArray(positionsObjects) && positionsObjects.every(item =>
+        typeof item === 'object' && item !== null &&
+        typeof item.x === 'number' &&
+        typeof item.y === 'number');
+};
 
 export {
     validatePassword,

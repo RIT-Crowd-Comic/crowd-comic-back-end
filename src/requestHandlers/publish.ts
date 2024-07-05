@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
-import { Sequelize, Transaction } from 'sequelize';
-import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, validatePositions } from './utils';
+import { Sequelize } from 'sequelize';
+import {
+    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, validatePositions
+} from './utils';
 import { sequelize } from '../database';
 import { createPanel } from '../services/panelService';
 import { createHook } from '../services/hookService';
 import { Json } from 'sequelize/types/utils';
 import { _saveImageController, validateImageFile } from './image';
 import { _createPanelSetController } from './panelSet';
-import { json } from 'body-parser';
 
 // types 
 type hook = {position : Json, panel_index : number}
@@ -57,9 +58,9 @@ const _publishController = (sequelize : Sequelize) => async (
             const matchedPanel = [panel1, panel2, panel3].find(panel => panel.index === hook.panel_index);
             if (matchedPanel === undefined) throw new Error('Hook panel_index was invalid');
             await createHook(sequelize, t)({
-              position: hook.position,
-              current_panel_id: matchedPanel.id,
-              next_panel_set_id: null
+                position:          hook.position,
+                current_panel_id:  matchedPanel.id,
+                next_panel_set_id: null
             });
         }));
 
@@ -148,8 +149,8 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
         validArgs = assertArgumentsNumber({ index: hook.panel_index });
         if (!validArgs.success) return res.status(400).json(validArgs);
 
-        //validate position
-        if(!validatePositions(hook.position)) return res.status(400).json('Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects.');
+        // validate position
+        if (!validatePositions(hook.position)) return res.status(400).json('Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects.');
 
         hooks[i] = hook;
     }

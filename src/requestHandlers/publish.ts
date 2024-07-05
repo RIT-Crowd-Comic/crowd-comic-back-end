@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Sequelize } from 'sequelize';
 import {
-    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, validatePositions
+    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition
 } from './utils';
 import { sequelize } from '../database';
 import { createPanel } from '../services/panelService';
@@ -22,12 +22,15 @@ const _publishController = (sequelize : Sequelize) => async (
     // make transaction
     const t = await sequelize.transaction();
     try {
+        let finalResponseObject  = '';
 
         // make panel_set, call the controller as author validation is needed
         const panel_set = await _createPanelSetController(sequelize, t)(author_id) as {author_id: string, id: number} | Error;
 
         // validate panel set creation, if not expected, its an error so throw it
         if (panel_set instanceof Error) throw panel_set;
+
+        finalResponseObject+= JSON.stringify(panel_set);
 
         // generate ids for each panel image
         const image1Id = `${author_id}_${panel_set.id}_${panelImage1.originalname}`;
@@ -53,30 +56,41 @@ const _publishController = (sequelize : Sequelize) => async (
             panel_set_id: panel_set.id,
         });
 
+        finalResponseObject+= JSON.stringify(panel1);
+        finalResponseObject+= JSON.stringify(panel2);
+        finalResponseObject+= JSON.stringify(panel3);
+
+
         // create hooks and validate
         await Promise.all(hooks.map(async (hook) => {
             const matchedPanel = [panel1, panel2, panel3].find(panel => panel.index === hook.panel_index);
             if (matchedPanel === undefined) throw new Error('Hook panel_index was invalid');
-            await createHook(sequelize, t)({
+            finalResponseObject+= JSON.stringify((await createHook(sequelize, t)({
                 position:          hook.position,
                 current_panel_id:  matchedPanel.id,
                 next_panel_set_id: null
-            });
+            })));
         }));
 
-        // save to amazon
-        const s3Image1 = await _saveImageController(image1Id, panelImage1.buffer, panelImage1.mimetype);
+        // save to amazon 
+        const s3Image1 = await _saveImageController(image1Id, panelImage1.buffer, panelImage1.mimetype) as {id: string, } | Error;
         if (s3Image1 instanceof Error) throw s3Image1;
 
-        const s3Image2 =  await _saveImageController(image2Id, panelImage2.buffer, panelImage2.mimetype);
+        const s3Image2 =  await _saveImageController(image2Id, panelImage2.buffer, panelImage2.mimetype) as {id: string, } | Error;;
         if (s3Image2 instanceof Error) throw s3Image2;
 
-        const s3Image3 = await _saveImageController(image3Id, panelImage3.buffer, panelImage3.mimetype);
+        const s3Image3 = await _saveImageController(image3Id, panelImage3.buffer, panelImage3.mimetype) as {id: string, } | Error;;
         if (s3Image3 instanceof Error) throw s3Image3;
+
+
+        finalResponseObject+=JSON.stringify(s3Image1);
+        finalResponseObject+= JSON.stringify(s3Image2);
+        finalResponseObject+= JSON.stringify(s3Image3);
+
 
         // if gotten this far, everything worked
         await t.commit();
-        return { success: 'Panel_Set successfully published.' };
+        return { success: `Panel_Set successfully published. ${finalResponseObject.toString()}` };
     }
     catch (err) {
         await t.rollback();
@@ -92,17 +106,8 @@ const _publishController = (sequelize : Sequelize) => async (
  */
 const publish = async (request: Request, res: Response) : Promise<Response> => {
 
-    // parse the data field
-    try {
-        JSON.parse(request.body.data);
-    }
-    catch (e) {
-        return res.status(400).json({ error: 'Data is not valid JSON and cannot be accepted' });
-    }
-    const data = JSON.parse(request.body.data);
-
     // get the author data
-    const author_id = data.author_id;
+    const author_id = request.body.author_id;
 
     // validate
     let validArgs = assertArgumentsDefined({ author_id });
@@ -140,21 +145,30 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
 
 
-    // get the hooks data
-    const hooks = data.hooks;
+    // parse the hooks field
+    const hooks = request.body.hooks as hookArray;
+
     if (!hooks) return res.status(400).json({ error: 'No hooks uploaded' });
 
     // validate
     for (let i = 0; i < hooks.length; i++) {
-        const hook = hooks[i] as hook;
+        let hook;
+        try {
+            hook = JSON.parse(request.body.hooks[i]) as hook;
+        }
+        catch (e) {
+            return res.status(400).json({ error: `Hook data at index ${i} is not valid JSON and cannot be accepted`});
+        }
+
         validArgs = assertArgumentsDefined({ position: hook.position });
         if (!validArgs.success) return res.status(400).json(validArgs);
         validArgs = assertArgumentsNumber({ index: hook.panel_index });
         if (!validArgs.success) return res.status(400).json(validArgs);
 
         // validate position
-        if (!validatePositions(hook.position)) return res.status(400).json('Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects.');
-
+        validArgs = assertArgumentsPosition(hook.position);
+        if (!validArgs.success) return res.status(400).json(validArgs);
+    
         hooks[i] = hook;
     }
 

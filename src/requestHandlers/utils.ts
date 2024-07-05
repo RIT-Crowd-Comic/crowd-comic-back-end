@@ -184,11 +184,14 @@ const notFound = (req: Request, res: Response): Response => {
 };
 
 
-const validatePositions = (positionsObjects : Json)=>{
-    return Array.isArray(positionsObjects) && positionsObjects.every(item =>
-        typeof item === 'object' && item !== null &&
-        typeof item.x === 'number' &&
-        typeof item.y === 'number');
+const assertArgumentsPosition = (positionsObjects : Json)=>{
+    return assertArguments(
+        positionsObjects,
+        arg =>  typeof arg === 'object' && arg !== null &&
+        typeof arg.x === 'number' &&
+        typeof arg.y === 'number',
+        'Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects. '
+    );
 };
 
 export {
@@ -202,5 +205,5 @@ export {
     assertArgumentsString,
     sanitizeResponse,
     notFound,
-    validatePositions
+    assertArgumentsPosition
 };

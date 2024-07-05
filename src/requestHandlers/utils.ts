@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import PasswordValidator from 'password-validator';
 import { ValidationError } from 'sequelize';
+import { Json } from 'sequelize/types/utils';
 
 
 // /**
@@ -182,6 +183,15 @@ const notFound = (req: Request, res: Response): Response => {
     return res.status(404).json({ message: `'${req.method} ${req.originalUrl}' is not a valid request` });
 };
 
+
+const validatePositions = (positionsObjects : Json)=>{
+    return Array.isArray(positionsObjects) && positionsObjects.every(item => 
+        typeof item === 'object' && item !== null && 
+        typeof item.x === 'number' && 
+        typeof item.y === 'number'
+    );
+}
+
 export {
     validatePassword,
     validateDisplayName,
@@ -192,5 +202,6 @@ export {
     assertArgumentsNumber,
     assertArgumentsString,
     sanitizeResponse,
-    notFound
+    notFound,
+    validatePositions
 };

@@ -16,7 +16,10 @@ type hookArray = Array<hook>;
 
 const _publishController = (sequelize : Sequelize) => async (
     author_id: string,
-    panelImage1 : Express.Multer.File, panelImage2 : Express.Multer.File, panelImage3: Express.Multer.File, hooks : hookArray
+    panelImage1 : Express.Multer.File, 
+    panelImage2 : Express.Multer.File, 
+    panelImage3: Express.Multer.File, 
+    hooks : hookArray
 ) => {
 
     // make transaction
@@ -106,15 +109,14 @@ const _publishController = (sequelize : Sequelize) => async (
  */
 const publish = async (request: Request, res: Response) : Promise<Response> => {
 
+    let data;
     // parse the data field
     try {
-        JSON.parse(request.body.data);
+        data = JSON.parse(request.body.data);
     }
     catch (e) {
         return res.status(400).json({ error: 'data is not valid JSON and cannot be accepted' });
     }
-
-    const data = JSON.parse(request.body.data);
 
     // get the author data
     const author_id = data.author_id;

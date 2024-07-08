@@ -187,7 +187,7 @@ const notFound = (req: Request, res: Response): Response => {
 const assertArgumentsPosition = (positionsObjects : Json)=>{
     return assertArguments(
         positionsObjects,
-        arg =>  typeof arg === 'object' && arg !== null &&
+        arg => typeof arg === 'object' && arg !== null &&
         typeof arg.x === 'number' &&
         typeof arg.y === 'number',
         'Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects. '

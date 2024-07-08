@@ -23,6 +23,7 @@ describe('_publishController', () => {
     const imageFile = {} as jest.Mocked<Express.Multer.File>;
     const hookPosition = {} as Json;
     const panelReturn = { id: 0, index: 0 };
+    const createHookeReturn = { id: 0, panel_set: 0 };
     const panelSetReturn = { author_id: 'id', id: 0 };
 
     // error happens in panel set creation, throw an error
@@ -36,7 +37,7 @@ describe('_publishController', () => {
     test('image save fails', async() => {
         (_createPanelSetController as jest.Mock).mockReturnValue(() => panelSetReturn);
         (createPanel as jest.Mock).mockReturnValue(() => panelReturn);
-        (createHook as jest.Mock).mockReturnValue(() => {});
+        (createHook as jest.Mock).mockReturnValue(() => createHookeReturn);
         (_saveImageController as jest.Mock).mockResolvedValue(Error('Error saving image'));
         const response = await _publishController(sequelizeMock)('author_id', imageFile, imageFile, imageFile, [{ position: hookPosition, panel_index: 0 }, { position: hookPosition, panel_index: 0 } ]);
         expect(response).toBeInstanceOf(Error);
@@ -62,10 +63,10 @@ describe('_publishController', () => {
     test('Successful Publish', async() => {
         (_createPanelSetController as jest.Mock).mockReturnValue(() => panelSetReturn);
         (createPanel as jest.Mock).mockReturnValue(() => panelReturn);
-        (createHook as jest.Mock).mockReturnValue(() => {});
+        (createHook as jest.Mock).mockReturnValue(() => createHookeReturn);
         (_saveImageController as jest.Mock).mockResolvedValue({ id: 'id' });
         const response = await _publishController(sequelizeMock)('author_id', imageFile, imageFile, imageFile, [{ position: hookPosition, panel_index: 0 }, { position: hookPosition, panel_index: 0 } ]);
-        expect(response).toEqual({ success: 'Panel_Set successfully published.' });
+        expect(response).toEqual({ success: 'Panel_Set successfully published. {"author_id":"id","id":0}{"id":0,"index":0}{"id":0,"index":0}{"id":0,"index":0}{"id":0,"panel_set":0}{"id":"id"}{"id":"id"}{"id":"id"}' });
     });
 
 });

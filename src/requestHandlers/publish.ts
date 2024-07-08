@@ -30,7 +30,7 @@ const _publishController = (sequelize : Sequelize) => async (
         // validate panel set creation, if not expected, its an error so throw it
         if (panel_set instanceof Error) throw panel_set;
 
-        finalResponseObject+= JSON.stringify(panel_set);
+        finalResponseObject += JSON.stringify(panel_set);
 
         // generate ids for each panel image
         const image1Id = `${author_id}_${panel_set.id}_${panelImage1.originalname}`;
@@ -56,36 +56,36 @@ const _publishController = (sequelize : Sequelize) => async (
             panel_set_id: panel_set.id,
         });
 
-        finalResponseObject+= JSON.stringify(panel1);
-        finalResponseObject+= JSON.stringify(panel2);
-        finalResponseObject+= JSON.stringify(panel3);
+        finalResponseObject += JSON.stringify(panel1);
+        finalResponseObject += JSON.stringify(panel2);
+        finalResponseObject += JSON.stringify(panel3);
 
 
         // create hooks and validate
         await Promise.all(hooks.map(async (hook) => {
             const matchedPanel = [panel1, panel2, panel3].find(panel => panel.index === hook.panel_index);
             if (matchedPanel === undefined) throw new Error('Hook panel_index was invalid');
-            finalResponseObject+= JSON.stringify((await createHook(sequelize, t)({
+            finalResponseObject += JSON.stringify(await createHook(sequelize, t)({
                 position:          hook.position,
                 current_panel_id:  matchedPanel.id,
                 next_panel_set_id: null
-            })));
+            }));
         }));
 
         // save to amazon 
         const s3Image1 = await _saveImageController(image1Id, panelImage1.buffer, panelImage1.mimetype) as {id: string, } | Error;
         if (s3Image1 instanceof Error) throw s3Image1;
 
-        const s3Image2 =  await _saveImageController(image2Id, panelImage2.buffer, panelImage2.mimetype) as {id: string, } | Error;;
+        const s3Image2 =  await _saveImageController(image2Id, panelImage2.buffer, panelImage2.mimetype) as {id: string, } | Error;
         if (s3Image2 instanceof Error) throw s3Image2;
 
-        const s3Image3 = await _saveImageController(image3Id, panelImage3.buffer, panelImage3.mimetype) as {id: string, } | Error;;
+        const s3Image3 = await _saveImageController(image3Id, panelImage3.buffer, panelImage3.mimetype) as {id: string, } | Error;
         if (s3Image3 instanceof Error) throw s3Image3;
 
 
-        finalResponseObject+=JSON.stringify(s3Image1);
-        finalResponseObject+= JSON.stringify(s3Image2);
-        finalResponseObject+= JSON.stringify(s3Image3);
+        finalResponseObject += JSON.stringify(s3Image1);
+        finalResponseObject += JSON.stringify(s3Image2);
+        finalResponseObject += JSON.stringify(s3Image3);
 
 
         // if gotten this far, everything worked
@@ -106,7 +106,7 @@ const _publishController = (sequelize : Sequelize) => async (
  */
 const publish = async (request: Request, res: Response) : Promise<Response> => {
 
-      //parse the data field
+    // parse the data field
     try {
         JSON.parse(request.body.data);
     }
@@ -115,7 +115,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     }
 
     const data = JSON.parse(request.body.data);
-    
+
     // get the author data
     const author_id = data.author_id;
 

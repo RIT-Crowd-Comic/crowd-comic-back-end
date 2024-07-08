@@ -9,6 +9,7 @@ import { createHook } from '../services/hookService';
 import { Json } from 'sequelize/types/utils';
 import { _saveImageController, validateImageFile } from './image';
 import { _createPanelSetController } from './panelSet';
+import { IPanelSet } from '../models';
 
 // types 
 type hook = {position : Json, panel_index : number}
@@ -28,7 +29,7 @@ const _publishController = (sequelize : Sequelize) => async (
         let finalResponseObject  = '';
 
         // make panel_set, call the controller as author validation is needed
-        const panel_set = await _createPanelSetController(sequelize, t)(author_id) as {author_id: string, id: number} | Error;
+        const panel_set = await _createPanelSetController(sequelize, t)(author_id) as IPanelSet | Error;
 
         // validate panel set creation, if not expected, its an error so throw it
         if (panel_set instanceof Error) throw panel_set;

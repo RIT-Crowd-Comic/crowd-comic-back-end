@@ -23,7 +23,7 @@ describe('_publishController', () => {
     const imageFile = {} as jest.Mocked<Express.Multer.File>;
     const hookPosition = {} as Json;
     const panelReturn = { id: 0, index: 0 };
-    const createHookeReturn = { id: 0, panel_set: 0 };
+    const hookReturn = { id: 0, panel_set: 0 };
     const panelSetReturn = { author_id: 'id', id: 0 };
 
     // error happens in panel set creation, throw an error

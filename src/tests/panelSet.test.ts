@@ -1,5 +1,5 @@
 import {
-    _createPanelSetController, _getPanelSetByIDController, _getAllPanelSetsFromUserController, _getAllTrunkSetsController
+    _createPanelSetController, _getPanelSetByIDController, _getAllPanelSetsFromUserController, _getAllTrunkSetsController, _getTreeController
 } from '../requestHandlers/panelSet';
 import * as panelSetService from '../services/panelSetService';
 import * as userService from '../services/userService';
@@ -72,4 +72,12 @@ describe('Get All Trunk Sets', () => {
         const response = await _getAllTrunkSetsController(sequelizeMock);
         expect(response).toBeInstanceOf(Error);
     });
+
+    describe('Get tree', () => {
+        test('if there is an error from _getPanelSetByIDController, return it', async () => {
+        (_getPanelSetByIDController as jest.Mock).mockRejectedValue(() => { throw new Error('I am an error'); });
+        const response = await _getTreeController(sequelizeMock)(1); 
+
+        })
+    })
 });

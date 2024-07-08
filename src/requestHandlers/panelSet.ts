@@ -192,7 +192,7 @@ const getTree = async(request: Request, res: Response) : Promise<Response> => {
     const panel_set_id = request.params.id;
     const response = await _getTreeController(sequelize)(Number(panel_set_id)) as PanelSetNode[];
 
-    //! calling sanitizeResponse more than once throws an error
+    //! calling sanitizeResponse more than once throws an error unless it's a return statement
     //! probably not the best way to check if an error is thrown
     if(!Array.isArray(response)) {
         return sanitizeResponse(response, res);

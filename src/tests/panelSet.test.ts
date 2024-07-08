@@ -74,10 +74,26 @@ describe('Get All Trunk Sets', () => {
     });
 
     describe('Get tree', () => {
-        test('if there is an error from _getPanelSetByIDController, return it', async () => {
-        (_getPanelSetByIDController as jest.Mock).mockRejectedValue(() => { throw new Error('I am an error'); });
-        const response = await _getTreeController(sequelizeMock)(1); 
+        let _getPanelSetByIDController = jest.fn();
 
+        test('if there is an error from _getPanelSetByIDController, return it', async () => {
+        (_getPanelSetByIDController as jest.Mock).mockResolvedValue( new Error('I am error') );
+        const response = await _getTreeController(sequelizeMock)(1); 
+        expect(response).toBeInstanceOf(Error);
+        })
+
+        test('if the response from _getPanelSetByIDController is not a panel_set throw an error', async () => {
+            (_getPanelSetByIDController as jest.Mock).mockResolvedValue(null);
+            const response = await _getTreeController(sequelizeMock)(1); 
+            expect(response).toBeInstanceOf(Error);
+        })
+
+        test('valid data should give results from getTree', async () => {
+            const results = 'a';
+            (_getPanelSetByIDController as jest.Mock).mockResolvedValue({author_id: '1'});
+            (panelSetService.getTree as jest.Mock).mockResolvedValue(results);
+            const response = await _getTreeController(sequelizeMock)(1); 
+            expect(response).toEqual(results);
         })
     })
 });

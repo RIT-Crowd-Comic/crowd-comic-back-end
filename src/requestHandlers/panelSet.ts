@@ -73,7 +73,6 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
     const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getPanelSetByIDController(sequelize)(id);
-    return res.status(400).json(response);
     return sanitizeResponse(response, res, `a panel with the id of "${id}" cannot be found`);
 
     // API documentation
@@ -217,6 +216,7 @@ const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
         const response = await _getPanelSetByIDController(sequelize)(id);
         //if an error or contains not a panelSet return
         if(response instanceof Error) {
+            console.log('a')
             return response;
         }
         

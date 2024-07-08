@@ -17,9 +17,9 @@ type hookArray = Array<hook>;
 
 const _publishController = (sequelize : Sequelize) => async (
     author_id: string,
-    panelImage1 : Express.Multer.File, 
-    panelImage2 : Express.Multer.File, 
-    panelImage3: Express.Multer.File, 
+    panelImage1 : Express.Multer.File,
+    panelImage2 : Express.Multer.File,
+    panelImage3: Express.Multer.File,
     hooks : hookArray
 ) => {
 
@@ -111,6 +111,7 @@ const _publishController = (sequelize : Sequelize) => async (
 const publish = async (request: Request, res: Response) : Promise<Response> => {
 
     let data;
+
     // parse the data field
     try {
         data = JSON.parse(request.body.data);

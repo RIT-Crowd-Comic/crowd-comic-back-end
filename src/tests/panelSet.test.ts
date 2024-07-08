@@ -72,28 +72,27 @@ describe('Get All Trunk Sets', () => {
         const response = await _getAllTrunkSetsController(sequelizeMock);
         expect(response).toBeInstanceOf(Error);
     });
+});
 
-    describe('Get tree', () => {
-        let _getPanelSetByIDController = jest.fn();
+describe('Get tree', () => {
 
-        test('if there is an error from _getPanelSetByIDController, return it', async () => {
-        (_getPanelSetByIDController as jest.Mock).mockResolvedValue( new Error('I am error') );
+    test('if there is an error from _getPanelSetByIDController, return it', async () => {
+        (panelSetService.getPanelSetByID as jest.Mock).mockReturnValue(() => { throw new Error('I am an error'); });
         const response = await _getTreeController(sequelizeMock)(1); 
         expect(response).toBeInstanceOf(Error);
-        })
-
-        test('if the response from _getPanelSetByIDController is not a panel_set throw an error', async () => {
-            (_getPanelSetByIDController as jest.Mock).mockResolvedValue(null);
-            const response = await _getTreeController(sequelizeMock)(1); 
-            expect(response).toBeInstanceOf(Error);
-        })
-
-        test('valid data should give results from getTree', async () => {
-            const results = 'a';
-            (_getPanelSetByIDController as jest.Mock).mockResolvedValue({author_id: '1'});
-            (panelSetService.getTree as jest.Mock).mockResolvedValue(results);
-            const response = await _getTreeController(sequelizeMock)(1); 
-            expect(response).toEqual(results);
-        })
     })
-});
+
+    test('if the response from _getPanelSetByIDController is not a panel_set throw an error', async () => {
+        (panelSetService.getPanelSetByID as jest.Mock).mockResolvedValue(null);
+        const response = await _getTreeController(sequelizeMock)(1); 
+        expect(response).toBeInstanceOf(Error);
+    })
+
+    test('valid data should give results from getTree', async () => {
+        const results = 'a';
+        (panelSetService.getPanelSetByID as jest.Mock).mockResolvedValue({author_id: '1'});
+        (panelSetService.getTree as jest.Mock).mockResolvedValue(results);
+        const response = await _getTreeController(sequelizeMock)(1); 
+        expect(response).toEqual(results);
+    })
+})

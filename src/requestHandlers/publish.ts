@@ -161,7 +161,10 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
     const hooks = data.hooks;
 
+    //ensure hooks exist
     if (!hooks) return res.status(400).json({ error: 'No hooks uploaded' });
+
+    if(!Array.isArray(hooks) || hooks.length < 3) return res.status(400).json({ error: 'At least 3 hooks need to be uploaded.' });
 
     // validate
     for (let i = 0; i < hooks.length; i++) {

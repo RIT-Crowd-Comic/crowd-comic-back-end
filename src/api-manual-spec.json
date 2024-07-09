@@ -9,9 +9,10 @@
         },
         "version": "1.0.0"
     },
+    "host": "localhost:4000",
     "servers": [
         {
-            "url":         "http://localhost:3000/",
+            "url":         "http://localhost:4000/",
             "description": "Local server"
         },
         {
@@ -37,11 +38,57 @@
             "current_panel_id": 0,
             "next_panel_set_id": 0
         },
+        "publish": {
+                "author_id": "fda3215f-51a3-46e7-b1c4-b5c74f931f94",
+                "hooks": [
+                    {
+                        "position": [
+                            {
+                                "x": 1,
+                                "y": 1
+                            },
+                            {
+                                "x": 2,
+                                "y": 2
+                            }
+                        ],
+                        "panel_index": 0
+                    },
+                    {
+                        "position": [
+                            {
+                                "x": 4,
+                                "y": 1
+                            }
+                        ],
+                        "panel_index": 0
+                    }
+                ]
+        },
         "panel": {
             "id": 0,
             "image": "path/to/image",
             "index": 0,
             "panel_set_id": 0
+        },
+        "panelCreate":{
+            "image": "sdfe34refergfer4trffs",
+            "panel_set_id": 0
+        },
+        "panelUpdate":{
+            "id": 0,
+            "image": "sdfe34refergfer4trffs"
+        },
+        "publishDefinition": {
+            "email":        "example@example.com",
+            "password":     "asdfASDF1234",
+            "display_name": "John Doe"
+        },
+        "publishResponse": {
+            "success": "Panel_Set successfully published."
+        },
+        "getImage":{
+            "id": "asdsdfwdf6sdf8e"
         }
     }
 }

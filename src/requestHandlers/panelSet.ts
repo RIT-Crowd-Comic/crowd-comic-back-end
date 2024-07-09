@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
-import { Sequelize } from 'sequelize';
+import { Sequelize, Transaction } from 'sequelize';
 import {
     assertArgumentsDefined, assertArgumentsNumber, assertArgumentsString, sanitizeResponse
 } from './utils';
@@ -12,11 +12,11 @@ import * as UserService from '../services/userService';
  * @param author_id the id of the author who made the panel set
  * @returns 
  */
-const _createPanelSetController = (sequelize : Sequelize) => async (author_id: string) => {
+const _createPanelSetController = (sequelize : Sequelize, transaction?: Transaction) => async (author_id: string) => {
     try {
         const user = await UserService.getUserByID(sequelize)(author_id);
         if (user == null) throw new Error(`An author with the id "${author_id}" does not exist`);
-        return await PanelSetService.createPanelSet(sequelize)({ author_id });
+        return await PanelSetService.createPanelSet(sequelize, transaction)({ author_id });
     }
     catch (err) {
         return err;

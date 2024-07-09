@@ -22,7 +22,7 @@ const _createHookController = (sequelize: Sequelize) => async (position: Json, c
     try {
         const panel = await getPanel(sequelize)(current_panel_id);
         if (panel == null) throw new Error('no panel exists for given panel id');
-        if(next_panel_set_id != null) await validateHookConnection(sequelize)(next_panel_set_id, validateTrunks)
+        if (next_panel_set_id != null) await validateHookConnection(sequelize)(next_panel_set_id, validateTrunks);
         return await hookService.createHook(sequelize)({
             position,
             current_panel_id,
@@ -243,28 +243,28 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
  */
 const validateHookConnection = (sequelize : Sequelize) => async(next_panel_set_id : number, validateTrunks : boolean) =>{
 
-    //get panel set to connect to
+    // get panel set to connect to
     const panelSet = await sequelize.models.panel_set.findByPk(next_panel_set_id, { include: sequelize.models.hook }) as IPanelSet;
 
-    //if no panel set is found
+    // if no panel set is found
     if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
 
-    //if panel set is hooked up
+    // if panel set is hooked up
     if (panelSet.hook) throw new Error('Panel set already has a connection, it cannot be connected to anything else.');
 
-    if(validateTrunks === true)
-    {
-        //get the trunks
+    if (validateTrunks === true) {
+
+        // get the trunks
         const trunks = await _getAllTrunkSetsController(sequelize) as IPanelSet[];
 
-        //check if the trunk has it
+        // check if the trunk has it
         if (trunks.map(trunk => trunk.id).some(id => id === panelSet.id)) {
             throw new Error('Panel set is a trunk');
         }
     }
 
-    //if no error is thrown it is fine
-}
+    // if no error is thrown it is fine
+};
 
 
 export {

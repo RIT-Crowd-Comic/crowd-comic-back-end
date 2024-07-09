@@ -25,7 +25,7 @@ describe('_publishController', () => {
     const panelReturn = { id: 0, index: 0 };
     const hookReturn = { id: 0, panel_set: 0 };
     const panelSetReturn = { author_id: 'id', id: 0 };
-    const imageReturn = {id: 'id'};
+    const imageReturn = { id: 'id' };
 
     // error happens in panel set creation, throw an error
     test('_createPanelSetController returns an error', async() => {
@@ -67,6 +67,8 @@ describe('_publishController', () => {
         (createHook as jest.Mock).mockReturnValue(() => hookReturn);
         (_saveImageController as jest.Mock).mockResolvedValue(imageReturn);
         const response = await _publishController(sequelizeMock)('author_id', imageFile, imageFile, imageFile, [{ position: hookPosition, panel_index: 0 }, { position: hookPosition, panel_index: 0 } ]);
-        expect(response).toEqual({ success: `Panel_Set successfully published`, panel_set: panelSetReturn, panel1: panelReturn, panel2 : panelReturn,  panel3 : panelReturn, image1: imageReturn, image2: imageReturn, image3: imageReturn, hooks : [hookReturn, hookReturn]});
+        expect(response).toEqual({
+            success: `Panel_Set successfully published`, panel_set: panelSetReturn, panel1: panelReturn, panel2: panelReturn, panel3: panelReturn, image1: imageReturn, image2: imageReturn, image3: imageReturn, hooks: [hookReturn, hookReturn]
+        });
     });
 });

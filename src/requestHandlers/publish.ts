@@ -81,7 +81,7 @@ const _publishController = (sequelize : Sequelize) => async (
 
         // if gotten this far, everything worked
         await t.commit();
-        return { success: `Panel_Set successfully published`, panel_set: panel_set, panel1: panel1, panel2 : panel2, hooks : createdHooks};
+        return { success: `Panel_Set successfully published`, panel_set: panel_set, panel1: panel1, panel2 : panel2, panel3 : panel3, image1: s3Image1, image2: s3Image2, image3: s3Image3, hooks : createdHooks};
     }
     catch (err) {
         await t.rollback();

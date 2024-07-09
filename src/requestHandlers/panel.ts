@@ -221,5 +221,5 @@ const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Re
 }
 
 export {
-    getPanelsFromPanelSetIDs, createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
+    _getPanelsFromPanelSetIDsController, getPanelsFromPanelSetIDs, createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
 };

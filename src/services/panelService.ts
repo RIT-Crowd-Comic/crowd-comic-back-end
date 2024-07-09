@@ -1,4 +1,4 @@
-import { Sequelize, Op } from 'sequelize';
+import { Sequelize, Op, Transaction } from 'sequelize';
 import { IPanel, IPanelSet } from '../models';
 import { sequelize } from '../database';
 
@@ -13,14 +13,14 @@ interface PanelConfig {
  * @param {} newPanel
  * @returns {} PanelInfoCreate
  */
-const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
+const createPanel = (sequelize : Sequelize, transaction? : Transaction) => async(newPanel: PanelConfig) => {
     const {
         id, image, index, panel_set_id
     } = await sequelize.models.panel.create({
         image:        newPanel.image,
         index:        newPanel.index,
         panel_set_id: newPanel.panel_set_id,
-    }) as IPanel;
+    }, transaction ? { transaction } : {}) as IPanel;
 
     return {
         id, image, index, panel_set_id

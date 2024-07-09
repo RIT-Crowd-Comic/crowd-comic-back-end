@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import * as hookService from '../services/hookService';
-import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse } from './utils';
+import {
+    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition
+} from './utils';
 import { getPanel } from '../services/panelService';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
@@ -41,7 +43,11 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     const current_panel_id : number = req.body.current_panel_id;
     const next_panel_set_id : number = req.body.next_panel_set_id;
 
-    const validArgs = assertArgumentsDefined({ position, current_panel_id });
+    let validArgs = assertArgumentsDefined({ position, current_panel_id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+
+    // validate position
+    validArgs = assertArgumentsPosition(position);
     if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _createHookController(sequelize)(position, current_panel_id, next_panel_set_id);
@@ -189,20 +195,33 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
 
     return sanitizeResponse(response, res, `unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}`);
 
-    /*
-        #swagger.tags = ['hook']
-        #swagger.responses[200] = {
-            description: 'The altered hook',
-            schema: { $ref: '#/definitions/hook' }
+/*
+    #swagger.tags = ['hook']
+
+    #swagger.responses[200] = {
+        description: 'The altered hook',
+        schema: { $ref: '#/definitions/hook' }
+    }
+    #swagger.responses[400] = {
+        description: 'Bad Request',
+        schema: { $ref: '#/definitions/error' }
+    }
+    #swagger.responses[404] = {
+        description: 'Not Found',
+        schema: {
+            type: 'object',
+            properties: {
+                message: {
+                    type: 'string',
+                    example: 'unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}'
+                }
+            }
         }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-            #swagger.responses[404] = {
-            schema: { message: 'unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}' }
-        }
-        #swagger.responses[500] = {}
-    */
+    }
+    #swagger.responses[500] = {
+        description: 'Internal Server Error'
+    }
+*/
 };
 
 export {

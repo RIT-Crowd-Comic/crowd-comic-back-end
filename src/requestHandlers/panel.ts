@@ -55,6 +55,11 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
 
     /*
         #swagger.tags = ['panel']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Create Panel',
+            schema: { $ref: '#/definitions/panelCreate' }
+        } 
         #swagger.responses[200] = {
             description: 'A newly created panel',
             schema: { $ref: '#/definitions/panel' }
@@ -100,6 +105,23 @@ const updatePanel = async (req: Request, res: Response): Promise<Response> => {
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _updatePanelController(sequelize)(id, image);
     return sanitizeResponse(response, res);
+
+    /*
+        #swagger.tags = ['panel']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Update Panel',
+            schema: { $ref: '#/definitions/panelUpdate' }
+        } 
+        #swagger.responses[200] = {
+            description: 'An updated Panel',
+            schema: { $ref: '#/definitions/panel' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 

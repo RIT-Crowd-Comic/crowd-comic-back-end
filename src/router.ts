@@ -40,7 +40,7 @@ export default (app: Express) => {
     app.get('/user/:id/', user.getUserByID);
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
     app.get('/trunks', panelSet.getAllTrunkSets);
-    app.get('/tree/:id', panelSet.getTree)
+    app.get('/tree/:id', panelSet.getTree);
     app.get('/dumb', panelSet.dumbDumb);
 
     app.get('*', utils.notFound);

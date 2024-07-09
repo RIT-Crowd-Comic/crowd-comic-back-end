@@ -1,6 +1,5 @@
 import { Sequelize, Op, Transaction } from 'sequelize';
 import { IPanel, IPanelSet } from '../models';
-import { sequelize } from '../database';
 
 interface PanelConfig {
     image: string,
@@ -95,19 +94,19 @@ const getPanelBasedOnPanelSetAndIndex = (sequelize : Sequelize) => async (index 
  */
 const getPanelsFromPanelSetIDs = (sequelize : Sequelize) => async (ids: number[]) => {
 
-    //get all of the panel_sets with the given ids
+    // get all of the panel_sets with the given ids
     const panel_sets = await sequelize.models.panel_set.findAll({
-            include: sequelize.models.panel,
-            where: {[Op.or]: ids.map(id => {return {id: id}})}
-      }) as IPanelSet[];
-      let panels = [] as IPanel[];
-      for(const panel_set of panel_sets) {
-        if(panel_set.panels?.length !== undefined && panel_set.panels.length > 0) {
+        include: sequelize.models.panel,
+        where:   { [Op.or]: ids.map(id => { return { id: id }; }) }
+    }) as IPanelSet[];
+    let panels = [] as IPanel[];
+    for (const panel_set of panel_sets) {
+        if (panel_set.panels?.length !== undefined && panel_set.panels.length > 0) {
             panels = panels.concat(panel_set.panels);
         }
-      }
+    }
 
-      return panels;
+    return panels;
 };
 
 

@@ -54,7 +54,7 @@ const getAllTrunkSets = async (sequelize: Sequelize) => {
     return trunks as IPanelSet[];
 };
 const getTree = (sequelize: Sequelize) => async (panel_set: IPanelSet) => {
-    const [results, metadata]  = await sequelize.query(`WITH RECURSIVE panel_set_tree AS (
+    const [results]  = await sequelize.query(`WITH RECURSIVE panel_set_tree AS (
         -- Base case: start with the given panel_set_id
         SELECT 
             ps.id AS panel_set_id,
@@ -105,8 +105,8 @@ const getTree = (sequelize: Sequelize) => async (panel_set: IPanelSet) => {
         path;`);
 
     return results;
-    
-}
+
+};
 
 export {
     getTree, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets

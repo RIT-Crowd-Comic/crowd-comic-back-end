@@ -26,15 +26,12 @@ const _publishController = (sequelize : Sequelize) => async (
     // make transaction
     const t = await sequelize.transaction();
     try {
-        let finalResponseObject  = '';
 
         // make panel_set, call the controller as author validation is needed
         const panel_set = await _createPanelSetController(sequelize, t)(author_id) as IPanelSet | Error;
 
         // validate panel set creation, if not expected, its an error so throw it
         if (panel_set instanceof Error) throw panel_set;
-
-        finalResponseObject += JSON.stringify(panel_set);
 
         // generate ids for each panel image
         const image1Id = `${author_id}_${panel_set.id}_${panelImage1.originalname}`;
@@ -60,16 +57,12 @@ const _publishController = (sequelize : Sequelize) => async (
             panel_set_id: panel_set.id,
         });
 
-        finalResponseObject += JSON.stringify(panel1);
-        finalResponseObject += JSON.stringify(panel2);
-        finalResponseObject += JSON.stringify(panel3);
-
-
         // create hooks and validate
+        let createdHooks = [] as Array<object>;
         await Promise.all(hooks.map(async (hook) => {
             const matchedPanel = [panel1, panel2, panel3].find(panel => panel.index === hook.panel_index);
             if (matchedPanel === undefined) throw new Error('Hook panel_index was invalid');
-            finalResponseObject += JSON.stringify(await createHook(sequelize, t)({
+            createdHooks.push(await createHook(sequelize, t)({
                 position:          hook.position,
                 current_panel_id:  matchedPanel.id,
                 next_panel_set_id: null
@@ -86,15 +79,9 @@ const _publishController = (sequelize : Sequelize) => async (
         const s3Image3 = await _saveImageController(image3Id, panelImage3.buffer, panelImage3.mimetype) as {id: string, } | Error;
         if (s3Image3 instanceof Error) throw s3Image3;
 
-
-        finalResponseObject += JSON.stringify(s3Image1);
-        finalResponseObject += JSON.stringify(s3Image2);
-        finalResponseObject += JSON.stringify(s3Image3);
-
-
         // if gotten this far, everything worked
         await t.commit();
-        return { success: `Panel_Set successfully published. ${finalResponseObject.toString()}` };
+        return { success: `Panel_Set successfully published`, panel_set: panel_set, panel1: panel1, panel2 : panel2, hooks : createdHooks};
     }
     catch (err) {
         await t.rollback();

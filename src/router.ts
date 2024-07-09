@@ -23,6 +23,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 export default (app: Express) => {
     app.use(cors());
     app.get('/', help);
+    app.get('/dumb', populate.populate);
 
     // app.post('/saveImage', upload.single('image'), image.saveImage);
     app.post('/publish', upload.fields([
@@ -44,7 +45,6 @@ export default (app: Express) => {
     app.get('/trunks', panelSet.getAllTrunkSets);
 
     app.get('*', utils.notFound);
-    app.get('/dumb', populate.populate);
 
     app.post('/createHook', hook.createHook);
     app.post('/createPanel', panel.createPanel);

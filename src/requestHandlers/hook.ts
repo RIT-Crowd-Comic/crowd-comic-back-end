@@ -4,7 +4,6 @@ import {
     assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition
 } from './utils';
 import { getPanel } from '../services/panelService';
-import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
 import { Json } from 'sequelize/types/utils';
@@ -19,10 +18,11 @@ import { _getAllTrunkSetsController } from './panelSet';
  * @param {number} next_panel_set_id ID of panel set that hook links to
  * @returns response or error
  */
-const _createHookController = (sequelize: Sequelize) => async (position: Json, current_panel_id: number, next_panel_set_id: number|null) => {
+const _createHookController = (sequelize: Sequelize) => async (position: Json, current_panel_id: number, next_panel_set_id: number|null, validateTrunks : boolean) => {
     try {
         const panel = await getPanel(sequelize)(current_panel_id);
         if (panel == null) throw new Error('no panel exists for given panel id');
+        if(next_panel_set_id) await validateHookConnection(sequelize)(next_panel_set_id, validateTrunks)
         return await hookService.createHook(sequelize)({
             position,
             current_panel_id,
@@ -44,6 +44,7 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     const position : Json = req.body.position;
     const current_panel_id : number = req.body.current_panel_id;
     const next_panel_set_id : number = req.body.next_panel_set_id;
+    const validateTrunks : boolean = req.body.validateTrunks ?? true;
 
     let validArgs = assertArgumentsDefined({ position, current_panel_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
@@ -52,12 +53,17 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     validArgs = assertArgumentsPosition(position);
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _createHookController(sequelize)(position, current_panel_id, next_panel_set_id);
+    const response = await _createHookController(sequelize)(position, current_panel_id, next_panel_set_id, validateTrunks);
 
     return sanitizeResponse(response, res);
 
     /*
         #swagger.tags = ['hook']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Create a new hook',
+            schema: { $ref: '#/definitions/createHookDefinition' }
+        } 
         #swagger.responses[200] = {
             description: 'A hook',
             schema: { $ref: '#/definitions/hook' }
@@ -175,10 +181,9 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
  * @param {number} panel_set_id ID of panel set that hook links to
  * @returns response or error
  */
-const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number) => {
+const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number, validateTrunks : boolean) => {
     try {
-        const panelSet = await getPanelSetByID(sequelize)(panel_set_id);
-        if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
+        await validateHookConnection(sequelize)(panel_set_id, validateTrunks);
         return await hookService.addSetToHook(sequelize)(hook_id, panel_set_id);
     }
     catch (err) {
@@ -189,17 +194,22 @@ const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number
 const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
     const hook_id = req.body.hook_id;
     const panel_set_id = req.body.panel_set_id;
+    const validateTrunks : boolean = req.body.validateTrunks ?? true;
 
     const validArgs = assertArgumentsNumber({ hook_id, panel_set_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
 
-    const response = await _addSetToHookController(sequelize)(hook_id, panel_set_id);
+    const response = await _addSetToHookController(sequelize)(hook_id, panel_set_id, validateTrunks);
 
     return sanitizeResponse(response, res, `unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}`);
 
 /*
     #swagger.tags = ['hook']
-
+    #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Connect a hook to a panel_set',
+        schema: { $ref: '#/definitions/addSetToHookDefinition' }
+    } 
     #swagger.responses[200] = {
         description: 'The altered hook',
         schema: { $ref: '#/definitions/hook' }
@@ -226,7 +236,12 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
 */
 };
 
-const validateHookConnection = async(next_panel_set_id : number) =>{
+
+/**
+ * Throws an error if the next_panel_set is invalid
+ * @param next_panel_set_id panel set id of the next panel set the hook is attached to
+ */
+const validateHookConnection = (sequelize : Sequelize) => async(next_panel_set_id : number, validateTrunks : boolean) =>{
 
     //get panel set to connect to
     const panelSet = await sequelize.models.panel_set.findByPk(next_panel_set_id, { include: sequelize.models.hook }) as IPanelSet;
@@ -235,13 +250,18 @@ const validateHookConnection = async(next_panel_set_id : number) =>{
     if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
 
     //if panel set is hooked up
-    if (panelSet.hook) throw new Error('Panel set already has a connection');
+    if (panelSet.hook) throw new Error('Panel set already has a connection, it cannot be connected to anything else.');
 
-    //get the trunks
-    const trunks = await _getAllTrunkSetsController(sequelize) as IPanelSet[];
+    if(validateTrunks === true)
+    {
+        //get the trunks
+        const trunks = await _getAllTrunkSetsController(sequelize) as IPanelSet[];
 
-    //check if the trunk has it
-    if (trunks.includes(panelSet)) throw new Error('Panel set is a trunk');
+        //check if the trunk has it
+        if (trunks.map(trunk => trunk.id).some(id => id === panelSet.id)) {
+            throw new Error('Panel set is a trunk');
+        }
+    }
 
     //if no error is thrown it is fine
 }

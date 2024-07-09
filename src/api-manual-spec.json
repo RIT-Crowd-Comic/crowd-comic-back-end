@@ -38,32 +38,43 @@
             "current_panel_id": 0,
             "next_panel_set_id": 0
         },
+        "createHookDefinition": {
+            "position": "Json",
+            "current_panel_id": 1,
+            "next_panel_set_id": 2,
+            "validateTrunks": false
+        },
         "publish": {
-                "author_id": "fda3215f-51a3-46e7-b1c4-b5c74f931f94",
-                "hooks": [
-                    {
-                        "position": [
-                            {
-                                "x": 1,
-                                "y": 1
-                            },
-                            {
-                                "x": 2,
-                                "y": 2
-                            }
-                        ],
-                        "panel_index": 0
-                    },
-                    {
-                        "position": [
-                            {
-                                "x": 4,
-                                "y": 1
-                            }
-                        ],
-                        "panel_index": 0
-                    }
-                ]
+            "author_id": "ad64a986-16c6-4f59-a944-3f80b0cbfb05",
+            "hooks": [
+                {
+                    "position": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "panel_index": 0
+                },
+                {
+                    "position": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "panel_index": 0
+                },
+                {
+                    "position": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "panel_index": 0
+                }
+            ]
         },
         "panel": {
             "id": 0,
@@ -89,6 +100,11 @@
         },
         "getImage":{
             "id": "asdsdfwdf6sdf8e"
+        },
+        "addSetToHookDefinition":{
+            "hook_id": 1,
+            "panel_set_id": 1,
+            "validateTrunks": false
         }
     }
 }

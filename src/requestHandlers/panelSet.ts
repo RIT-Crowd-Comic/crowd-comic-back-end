@@ -196,6 +196,9 @@ const getTree = async(request: Request, res: Response) : Promise<Response> => {
     if(!Array.isArray(response)) {
         return sanitizeResponse(response, res);
     }
+
+    console.log(response)
+
     response.sort((a : PanelSetNode, b : PanelSetNode) => a.level - b.level)
     const panel_sets = [] as PanelSetFrontEnd[];
     for(const panel_set of response) {
@@ -216,12 +219,11 @@ const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
         const response = await _getPanelSetByIDController(sequelize)(id);
         //if an error or contains not a panelSet return
         if(response instanceof Error) {
-            console.log('a')
             return response;
         }
         
         //? This isn't the best way to check if it's a panel set, but unsure of another way
-        if(!(response as any).author_id) {
+        if(response === null) {
             throw new Error(`A panel set with an id of "${id}" could not be found`)
         }
         const root = response as IPanelSet;

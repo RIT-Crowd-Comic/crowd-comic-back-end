@@ -183,7 +183,6 @@ const notFound = (req: Request, res: Response): Response => {
     return res.status(404).json({ message: `'${req.method} ${req.originalUrl}' is not a valid request` });
 };
 
-
 const assertArgumentsPosition = (positionsObjects : Json)=>{
     return assertArguments(
         positionsObjects,

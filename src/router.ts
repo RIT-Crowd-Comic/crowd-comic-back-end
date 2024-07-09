@@ -8,7 +8,9 @@ import * as panelSet from './requestHandlers/panelSet';
 import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
 import * as publish from './requestHandlers/publish';
+import * as populate from './requestHandlers/populate';
 import cors from 'cors';
+
 
 /**
  * Route all incoming requests
@@ -42,6 +44,7 @@ export default (app: Express) => {
     app.get('/trunks', panelSet.getAllTrunkSets);
 
     app.get('*', utils.notFound);
+    app.get('/dumb', populate.populate);
 
     app.post('/createHook', hook.createHook);
     app.post('/createPanel', panel.createPanel);

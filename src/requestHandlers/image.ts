@@ -34,22 +34,25 @@ const saveImage = async (req: Request, res: Response): Promise<Response> => {
     return sanitizeResponse(response, res);
 
     // API documentation
-    /*  
-        #swagger.tags = ['image']
-        #swagger.parameters['image file'] = {
-            in: 'body',
-            description: 'the image to save',
-            schema: {image: 'asdas3dfsdf.png'}
-        } 
-        #swagger.responses[200] = {
-            description: 'Returns the id of the saved image',
-            schema: { id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[500] = {}
-    */
+    /*
+    #swagger.tags = ['image']
+
+    #swagger.consumes = ['multipart/form-data']
+
+    #swagger.parameters['image'] = {
+        in: 'formData',
+        type: 'file',
+        required: true,
+        description: 'The file of the image to save.'
+    }
+    #swagger.responses[200] = {
+        schema: { "id": 'image-id' }
+    }
+    #swagger.responses[400] = {
+        schema: { $ref: '#/definitions/error' }
+    }
+    #swagger.responses[500] = {}
+*/
 };
 
 /**

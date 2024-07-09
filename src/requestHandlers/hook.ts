@@ -22,7 +22,7 @@ const _createHookController = (sequelize: Sequelize) => async (position: Json, c
     try {
         const panel = await getPanel(sequelize)(current_panel_id);
         if (panel == null) throw new Error('no panel exists for given panel id');
-        if(next_panel_set_id) await validateHookConnection(sequelize)(next_panel_set_id, validateTrunks)
+        if(next_panel_set_id != null) await validateHookConnection(sequelize)(next_panel_set_id, validateTrunks)
         return await hookService.createHook(sequelize)({
             position,
             current_panel_id,
@@ -268,5 +268,5 @@ const validateHookConnection = (sequelize : Sequelize) => async(next_panel_set_i
 
 
 export {
-    createHook, getHook, getPanelHooks, addSetToHook, _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController
+    createHook, getHook, getPanelHooks, addSetToHook, _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController, validateHookConnection
 };

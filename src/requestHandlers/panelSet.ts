@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
-import { Sequelize, QueryTypes, DataTypes } from 'sequelize';
+import { Sequelize, QueryTypes, DataTypes, ValidationError } from 'sequelize';
 import {
     assertArgumentsDefined, assertArgumentsNumber, assertArgumentsString, sanitizeResponse
 } from './utils';
@@ -189,15 +189,15 @@ interface PanelSetFrontEnd {
 
 const getTree = async(request: Request, res: Response) : Promise<Response> => {
     const panel_set_id = request.params.id;
+    const validArgs = assertArgumentsNumber({ panel_set_id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getTreeController(sequelize)(Number(panel_set_id)) as PanelSetNode[];
 
     //! calling sanitizeResponse more than once throws an error unless it's a return statement
     //! probably not the best way to check if an error is thrown
     if(!Array.isArray(response)) {
-        return sanitizeResponse(response, res);
+        return sanitizeResponse(response, res, `A panel set with an id of "${panel_set_id}" could not be found`);
     }
-
-    console.log(response)
 
     response.sort((a : PanelSetNode, b : PanelSetNode) => a.level - b.level)
     const panel_sets = [] as PanelSetFrontEnd[];
@@ -224,7 +224,7 @@ const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
         
         //? This isn't the best way to check if it's a panel set, but unsure of another way
         if(response === null) {
-            throw new Error(`A panel set with an id of "${id}" could not be found`)
+            return response
         }
         const root = response as IPanelSet;
         return await PanelSetService.getTree(sequelize)(root);

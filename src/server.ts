@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import sessions from 'express-session';
 import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
@@ -35,7 +36,21 @@ setupDatabase().then(() => {
     app.use(helpers.setCSP);
     app.use(helpers.errorHandler);
 
-    // we could probably use sessions to secure user logins
+    // session setup
+    app.use(
+        sessions({
+            secret: 'secret',
+            cookie: {
+                maxAge: 1000 * 60 * 60 * 24 //24 hours
+            },
+            resave: true,
+            saveUninitialized: false
+        })
+    );
+
+    app.use(express.json());
+
+    app.use(express.urlencoded({extended: true}));
 
     // host swagger OAS spec file
     app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));

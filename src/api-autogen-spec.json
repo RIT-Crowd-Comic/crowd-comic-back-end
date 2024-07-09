@@ -328,55 +328,20 @@
         }
       }
     },
-    "/panel_set/{id}/panels": {
+    "/panel_sets/{ids}/panels": {
       "get": {
-        "tags": [
-          "panel"
-        ],
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "ids",
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "panel_set_id",
-            "in": "query",
-            "type": "number"
           }
         ],
         "responses": {
-          "200": {
-            "description": "A panel",
-            "schema": {
-              "$ref": "#/definitions/panel"
-            }
-          },
           "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "could not find panels under panelSet id ${panel_set_id}"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           }
         }
       }

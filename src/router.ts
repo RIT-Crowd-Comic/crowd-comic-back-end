@@ -28,7 +28,7 @@ export default (app: Express) => {
     app.get('/panel/:id', panel.getPanel);
     app.get('/panel/:id/hooks', hook.getPanelHooks);
     app.get('/panel_set/:id', panelSet.getPanelSetByID);
-    app.get('/panel_set/:id/panels', panel.getPanelsFromPanelSetID); // documentation doesn't work for some reason
+    app.get('/panel_sets/:ids/panels', panel.getPanelsFromPanelSetIDs); // documentation doesn't work for some reason
     app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
     app.get('/user/:id/', user.getUserByID);
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason

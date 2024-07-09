@@ -201,42 +201,25 @@ const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Pro
  * @param res 
  * @returns response or GenericErrorResponse
  */
-const _getPanelsFromPanelSetIDController = (sequelize : Sequelize) => async (panel_set_id: number) => {
+const _getPanelsFromPanelSetIDsController = (sequelize : Sequelize) => async (ids: number[]) => {
     try {
-        return await panelService.getPanelsFromPanelSetID(sequelize)(panel_set_id);
+        //remove duplicate ids
+        const uniqueIds = [...new Set(ids)];
+        return await panelService.getPanelsFromPanelSetIDs(sequelize)(uniqueIds);
     }
     catch (err) {
         return err;
     }
 };
 
-const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
-    const panel_set_id = req.params.id;
-    const validArgs = assertArgumentsNumber({ panel_set_id });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _getPanelsFromPanelSetIDController(sequelize)(Number(panel_set_id));
-    return sanitizeResponse(response, res, `could not find panels under panelSet id ${panel_set_id}`);
-
-    /*
-        #swagger.tags = ['panel']
-        #swagger.parameters['panel_set_id'] = {
-            in: 'query',
-            type: 'number'
-        }
-        #swagger.responses[200] = {
-            description: 'A panel',
-            schema: { $ref: '#/definitions/panel' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[404] = {
-            schema: { message: 'could not find panels under panelSet id ${panel_set_id}' }
-        }
-        #swagger.responses[500] = {}
-    */
-};
+const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Response> => {
+    const arr = req.params.ids.split('-') as [];
+    if(arr.some(a => isNaN(a)))
+        return res.status(400).json(`"${arr.join(' ')}" contains items that are not numbers`);
+    const response = await _getPanelsFromPanelSetIDsController(sequelize)(arr);
+    return sanitizeResponse(response, res, `No panel set(s) with the id(s) ${arr.join(', ')} could be found`);
+}
 
 export {
-    createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
+    getPanelsFromPanelSetIDs, createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
 };

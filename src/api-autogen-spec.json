@@ -213,7 +213,7 @@
         }
       }
     },
-    "/panel/{id}/hooks/": {
+    "/panel/{id}/hooks": {
       "get": {
         "tags": [
           "hook"
@@ -328,60 +328,20 @@
         }
       }
     },
-    "/panel_set/{id}/panels/": {
+    "/panel_sets/{ids}/panels": {
       "get": {
-        "tags": [
-          "panel"
-        ],
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "ids",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "panel_set_id",
-            "in": "query",
-            "type": "number"
-          },
-          {
-            "name": "id",
-            "in": "query",
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "A panel",
-            "schema": {
-              "$ref": "#/definitions/panel"
-            }
-          },
           "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "could not find panels under panelSet id ${panel_set_id}"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           }
         }
       }
@@ -506,7 +466,7 @@
         }
       }
     },
-    "/user/{id}/panel_sets/": {
+    "/user/{id}/panel_sets": {
       "get": {
         "tags": [
           "panel-set"
@@ -622,6 +582,34 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/tree/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/dumb": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }

@@ -54,7 +54,7 @@ describe('_getPanelController', () => {
         expect(response).toBeInstanceOf(Error);
     });
 });
-describe('_getPanelsFromPanelSetIDController', () => {
+describe('_getPanelsFromPanelSetIDsController', () => {
     test('Should return what the service getPanelsFromPanelSetID returns', async () => {
         const panelData = [
             {
@@ -74,17 +74,17 @@ describe('_getPanelsFromPanelSetIDController', () => {
             }
         ];
 
-        (panelService.getPanelsFromPanelSetID as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
+        (panelService.getPanelsFromPanelSetIDs as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
 
-        const response = await panel._getPanelsFromPanelSetIDController(sequelizeMock)(1);
+        const response = await panel._getPanelsFromPanelSetIDsController(sequelizeMock)([1]);
 
         expect(response).toEqual(panelData);
     });
 
     test('If an error occurs, it should return the error', async () => {
-        (panelService.getPanelsFromPanelSetID as jest.Mock).mockReturnValue(() => Promise.resolve(new Error('Some error getting panels')));
+        (panelService.getPanelsFromPanelSetIDs as jest.Mock).mockReturnValue(() => Promise.resolve(new Error('Some error getting panels')));
 
-        const response = await panel._getPanelsFromPanelSetIDController(sequelizeMock)(1000);
+        const response = await panel._getPanelsFromPanelSetIDsController(sequelizeMock)([1000]);
         expect(response).toBeInstanceOf(Error);
     });
 });

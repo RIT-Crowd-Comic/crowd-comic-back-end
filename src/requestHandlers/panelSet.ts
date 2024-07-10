@@ -5,10 +5,8 @@ import {
     assertArgumentsDefined, assertArgumentsNumber, assertArgumentsString, sanitizeResponse
 } from './utils';
 import { sequelize } from '../database';
-import * as PanelService from '../services/panelService';
 import * as UserService from '../services/userService';
-import * as HookService from '../services/hookService';
-import { IPanel, IPanelSet, IUser } from '../models';
+import { IPanelSet } from '../models';
 
 /**
  * Create a new panel set

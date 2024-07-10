@@ -3,7 +3,6 @@ import {
 } from '../requestHandlers/hook';
 import * as hookService from '../services/hookService';
 import * as panelService from '../services/panelService';
-import * as panelSetService from '../services/panelSetService';
 import * as panelSet from '../requestHandlers/panelSet';
 import { Sequelize } from 'sequelize';
 jest.mock('../services/hookService');
@@ -120,7 +119,7 @@ describe('Create Hook Controller', () => {
     });
 
     test('If an error occurs in validate, error should be returned', async () => {
-        (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => {throw new Error('Connection already exists.')});
+        (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => { throw new Error('Connection already exists.'); });
 
         const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2, false);
 
@@ -144,7 +143,6 @@ describe('Add Set To Hook Controller', () => {
             current_panel_id:  1,
             next_panel_set_id: 2
         };
-        const panelSetData = { author_id: 'abc123-efg456-hij789' };
 
         (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => Promise.resolve());
         (hookService.addSetToHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
@@ -155,8 +153,6 @@ describe('Add Set To Hook Controller', () => {
     });
 
     test('If an error occurs in validate, the error should be returned', async () => {
-        const panelSetData = { author_id: 'abc123-efg456-hij789' };
-
         (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => { throw new Error('Error Messgage'); });
 
         const response = await _addSetToHookController(sequelizeMock())(1, 2, false);
@@ -166,8 +162,6 @@ describe('Add Set To Hook Controller', () => {
 
 
     test('If an error occurs, the error should be returned', async () => {
-        const panelSetData = { author_id: 'abc123-efg456-hij789' };
-
         (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => Promise.resolve());
         (hookService.addSetToHook as jest.Mock).mockReturnValue(() => { throw new Error('Error Messgage'); });
 

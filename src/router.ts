@@ -45,7 +45,7 @@ export default (app: Express) => {
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
     app.post('/saveimage', upload.single('image'), image.saveImage);
-    
+
     app.post('/createHook', hook.createHook);
     app.post('/createPanel', panel.createPanel);
     app.post('/createPanelSet', panelSet.createPanelSet);
@@ -54,7 +54,7 @@ export default (app: Express) => {
     // authentication needs to change soon
     app.post('/authenticate', user.authenticate);
     app.post('/changePassword', user.changePassword);
-    app.post('/changeDisplayName', user.changeDisplayName); 
+    app.post('/changeDisplayName', user.changeDisplayName);
     app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 

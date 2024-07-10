@@ -7,7 +7,7 @@ import { getPanel } from '../services/panelService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
 import { Json } from 'sequelize/types/utils';
-import { _getAllTrunkSetsController, validateHookConnection } from './panelSet';
+import { validateHookConnection } from './panelSet';
 
 
 /**

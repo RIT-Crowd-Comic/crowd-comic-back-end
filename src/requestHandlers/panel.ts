@@ -222,6 +222,7 @@ const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Pro
  */
 const _getPanelsFromPanelSetIDsController = (sequelize : Sequelize) => async (ids: number[]) => {
     try {
+
         // remove duplicate ids
         const uniqueIds = [...new Set(ids)];
         return await panelService.getPanelsFromPanelSetIDs(sequelize)(uniqueIds);
@@ -237,7 +238,7 @@ const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Re
         return res.status(400).json(`"${arr.join(' ')}" contains items that are not numbers`);
     const response = await _getPanelsFromPanelSetIDsController(sequelize)(arr);
     return sanitizeResponse(response, res, `No panel set(s) with the id(s) ${arr.join(', ')} could be found`);
-    
+
     /*
         #swagger.tags = ['panel']
          #swagger.parameters['ids'] = {

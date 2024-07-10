@@ -36,7 +36,7 @@ export default (app: Express) => {
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
     app.get('/trunks', panelSet.getAllTrunkSets);
     app.get('/tree/:id', panelSet.getTree);
-    app.get('/dumb', populate.populate);
+    app.get('/populate', populate.populate);
     app.get('*', utils.notFound);
 
     app.post('/publish', upload.fields([

@@ -175,21 +175,11 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
 };
 
 /**
- * Updates a hook with a next panel set
- * @param {number} hook_id ID of hook that is being updated
- * @param {number} panel_set_id ID of panel set that hook links to
- * @returns response or error
+ * Get Panel Hooks request
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns 
  */
-const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number, validateTrunks : boolean) => {
-    try {
-        await validateHookConnection(sequelize)(panel_set_id, validateTrunks);
-        return await hookService.addSetToHook(sequelize)(hook_id, panel_set_id);
-    }
-    catch (err) {
-        return err;
-    }
-};
-
 const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
     const hook_id = req.body.hook_id;
     const panel_set_id = req.body.panel_set_id;
@@ -234,6 +224,23 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
         }
     */
 };
+
+/**
+ * Updates a hook with a next panel set
+ * @param {number} hook_id ID of hook that is being updated
+ * @param {number} panel_set_id ID of panel set that hook links to
+ * @returns response or error
+ */
+const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number, validateTrunks : boolean) => {
+    try {
+        await validateHookConnection(sequelize)(panel_set_id, validateTrunks);
+        return await hookService.addSetToHook(sequelize)(hook_id, panel_set_id);
+    }
+    catch (err) {
+        return err;
+    }
+};
+
 
 export {
     createHook, getHook, getPanelHooks, addSetToHook, _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController

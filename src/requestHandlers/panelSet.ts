@@ -209,6 +209,23 @@ const getTree = async(request: Request, res: Response) : Promise<Response> => {
         } as PanelSetFrontEnd);
     }
     return sanitizeResponse(panel_sets, res, 'Custom 404 error');
+
+    /*  
+        #swagger.tags = ['panel-set']
+        #swagger.parameters['id'] = {
+            type: 'number'
+        }
+        #swagger.responses[200] = {
+            description: 'Returns an array of panel sets and their children',
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'a panel with the id of "${id}" cannot be found' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 const _getTreeController = (sequelize: Sequelize) => async(id: number) => {

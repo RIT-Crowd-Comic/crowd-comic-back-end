@@ -80,11 +80,6 @@ const getImage = async (req: Request, res: Response): Promise<Response> => {
     // API documentation
     /*  
         #swagger.tags = ['image']
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'the id of the image to load',
-            schema : {$ref: '#/definitions/getImage' }
-        } 
         #swagger.responses[200] = {
             description: 'Returns the link to the image',
             schema: { url: 'link-to-image' }

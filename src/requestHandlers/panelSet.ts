@@ -75,7 +75,7 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
     /*  
         #swagger.tags = ['panel-set']
         #swagger.parameters['id'] = {
-            in: 'query',
+
             type: 'number'
         }
         #swagger.responses[200] = {

@@ -106,7 +106,6 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
     /*
         #swagger.tags = ['hook']
         #swagger.parameters['id'] = {
-            in: 'query',
             type: 'number'
         }
         #swagger.responses[200] = {
@@ -157,7 +156,6 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
     /*
         #swagger.tags = ['hook']
         #swagger.parameters['id'] = {
-            in: 'query',
             type: 'number'
         }
         #swagger.responses[200] = {

@@ -82,6 +82,14 @@
             "index": 0,
             "panel_set_id": 0
         },
+        "panelArray": {
+            "panels":[{
+            "id": 0,
+            "image": "path/to/image",
+            "index": 0,
+            "panel_set_id": 0
+        }]
+        },
         "panelCreate":{
             "image": "sdfe34refergfer4trffs",
             "panel_set_id": 0
@@ -97,9 +105,6 @@
         },
         "publishResponse": {
             "success": "Panel_Set successfully published."
-        },
-        "getImage":{
-            "id": "asdsdfwdf6sdf8e"
         },
         "addSetToHookDefinition":{
             "hook_id": 1,

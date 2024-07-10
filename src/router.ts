@@ -23,9 +23,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 export default (app: Express) => {
     app.use(cors());
     app.get('/', help);
-    app.get('/dumb', populate.populate);
-
-    // app.post('/saveImage', upload.single('image'), image.saveImage);
     app.post('/publish', upload.fields([
         { name: 'image1', maxCount: 1 },
         { name: 'image2', maxCount: 1 },
@@ -44,8 +41,7 @@ export default (app: Express) => {
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
     app.get('/trunks', panelSet.getAllTrunkSets);
     app.get('/tree/:id', panelSet.getTree);
-    app.get('/dumb', panelSet.dumbDumb);
-
+    app.get('/dumb', populate.populate);
     app.get('*', utils.notFound);
 
     app.post('/createHook', hook.createHook);
@@ -56,10 +52,10 @@ export default (app: Express) => {
     // authentication needs to change soon
     app.post('/authenticate', user.authenticate);
     app.post('/changePassword', user.changePassword);
-    app.post('/changeDisplayName', user.changeDisplayName); // documentation doesn't work for some reason
+    app.post('/changeDisplayName', user.changeDisplayName); 
     app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
-    app.patch('/addSetToHook', hook.addSetToHook); // documentation doesn't work for some reason
     app.patch('*', utils.notFound);
+    app.patch('/addSetToHook', hook.addSetToHook); // documentation doesn't work for some reason
 };

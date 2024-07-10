@@ -34,7 +34,7 @@
         "error": { "message": "string | string[]" },
         "hook": {
             "id": 0,
-            "position": [0, 0],
+            "position": "{ [{\"x\": 4, \"y\": 1}, {\"x\": 4, \"y\": 1}] }",
             "current_panel_id": 0,
             "next_panel_set_id": 0
         },

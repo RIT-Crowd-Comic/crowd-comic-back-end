@@ -202,37 +202,37 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
 
     return sanitizeResponse(response, res, `unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}`);
 
-/*
-    #swagger.tags = ['hook']
-    #swagger.parameters['body'] = {
-        in: 'body',
-        description: 'Connect a hook to a panel_set',
-        schema: { $ref: '#/definitions/addSetToHookDefinition' }
-    } 
-    #swagger.responses[200] = {
-        description: 'The altered hook',
-        schema: { $ref: '#/definitions/hook' }
-    }
-    #swagger.responses[400] = {
-        description: 'Bad Request',
-        schema: { $ref: '#/definitions/error' }
-    }
-    #swagger.responses[404] = {
-        description: 'Not Found',
-        schema: {
-            type: 'object',
-            properties: {
-                message: {
-                    type: 'string',
-                    example: 'unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}'
+    /*
+        #swagger.tags = ['hook']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Connect a hook to a panel_set',
+            schema: { $ref: '#/definitions/addSetToHookDefinition' }
+        } 
+        #swagger.responses[200] = {
+            description: 'The altered hook',
+            schema: { $ref: '#/definitions/hook' }
+        }
+        #swagger.responses[400] = {
+            description: 'Bad Request',
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            description: 'Not Found',
+            schema: {
+                type: 'object',
+                properties: {
+                    message: {
+                        type: 'string',
+                        example: 'unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}'
+                    }
                 }
             }
         }
-    }
-    #swagger.responses[500] = {
-        description: 'Internal Server Error'
-    }
-*/
+        #swagger.responses[500] = {
+            description: 'Internal Server Error'
+        }
+    */
 };
 
 export {

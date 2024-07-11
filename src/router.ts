@@ -22,7 +22,6 @@ export default (app: Express) => {
     app.use(cors());
     app.get('/', help);
 
-    // app.post('/saveImage', upload.single('image'), image.saveImage);
     app.post('/publish', upload.fields([
         { name: 'image1', maxCount: 1 },
         { name: 'image2', maxCount: 1 },
@@ -35,10 +34,10 @@ export default (app: Express) => {
     app.get('/panel/:id', panel.getPanel);
     app.get('/panel/:id/hooks', hook.getPanelHooks);
     app.get('/panel_set/:id', panelSet.getPanelSetByID);
-    app.get('/panel_sets/:ids/panels', panel.getPanelsFromPanelSetIDs); // documentation doesn't work for some reason
+    app.get('/panel_sets/:ids/panels', panel.getPanelsFromPanelSetIDs);
     app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
-    app.get('/user/:id/', user.getUserByID);
-    app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser); // documentation doesn't work for some reason
+    app.get('/user/:id', user.getUserByID);
+    app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser);
     app.get('/trunks', panelSet.getAllTrunkSets);
     app.get('/tree/:id', panelSet.getTree);
     app.get('/dumb', panelSet.dumbDumb);
@@ -53,10 +52,10 @@ export default (app: Express) => {
     // authentication needs to change soon
     app.post('/authenticate', user.authenticate);
     app.post('/changePassword', user.changePassword);
-    app.post('/changeDisplayName', user.changeDisplayName); // documentation doesn't work for some reason
+    app.post('/changeDisplayName', user.changeDisplayName);
     app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
-    app.patch('/addSetToHook', hook.addSetToHook); // documentation doesn't work for some reason
+    app.patch('/addSetToHook', hook.addSetToHook);
     app.patch('*', utils.notFound);
 };

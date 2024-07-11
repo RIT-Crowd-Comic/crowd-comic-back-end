@@ -1,7 +1,6 @@
 import {
     CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, Sequelize
 } from 'sequelize';
-import { sequelize } from '../database';
 
 /**
  * Session model attributes
@@ -19,21 +18,17 @@ const define = (sequelize: Sequelize): void => {
             id: {
                 type:         DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
-                allowNull: false,
+                allowNull:    false,
                 primaryKey:   true
             },
             user_id: {
-                type: DataTypes.STRING,
+                type:      DataTypes.STRING,
                 allowNull: false
             },
-            created_at: {
-                type: DataTypes.DATE,
-            }
+            created_at: { type: DataTypes.DATE, }
         },
-        {
-            updatedAt: 'updatedAt'
-        }
+        { updatedAt: 'updatedAt' }
     );
 };
 
-export {define, type ISession};
+export { define, type ISession };

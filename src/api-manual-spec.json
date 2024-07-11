@@ -42,6 +42,11 @@
             "image": "path/to/image",
             "index": 0,
             "panel_set_id": 0
+        },
+        "session": {
+            "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "user-id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "created_at": 1
         }
     }
 }

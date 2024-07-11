@@ -1128,6 +1128,23 @@
           "example": 0
         }
       }
+    },
+    "session": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        },
+        "user-id": {
+          "type": "string",
+          "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        },
+        "created_at": {
+          "type": "number",
+          "example": 1
+        }
+      }
     }
   }
 }

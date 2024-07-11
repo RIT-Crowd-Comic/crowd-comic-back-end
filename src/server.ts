@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import sessions from 'express-session';
 import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
@@ -17,7 +16,7 @@ const port = process.env.PORT || process.env.NODE_PORT || 4000;
 
 const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, './api-autogen-spec.json'), 'utf-8'));
 
-declare module "express-session" {
+declare module 'express-session' {
     interface SessionData {
         userId: number;
     }
@@ -43,7 +42,7 @@ setupDatabase().then(() => {
     app.use(helpers.errorHandler);
 
     // session setup
-    
+
 
     // host swagger OAS spec file
     app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));

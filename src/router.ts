@@ -7,6 +7,7 @@ import * as panel from './requestHandlers/panel';
 import * as panelSet from './requestHandlers/panelSet';
 import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
+import * as session from './requestHandlers/session';
 import cors from 'cors';
 
 /**
@@ -43,6 +44,8 @@ export default (app: Express) => {
 
     // authentication needs to change soon
     app.post('/authenticate', user.authenticate);
+    app.post('/createSession', session.createSession);
+    app.get('/session/:id', session.getSession);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName); // documentation doesn't work for some reason
     app.post('/updatePanel', panel.updatePanel);

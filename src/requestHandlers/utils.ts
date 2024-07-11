@@ -184,9 +184,9 @@ const notFound = (req: Request, res: Response): Response => {
 };
 
 const assertArgumentsPosition = (positionsObjects : Json)=>{
-    if(!Array.isArray(positionsObjects) || positionsObjects.length < 1){
-        return {success: false, message: 'Position must be in the array of objects. Length of array must be 1 or greater.'};
-    } 
+    if (!Array.isArray(positionsObjects) || positionsObjects.length < 1) {
+        return { success: false, message: 'Position must be in the array of objects. Length of array must be 1 or greater.' };
+    }
     return assertArguments(
         positionsObjects,
         arg => typeof arg === 'object' && arg !== null &&

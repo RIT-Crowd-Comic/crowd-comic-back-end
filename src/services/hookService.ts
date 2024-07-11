@@ -97,7 +97,7 @@ const addSetToHook = (sequelize: Sequelize, transaction? : Transaction) => async
     const hook = await sequelize.models.hook.findByPk(hook_id) as IHook;
     if (!hook) return undefined;
 
-    await hook.update({ next_panel_set_id: panel_set_id },  transaction ? { transaction } : {});
+    await hook.update({ next_panel_set_id: panel_set_id }, transaction ? { transaction } : {});
 
     // Return the altered hook
     return {

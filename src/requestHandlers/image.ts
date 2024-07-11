@@ -28,7 +28,7 @@ const saveImage = async (req: Request, res: Response): Promise<Response> => {
     }
     const mimetype = req.file.mimetype;
     const buffer = req.file.buffer;
-    const id = crypto.randomUUID(); 
+    const id = crypto.randomUUID();
 
     const response = await _saveImageController(id, buffer, mimetype);
     return sanitizeResponse(response, res);

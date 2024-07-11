@@ -10,7 +10,6 @@ import { Json } from 'sequelize/types/utils';
 import { _saveImageController, validateImageFile } from './image';
 import { _createPanelSetController } from './panelSet';
 import { IPanelSet } from '../models';
-import { _addSetToHookController, _getHookController } from './hook';
 import crypto from 'crypto';
 
 // types 
@@ -22,24 +21,25 @@ const _publishController = (sequelize : Sequelize) => async (
     panelImage1 : Express.Multer.File,
     panelImage2 : Express.Multer.File,
     panelImage3: Express.Multer.File,
-    hooks : hookArray, 
+    hooks : hookArray,
     hook_id : number | undefined
 ) => {
 
     // make transaction
     const t = await sequelize.transaction();
     try {
+
         // make panel_set, call the controller as author validation is needed
         const panel_set = await _createPanelSetController(sequelize, t)(author_id) as IPanelSet | Error;
 
         // validate panel set creation, if not expected, its an error so throw it
         if (panel_set instanceof Error) throw panel_set;
 
-        //add setTohook
+        // add setTohook
         let hook;
-        if(hook_id){
+        if (hook_id) {
             hook = await addSetToHook(sequelize, t)(hook_id, panel_set.id);
-            if(hook === undefined) throw new Error('Failure to create hook as the hook_id was invalid')
+            if (hook === undefined) throw new Error('Failure to create hook as the hook_id was invalid');
         }
 
 
@@ -81,13 +81,16 @@ const _publishController = (sequelize : Sequelize) => async (
 
         // save to amazon 
         const s3Image1 = await _saveImageController(image1Id, panelImage1.buffer, panelImage1.mimetype) as {id: string, } | Error;
-        //if (s3Image1 instanceof Error) throw s3Image1;
+
+        if (s3Image1 instanceof Error) throw s3Image1;
 
         const s3Image2 =  await _saveImageController(image2Id, panelImage2.buffer, panelImage2.mimetype) as {id: string, } | Error;
-        //if (s3Image2 instanceof Error) throw s3Image2;
+
+        if (s3Image2 instanceof Error) throw s3Image2;
 
         const s3Image3 = await _saveImageController(image3Id, panelImage3.buffer, panelImage3.mimetype) as {id: string, } | Error;
-        //if (s3Image3 instanceof Error) throw s3Image3;
+
+        if (s3Image3 instanceof Error) throw s3Image3;
 
         // if gotten this far, everything worked
         await t.commit();
@@ -122,7 +125,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     // get the author data
     const author_id = data.author_id;
 
-    //const parent
+    // const parent
     const hook_id = data.hook_id;
 
     // validate
@@ -181,7 +184,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     }
 
     // call the controller
-    const response = await _publishController(sequelize)(author_id , panelImage1, panelImage2, panelImage3, hooks, hook_id);
+    const response = await _publishController(sequelize)(author_id, panelImage1, panelImage2, panelImage3, hooks, hook_id);
 
     return sanitizeResponse(response, res);
 

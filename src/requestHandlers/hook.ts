@@ -24,10 +24,10 @@ const _createHookController = (sequelize: Sequelize) => async (position: Json, c
     try {
         const panel = await getPanel(sequelize)(current_panel_id);
         if (panel == null) throw new Error('no panel exists for given panel id');
-        if (next_panel_set_id != null){
+        if (next_panel_set_id != null) {
             const valid = await _validateHookConnectionController(sequelize)(next_panel_set_id);
-            if(valid instanceof(Error)) throw valid;
-        } 
+            if (valid instanceof Error) throw valid;
+        }
         return await hookService.createHook(sequelize)({
             position,
             current_panel_id,
@@ -232,7 +232,7 @@ const addSetToHook = async (req: Request, res: Response): Promise<Response> => {
 const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number) => {
     try {
         const valid = await _validateHookConnectionController(sequelize)(panel_set_id);
-        if(valid instanceof(Error)) throw valid;
+        if (valid instanceof Error) throw valid;
         return await hookService.addSetToHook(sequelize)(hook_id, panel_set_id);
     }
     catch (err) {
@@ -247,6 +247,7 @@ const _addSetToHookController = (sequelize: Sequelize) => async (hook_id: number
 const _validateHookConnectionController = (sequelize : Sequelize) => async(next_panel_set_id : number) =>{
 
     try {
+
         // get panel set to connect to
         const panelSet = await sequelize.models.panel_set.findByPk(next_panel_set_id, { include: sequelize.models.hook }) as IPanelSet;
 
@@ -267,7 +268,7 @@ const _validateHookConnectionController = (sequelize : Sequelize) => async(next_
     catch (err) {
         return err;
     }
-    return { success: true }
+    return { success: true };
 };
 export {
     createHook, getHook, getPanelHooks, addSetToHook, _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController, _validateHookConnectionController

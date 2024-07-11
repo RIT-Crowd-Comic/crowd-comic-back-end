@@ -42,6 +42,7 @@ export default (app: Express) => {
     app.get('/trunks', panelSet.getAllTrunkSets);
     app.get('/tree/:id', panelSet.getTree);
     app.get('/dumb', panelSet.dumbDumb);
+    app.get('/session/:id', session.getSession);
 
     app.get('*', utils.notFound);
 
@@ -53,7 +54,6 @@ export default (app: Express) => {
     // authentication needs to change soon
     app.post('/authenticate', user.authenticate);
     app.post('/createSession', session.createSession);
-    app.get('/session/:id', session.getSession);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName);
     app.post('/updatePanel', panel.updatePanel);

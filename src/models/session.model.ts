@@ -21,14 +21,14 @@ const define = (sequelize: Sequelize): void => {
                 primaryKey:   true
             },
             user_id: {
-                type:      DataTypes.STRING,
+                type:      DataTypes.UUID,
                 allowNull: false
             }
         },
-        { 
+        {
             createdAt: 'createdAt',
             updatedAt: 'updatedAt'
-         }
+        }
     );
 };
 

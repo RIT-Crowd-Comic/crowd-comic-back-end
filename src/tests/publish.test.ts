@@ -80,7 +80,7 @@ describe('_publishController', () => {
         (_saveImageController as jest.Mock).mockResolvedValue(imageReturn);
         const response = await _publishController(sequelizeMock)('author_id', imageFile, imageFile, imageFile, [{ position: hookPosition, panel_index: 0 }, { position: hookPosition, panel_index: 0 } ], 1);
         expect(response).toEqual({
-            success: `Panel_Set successfully published`, panel_set: panelSetReturn, panel1: panelReturn, panel2: panelReturn, panel3: panelReturn, image1: imageReturn, image2: imageReturn, image3: imageReturn, hooks: [hookReturn, hookReturn]
+            success: `Panel_Set successfully published`, panel_set: panelSetReturn, hook: addSetToHookReturn, panel1: panelReturn, panel2: panelReturn, panel3: panelReturn, image1: imageReturn, image2: imageReturn, image3: imageReturn, hooks: [hookReturn, hookReturn]
         });
     });
 });

@@ -7,7 +7,6 @@ import * as UserService from '../services/userService';
 
 import { IUser } from '../models';
 import { _publishController } from './publish';
-import { Json } from 'sequelize/types/utils';
 
 // test methods so I don't have to run all of these queries every time I want to test something
 const populate = async (request: Request, res: Response) => {

@@ -26,7 +26,7 @@ describe('_publishController', () => {
     const hookReturn = { id: 0, panel_set: 0 };
     const panelSetReturn = { author_id: 'id', id: 0 };
     const imageReturn = { id: 'id' };
-    const addSetToHookReturn = {position: [{}], current_panel_set_id: 1, next_panel_set_id: 1 }
+    const addSetToHookReturn = { position: [{}], current_panel_set_id: 1, next_panel_set_id: 1 };
 
     // error happens in panel set creation, throw an error
     test('_createPanelSetController returns an error', async() => {
@@ -57,24 +57,24 @@ describe('_publishController', () => {
     // if error happens return it
     test('error happens in one of the services', async() => {
         (_createPanelSetController as jest.Mock).mockReturnValue(() => panelSetReturn);
-        (addSetToHook as jest.Mock).mockReturnValue(()=>addSetToHookReturn)
-        (createPanel as jest.Mock).mockReturnValue(() => { throw new Error('Error creating panel'); });
+        (addSetToHook as jest.Mock).mockReturnValue(()=>addSetToHookReturn);
+        (createPanel as jest.Mock).mockReturnValue(() =>{ throw new Error('Error creating panel'); });
         const response = await _publishController(sequelizeMock)('author_id', imageFile, imageFile, imageFile, [{ position: hookPosition, panel_index: 100 }, { position: hookPosition, panel_index: 1 } ], 1);
         expect(response).toBeInstanceOf(Error);
     });
 
-        // if error happens return it
-        test('addSetToHook returns undefined', async() => {
-            (_createPanelSetController as jest.Mock).mockReturnValue(() => panelSetReturn);
-            (addSetToHook as jest.Mock).mockReturnValue(() =>undefined)
-            const response = await _publishController(sequelizeMock)('author_id', imageFile, imageFile, imageFile, [{ position: hookPosition, panel_index: 100 }, { position: hookPosition, panel_index: 1 } ], 1);
-            expect(response).toBeInstanceOf(Error);
-        });
+    // if error happens return it
+    test('addSetToHook returns undefined', async() => {
+        (_createPanelSetController as jest.Mock).mockReturnValue(() => panelSetReturn);
+        (addSetToHook as jest.Mock).mockReturnValue(() =>undefined);
+        const response = await _publishController(sequelizeMock)('author_id', imageFile, imageFile, imageFile, [{ position: hookPosition, panel_index: 100 }, { position: hookPosition, panel_index: 1 } ], 1);
+        expect(response).toBeInstanceOf(Error);
+    });
 
     // successful return
     test('Successful Publish', async() => {
         (_createPanelSetController as jest.Mock).mockReturnValue(() => panelSetReturn);
-        (addSetToHook as jest.Mock).mockReturnValue(() =>{addSetToHookReturn})
+        (addSetToHook as jest.Mock).mockReturnValue(() => addSetToHookReturn);
         (createPanel as jest.Mock).mockReturnValue(() => panelReturn);
         (createHook as jest.Mock).mockReturnValue(() => hookReturn);
         (_saveImageController as jest.Mock).mockResolvedValue(imageReturn);

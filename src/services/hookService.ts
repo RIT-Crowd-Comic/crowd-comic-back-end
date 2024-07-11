@@ -91,13 +91,13 @@ const getPanelHooks = (sequelize: Sequelize) => async (panel_id: number) => {
  * @param {number} panel_set_id ID of panel set that the hook links to
  * @returns {HookGetInfo} Values from the updated hook
  */
-const addSetToHook = (sequelize: Sequelize) => async (hook_id: number, panel_set_id: number) => {
+const addSetToHook = (sequelize: Sequelize, transaction? : Transaction) => async (hook_id: number, panel_set_id: number) => {
 
     // get hook and update the next_panel_set_id
     const hook = await sequelize.models.hook.findByPk(hook_id) as IHook;
     if (!hook) return undefined;
 
-    await hook.update({ next_panel_set_id: panel_set_id });
+    await hook.update({ next_panel_set_id: panel_set_id },  transaction ? { transaction } : {});
 
     // Return the altered hook
     return {

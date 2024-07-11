@@ -1,5 +1,5 @@
 import {
-    _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController
+    _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController, _validateHookConnectionController
 } from '../requestHandlers/hook';
 import * as hookService from '../services/hookService';
 import * as panelService from '../services/panelService';
@@ -8,7 +8,6 @@ import { Sequelize } from 'sequelize';
 jest.mock('../services/hookService');
 jest.mock('../services/panelService');
 jest.mock('../services/panelSetService');
-jest.mock('../requestHandlers/panelSet');
 
 const sequelizeMock = () => ({} as jest.Mocked<Sequelize>);
 
@@ -100,10 +99,10 @@ describe('Create Hook Controller', () => {
         };
 
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
-        (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => Promise.resolve());
+        (_validateHookConnectionController as jest.Mock).mockReturnValue(() => Promise.resolve());
         (hookService.createHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
-        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2, false);
+        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2);
 
         expect(response).toBe(hookData);
     });
@@ -119,9 +118,9 @@ describe('Create Hook Controller', () => {
     });
 
     test('If an error occurs in validate, error should be returned', async () => {
-        (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => { throw new Error('Connection already exists.'); });
+        (_validateHookConnectionController as jest.Mock).mockReturnValue(() => { throw new Error('Connection already exists.'); });
 
-        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2, false);
+        const response = await _createHookController(sequelizeMock())(JSON.parse(`[1, 1]`), 1, 2);
 
         expect(response).toBeInstanceOf(Error);
     });
@@ -144,28 +143,28 @@ describe('Add Set To Hook Controller', () => {
             next_panel_set_id: 2
         };
 
-        (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => Promise.resolve());
+        (_validateHookConnectionController as jest.Mock).mockReturnValue(() => Promise.resolve());
         (hookService.addSetToHook as jest.Mock).mockReturnValue(() => Promise.resolve(hookData));
 
-        const response = await _addSetToHookController(sequelizeMock())(1, 2, false);
+        const response = await _addSetToHookController(sequelizeMock())(1, 2);
 
         expect(response).toBe(hookData);
     });
 
     test('If an error occurs in validate, the error should be returned', async () => {
-        (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => { throw new Error('Error Messgage'); });
+        (_validateHookConnectionController as jest.Mock).mockReturnValue(() => { throw new Error('Error Messgage'); });
 
-        const response = await _addSetToHookController(sequelizeMock())(1, 2, false);
+        const response = await _addSetToHookController(sequelizeMock())(1, 2);
 
         expect(response).toBeInstanceOf(Error);
     });
 
 
     test('If an error occurs, the error should be returned', async () => {
-        (panelSet.validateHookConnection as jest.Mock).mockReturnValue(() => Promise.resolve());
+        (_validateHookConnectionController as jest.Mock).mockReturnValue(() => Promise.resolve());
         (hookService.addSetToHook as jest.Mock).mockReturnValue(() => { throw new Error('Error Messgage'); });
 
-        const response = await _addSetToHookController(sequelizeMock())(1, 2, false);
+        const response = await _addSetToHookController(sequelizeMock())(1, 2);
 
         expect(response).toBeInstanceOf(Error);
     });

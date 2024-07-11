@@ -249,36 +249,6 @@ const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
     }
 };
 
-
-/**
- * Throws an error if the next_panel_set is invalid
- * @param next_panel_set_id panel set id of the next panel set the hook is attached to
- */
-const validateHookConnection = (sequelize : Sequelize) => async(next_panel_set_id : number, validateTrunks : boolean) =>{
-
-    // get panel set to connect to
-    const panelSet = await sequelize.models.panel_set.findByPk(next_panel_set_id, { include: sequelize.models.hook }) as IPanelSet;
-
-    // if no panel set is found
-    if (panelSet == null) throw new Error('no panel_set exists for given panel_set_id');
-
-    // if panel set is hooked up
-    if (panelSet.hook) throw new Error('Panel set already has a connection, it cannot be connected to anything else.');
-
-    if (validateTrunks === true) {
-
-        // get the trunks
-        const trunks = await _getAllTrunkSetsController(sequelize) as IPanelSet[];
-
-        // check if the trunk has it
-        if (trunks.map(trunk => trunk.id).some(id => id === panelSet.id)) {
-            throw new Error('Panel set is a trunk');
-        }
-    }
-
-    // if no error is thrown it is fine
-};
-
 export {
-    _getTreeController, getTree, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController, validateHookConnection
+    _getTreeController, getTree, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
 };

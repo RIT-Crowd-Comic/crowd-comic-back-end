@@ -1,12 +1,14 @@
 import { sanitizeResponse } from './utils';
 import { Request, Response } from 'express';
-import * as PanelSetService from '../services/panelSetService';
+
 import { Sequelize } from 'sequelize';
 import { sequelize } from '../database';
 import * as UserService from '../services/userService';
 import { _createHookController } from './hook';
-import * as PanelService from '../services/panelService';
-import { IPanelSet, IPanel, IUser } from '../models';
+
+import { IUser } from '../models';
+import { _publishController } from './publish';
+import {Json} from 'sequelize/types/utils';
 
 // test methods so I don't have to run all of these queries every time I want to test something
 const populate = async (request: Request, res: Response) => {
@@ -14,6 +16,8 @@ const populate = async (request: Request, res: Response) => {
     return sanitizeResponse(response, res, '');
 };
 
+type hook = {position : Json, panel_index : number}
+type hookArray = Array<hook>;
 const _populate = (sequelize: Sequelize) => async() => {
     try {
 
@@ -24,60 +28,13 @@ const _populate = (sequelize: Sequelize) => async() => {
             display_name: 'display'
         }) as IUser;
 
-        // create panel sets
-        const panel_set_count = 10;
-        const panel_sets = [] as Array<IPanelSet>;
-        for (let i = 0; i < panel_set_count; i++) {
-            panel_sets.push(await PanelSetService.createPanelSet(sequelize)({ author_id: user.id }) as IPanelSet);
-        }
-        const panel_data = [1, 2, 3, 4, 4, 4];
-
-        // create 1 panel for each panel set
-        for (let i = 0; i < panel_data.length; i++) {
-            await PanelService.createPanel(sequelize)({
-                image:        '',
-                index:        0,
-                panel_set_id: panel_data[i],
-            }) as IPanel;
-        }
-
-        const hookConnection = [
-            { panel_id: 1, next_panel_set_id: 2 },
-            { panel_id: 1, next_panel_set_id: 7 },
-            { panel_id: 2, next_panel_set_id: 3 },
-            { panel_id: 4, next_panel_set_id: 4 },
-            { panel_id: 5, next_panel_set_id: 5 },
-            { panel_id: 6, next_panel_set_id: 6 }
-        ];
-
-        // add hooks
-        for (const hook of hookConnection) {
-            const createdHook =  await _createHookController(sequelize)(
-                JSON.parse(`
-                {
-                    "position":[
-                        {
-                            "x":1,
-                            "y":1
-                        },
-                        {
-                            "x":1,
-                            "y":1
-                        },
-                        {
-                            "x":1,
-                            "y":1
-                        }
-                    ]
-                }`),
-                hook.panel_id,
-                hook.next_panel_set_id,
-                true
-            );
-            if (createdHook instanceof Error) throw createdHook;
-        }
-
-        return { success: true };
+        const image1 = {} as Express.Multer.File
+        const image2 = {} as Express.Multer.File
+        const image3 = {} as Express.Multer.File
+        const hooks = [{position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1},{position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1},{position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1}]
+        const publish = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, undefined ) as any;
+        const publish2 = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, publish.hooks[0].id);
+        return { success: true, publish: publish, publish2: publish2 };
     }
     catch (err) {
         return err;

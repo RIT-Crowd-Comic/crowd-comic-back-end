@@ -38,12 +38,6 @@
             "current_panel_id": 0,
             "next_panel_set_id": 0
         },
-        "createHookDefinition": {
-            "position": "Json",
-            "current_panel_id": 1,
-            "next_panel_set_id": 2,
-            "validateTrunks": false
-        },
         "publish": {
             "author_id": "ad64a986-16c6-4f59-a944-3f80b0cbfb05",
             "hooks": [
@@ -74,7 +68,8 @@
                     ],
                     "panel_index": 0
                 }
-            ]
+            ],
+            "hook_id": 1
         },
         "panel": {
             "id": 0,
@@ -108,8 +103,7 @@
         },
         "addSetToHookDefinition":{
             "hook_id": 1,
-            "panel_set_id": 1,
-            "validateTrunks": false
+            "panel_set_id": 1
         }
     }
 }

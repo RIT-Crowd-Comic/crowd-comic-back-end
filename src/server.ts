@@ -12,10 +12,6 @@ import path from 'path';
 import router from './router';
 import { setup as setupDatabase } from './database';
 import * as helpers from './helpers';
-import {homeHandler} from './sessionHandlers/home';
-import {loginHandler} from './sessionHandlers/login';
-import { processLogin } from './sessionHandlers/process-login';
-import { logout } from './sessionHandlers/logout';
 
 const port = process.env.PORT || process.env.NODE_PORT || 4000;
 
@@ -47,25 +43,7 @@ setupDatabase().then(() => {
     app.use(helpers.errorHandler);
 
     // session setup
-    app.use(
-        sessions({
-            secret: 'secret',
-            cookie: {
-                maxAge: 1000 * 60 * 60 * 24 //24 hours
-            },
-            resave: true,
-            saveUninitialized: false
-        })
-    );
-
-    app.use(express.json());
-
-    app.use(express.urlencoded({extended: true}));
-
-    app.get('/', homeHandler);
-    app.get('/login', loginHandler);
-    app.post('/process-login', processLogin);
-    app.get('/logout', logout);
+    
 
     // host swagger OAS spec file
     app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));

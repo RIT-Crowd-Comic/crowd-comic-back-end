@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize, Op, Transaction } from 'sequelize';
 import { IPanel, IPanelSet } from '../models';
 
 interface PanelConfig {
@@ -12,14 +12,14 @@ interface PanelConfig {
  * @param {} newPanel
  * @returns {} PanelInfoCreate
  */
-const createPanel = (sequelize : Sequelize) => async(newPanel: PanelConfig) => {
+const createPanel = (sequelize : Sequelize, transaction? : Transaction) => async(newPanel: PanelConfig) => {
     const {
         id, image, index, panel_set_id
     } = await sequelize.models.panel.create({
         image:        newPanel.image,
         index:        newPanel.index,
         panel_set_id: newPanel.panel_set_id,
-    }) as IPanel;
+    }, transaction ? { transaction } : {}) as IPanel;
 
     return {
         id, image, index, panel_set_id
@@ -89,25 +89,27 @@ const getPanelBasedOnPanelSetAndIndex = (sequelize : Sequelize) => async (index 
 
 /**
  * Get all panels that are associated with a specific panelSet
- * @param {number} panel_set_id ID of panelSet
+ * @param {number[]} ids the ids of the panel set(s)
  * @returns {object[]} An array of objects with id, image, index properties
  */
-const getPanelsFromPanelSetID = (sequelize : Sequelize) => async (panel_set_id: number) => {
+const getPanelsFromPanelSetIDs = (sequelize : Sequelize) => async (ids: number[]) => {
 
-    // Find all panels on requested panelSet 
-    const panel_set = await sequelize.models.panel_set.findByPk(panel_set_id, { include: sequelize.models.panel }) as IPanelSet;
-    if (!panel_set) return [];
-    const panels = panel_set.panels as IPanel[];
+    // get all of the panel_sets with the given ids
+    const panel_sets = await sequelize.models.panel_set.findAll({
+        include: sequelize.models.panel,
+        where:   { [Op.or]: ids.map(id => { return { id: id }; }) }
+    }) as IPanelSet[];
+    let panels = [] as IPanel[];
+    for (const panel_set of panel_sets) {
+        if (panel_set.panels?.length !== undefined && panel_set.panels.length > 0) {
+            panels = panels.concat(panel_set.panels);
+        }
+    }
 
-    // Map panels to keep only needed data
-    return panels.map((p) => ({
-        id:    p.id as number,
-        image: p.image,
-        index: p.index
-    }));
+    return panels;
 };
 
 
 export {
-    getPanelsFromPanelSetID, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex, updatePanel
+    getPanelsFromPanelSetIDs, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex, updatePanel
 };

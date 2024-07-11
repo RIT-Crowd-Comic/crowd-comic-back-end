@@ -28,7 +28,7 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
         }
         const panelIndex = panels.length;
 
-        // make new
+        // make new hook
         return await panelService.createPanel(sequelize)({
             image:        image,
             index:        panelIndex,
@@ -55,6 +55,11 @@ const createPanel = async (req: Request, res: Response): Promise<Response> => {
 
     /*
         #swagger.tags = ['panel']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Create Panel',
+            schema: { $ref: '#/definitions/panelCreate' }
+        } 
         #swagger.responses[200] = {
             description: 'A newly created panel',
             schema: { $ref: '#/definitions/panel' }
@@ -100,6 +105,23 @@ const updatePanel = async (req: Request, res: Response): Promise<Response> => {
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _updatePanelController(sequelize)(id, image);
     return sanitizeResponse(response, res);
+
+    /*
+        #swagger.tags = ['panel']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Update Panel',
+            schema: { $ref: '#/definitions/panelUpdate' }
+        } 
+        #swagger.responses[200] = {
+            description: 'An updated Panel',
+            schema: { $ref: '#/definitions/panel' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 
@@ -201,42 +223,26 @@ const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Pro
  * @param res 
  * @returns response or GenericErrorResponse
  */
-const _getPanelsFromPanelSetIDController = (sequelize : Sequelize) => async (panel_set_id: number) => {
+const _getPanelsFromPanelSetIDsController = (sequelize : Sequelize) => async (ids: number[]) => {
     try {
-        return await panelService.getPanelsFromPanelSetID(sequelize)(panel_set_id);
+
+        // remove duplicate ids
+        const uniqueIds = [...new Set(ids)];
+        return await panelService.getPanelsFromPanelSetIDs(sequelize)(uniqueIds);
     }
     catch (err) {
         return err;
     }
 };
 
-const getPanelsFromPanelSetID = async (req: Request, res: Response): Promise<Response> => {
-    const panel_set_id = Number(req.query.id);
-    const validArgs = assertArgumentsNumber({ panel_set_id });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _getPanelsFromPanelSetIDController(sequelize)(panel_set_id);
-    return sanitizeResponse(response, res, `could not find panels under panelSet id ${panel_set_id}`);
-
-    /*
-        #swagger.tags = ['panel']
-        #swagger.parameters['panel_set_id'] = {
-            in: 'query',
-            type: 'number'
-        }
-        #swagger.responses[200] = {
-            description: 'A panel',
-            schema: { $ref: '#/definitions/panel' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[404] = {
-            schema: { message: 'could not find panels under panelSet id ${panel_set_id}' }
-        }
-        #swagger.responses[500] = {}
-    */
+const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Response> => {
+    const arr = req.params.ids.split('-') as [];
+    if (arr.some(a => isNaN(a)))
+        return res.status(400).json(`"${arr.join(' ')}" contains items that are not numbers`);
+    const response = await _getPanelsFromPanelSetIDsController(sequelize)(arr);
+    return sanitizeResponse(response, res, `No panel set(s) with the id(s) ${arr.join(', ')} could be found`);
 };
 
 export {
-    createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, getPanelsFromPanelSetID, _createPanelController, _getPanelController, _getPanelsFromPanelSetIDController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
+    _getPanelsFromPanelSetIDsController, getPanelsFromPanelSetIDs, createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
 };

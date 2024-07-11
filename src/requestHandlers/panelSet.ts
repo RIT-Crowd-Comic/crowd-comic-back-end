@@ -1,22 +1,25 @@
 import { Request, Response } from 'express';
 import * as PanelSetService from '../services/panelSetService';
-import { Sequelize } from 'sequelize';
+import { Sequelize, Transaction, DataTypes } from 'sequelize';
 import {
     assertArgumentsDefined, assertArgumentsNumber, assertArgumentsString, sanitizeResponse
 } from './utils';
 import { sequelize } from '../database';
+import * as PanelService from '../services/panelService';
 import * as UserService from '../services/userService';
+import * as HookService from '../services/hookService';
+import { IPanel, IPanelSet, IUser } from '../models';
 
 /**
  * Create a new panel set
  * @param author_id the id of the author who made the panel set
  * @returns 
  */
-const _createPanelSetController = (sequelize : Sequelize) => async (author_id: string) => {
+const _createPanelSetController = (sequelize : Sequelize, transaction?: Transaction) => async (author_id: string) => {
     try {
         const user = await UserService.getUserByID(sequelize)(author_id);
         if (user == null) throw new Error(`An author with the id "${author_id}" does not exist`);
-        return await PanelSetService.createPanelSet(sequelize)({ author_id });
+        return await PanelSetService.createPanelSet(sequelize, transaction)({ author_id });
     }
     catch (err) {
         return err;
@@ -163,6 +166,136 @@ const getAllTrunkSets = async(request: Request, res: Response) : Promise<Respons
     */
 };
 
+
+interface PanelSetNode {
+    panel_set_id: number,
+    parent_panel_set_id: number | null,
+    author_id: string,
+    level: number,
+    created_at: DataTypes.DateDataType,
+    updated_at: DataTypes.DateDataType,
+    path: string
+}
+
+interface PanelSetFrontEnd {
+    panel_set_id: number,
+    parent_panel_set_id: number | null,
+    author_id: string,
+    created_at: DataTypes.DateDataType,
+    updated_at: DataTypes.DateDataType,
+    childrenIds: number[]
+}
+
+const getTree = async(request: Request, res: Response) : Promise<Response> => {
+    const panel_set_id = request.params.id;
+    const validArgs = assertArgumentsNumber({ panel_set_id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await _getTreeController(sequelize)(Number(panel_set_id)) as PanelSetNode[];
+
+    // ! calling sanitizeResponse more than once throws an error unless it's a return statement
+    // ! probably not the best way to check if an error is thrown
+    if (!Array.isArray(response)) {
+        return sanitizeResponse(response, res, `A panel set with an id of "${panel_set_id}" could not be found`);
+    }
+
+    response.sort((a : PanelSetNode, b : PanelSetNode) => a.level - b.level);
+    const panel_sets = [] as PanelSetFrontEnd[];
+    for (const panel_set of response) {
+        const children = response.filter(p => p.parent_panel_set_id == panel_set.panel_set_id);
+        panel_sets.push({
+            panel_set_id: panel_set.panel_set_id,
+            author_id:    panel_set.author_id,
+            created_at:   panel_set.created_at,
+            updated_at:   panel_set.updated_at,
+            childrenIds:  children.map(p => p.panel_set_id)
+        } as PanelSetFrontEnd);
+    }
+    return sanitizeResponse(panel_sets, res, 'Custom 404 error');
+};
+
+const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
+    try {
+        const response = await _getPanelSetByIDController(sequelize)(id);
+
+        // if an error or contains not a panelSet return
+        if (response instanceof Error) {
+            return response;
+        }
+
+        // ? This isn't the best way to check if it's a panel set, but unsure of another way
+        if (response === null) {
+            return response;
+        }
+        const root = response as IPanelSet;
+        return await PanelSetService.getTree(sequelize)(root);
+    }
+    catch (err) {
+        return err;
+    }
+};
+
+// test methods so I don't have to run all of these queries every time I want to test something
+const dumbDumb = async (request: Request, res: Response) => {
+    const response = await _dumbDumbController(sequelize)();
+    return sanitizeResponse(response, res, '');
+};
+
+const _dumbDumbController = (sequelize: Sequelize) => async() => {
+    try {
+
+        // create a user
+        const user = await UserService.createUser(sequelize)({
+            password:     'Password!',
+            email:        'email@yaoo.com',
+            display_name: 'display'
+        }) as IUser;
+
+        // create panel sets
+        const panel_set_count = 10;
+        const panel_sets = [];
+        for (let i = 0; i < panel_set_count; i++) {
+            panel_sets.push(await PanelSetService.createPanelSet(sequelize)({ author_id: user.id }) as IPanelSet);
+        }
+        const panel_data = [1, 2, 3, 4, 4, 4];
+
+        // create 1 panel for each panel set
+        for (let i = 0; i < panel_data.length; i++) {
+            await PanelService.createPanel(sequelize)({
+                image:        '',
+                index:        0,
+                panel_set_id: panel_data[i],
+            }) as IPanel;
+        }
+
+        const hookConnection = [
+            { panel_id: 1, next_panel_set_id: 2 },
+            { panel_id: 1, next_panel_set_id: 3 },
+            { panel_id: 2, next_panel_set_id: 4 },
+            { panel_id: 4, next_panel_set_id: 5 },
+            { panel_id: 5, next_panel_set_id: 6 },
+            { panel_id: 6, next_panel_set_id: 7 }
+        ];
+
+        // add hooks
+        for (const hook of hookConnection) {
+            await HookService.createHook(sequelize)({
+                position: {
+                    conditions: {},
+                    path:       '',
+                    value:      ''
+                },
+                current_panel_id:  hook.panel_id,
+                next_panel_set_id: hook.next_panel_set_id
+            });
+        }
+
+        return { success: true };
+    }
+    catch (err) {
+        return err;
+    }
+};
+
 export {
-    createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
+    _getTreeController, getTree, dumbDumb, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
 };

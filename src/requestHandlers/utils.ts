@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import PasswordValidator from 'password-validator';
 import { ValidationError } from 'sequelize';
+import { Json } from 'sequelize/types/utils';
 
 
 // /**
@@ -154,6 +155,7 @@ const assertArgumentsString = (args: object) => {
     return validArgs;
 };
 
+
 /**
  * Parses a database response as an express response, creating the correct HTTP status codes.<br>
  * - [] | undefined | null => 404
@@ -181,6 +183,17 @@ const notFound = (req: Request, res: Response): Response => {
     return res.status(404).json({ message: `'${req.method} ${req.originalUrl}' is not a valid request` });
 };
 
+
+const assertArgumentsPosition = (positionsObjects : Json)=>{
+    return assertArguments(
+        positionsObjects,
+        arg => typeof arg === 'object' && arg !== null &&
+        typeof arg.x === 'number' &&
+        typeof arg.y === 'number',
+        'Positions was not given with the proper parameters. Ensure it is an array of {x: , y: } objects. '
+    );
+};
+
 export {
     validatePassword,
     validateDisplayName,
@@ -191,5 +204,6 @@ export {
     assertArgumentsNumber,
     assertArgumentsString,
     sanitizeResponse,
-    notFound
+    notFound,
+    assertArgumentsPosition
 };

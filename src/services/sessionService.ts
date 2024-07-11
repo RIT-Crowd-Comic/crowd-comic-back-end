@@ -7,12 +7,12 @@ interface sessionConfig {
 
 const createSession = (sequelize: Sequelize) => async (newSession: sessionConfig) => {
     //Delete any other session data for the user
-    await sequelize.models.user.destroy({where: {id: newSession.user_id}});
+    await sequelize.models.session.destroy({where: {id: newSession.user_id}});
 
     //Create new session for the user
-    const { id, user_id, created_at } = await sequelize.models.user.create({ user_id: newSession.user_id, }) as ISession;
+    const { id, user_id } = await sequelize.models.session.create({ user_id: newSession.user_id, }) as ISession;
 
-    return { id, user_id, created_at };
+    return { id, user_id };
 };
 
 const getSession = (sequelize: Sequelize) => async (id: string) => {

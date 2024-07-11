@@ -7,8 +7,7 @@ import {
  */
 interface ISession extends Model<InferAttributes<ISession>, InferCreationAttributes<ISession>> {
     id: CreationOptional<string>,
-    user_id: ForeignKey<string>,
-    created_at: Date
+    user_id: ForeignKey<string>
 }
 
 const define = (sequelize: Sequelize): void => {
@@ -24,10 +23,12 @@ const define = (sequelize: Sequelize): void => {
             user_id: {
                 type:      DataTypes.STRING,
                 allowNull: false
-            },
-            created_at: { type: DataTypes.DATE, }
+            }
         },
-        { updatedAt: 'updatedAt' }
+        { 
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt'
+         }
     );
 };
 

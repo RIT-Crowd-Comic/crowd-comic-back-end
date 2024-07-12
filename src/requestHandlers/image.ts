@@ -65,7 +65,7 @@ const _getImageController = async (id : string) => {
         return await imageService.getImage(id);
     }
     catch (err) {
-        if(err instanceof Error)
+        if (err instanceof Error)
             return new Error(`S3 Error: ${err.message}`);
     }
 };

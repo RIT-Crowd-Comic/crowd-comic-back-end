@@ -12,17 +12,18 @@ try {
         silent:    false,
         directory: '/tmp/s3rver_test_directory'
     });
-    
+
     aws.run(() => {
         console.log('Server for aws running.');
     });
 }
-catch(error){ console.error('An error occurred during aws s3ver setup:', error);} 
+catch (error) { console.error('An error occurred during aws s3ver setup:', error); }
 
 let s3 : S3Client;
 let bucketName : string | undefined;
-try{
-    //config for fakeS3
+try {
+
+    // config for fakeS3
     const config = {
         forcePathStyle: true,
         credentials:    {
@@ -32,22 +33,22 @@ try{
         region:   process.env.BUCKET_REGION as string,
         endpoint: 'http://localhost:5000'
     };
-    
-    //config for actual s3
-    const trueConfig = {
+
+    // config for actual s3
+    /*const trueConfig = {
         credentials: {
             accessKeyId:     process.env.S3_ACCESS_KEY as string,
             secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
         },
         region: process.env.BUCKET_REGION as string,
-    };
+    };*/
 
     s3 = new S3Client(config);
     bucketName = process.env.BUCKET_NAME;
 }
-catch(error){
+catch (error) {
     console.error('An error occurred s3 setup. Ensure that .env is setup properly and endpoint is correct.', error);
-};
+}
 
 
 async function createBucket() {

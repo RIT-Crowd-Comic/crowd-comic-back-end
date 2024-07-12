@@ -28,9 +28,9 @@ const _populate = (sequelize: Sequelize) => async() => {
         const image2 = {} as Express.Multer.File;
         const image3 = {} as Express.Multer.File;
         const hooks = [{ position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }, { position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }, { position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }];
-        const publish = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, undefined) as any;
-        const publish2 = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, publish.hooks[0].id);
-        return { success: true, publish: publish, publish2: publish2 };
+        const parent = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, undefined) as any;
+        const child = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, parent.hooks[0].id);
+        return { success: true, publish: parent, publish2: child };
     }
     catch (err) {
         return err;

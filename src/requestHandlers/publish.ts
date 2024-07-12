@@ -148,7 +148,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
     // make sure all three exist
     if (!panelImage1 || !panelImage2 || !panelImage3) {
-        return res.status(400).json({ message: 'All three files must be uploaded' });
+        return res.status(400).json({ message: 'Exactly three images files must be uploaded' });
     }
 
     // Validate all three images

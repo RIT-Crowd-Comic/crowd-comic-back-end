@@ -93,11 +93,6 @@
             "id": 0,
             "image": "sdfe34refergfer4trffs"
         },
-        "publishDefinition": {
-            "email":        "example@example.com",
-            "password":     "asdfASDF1234",
-            "display_name": "John Doe"
-        },
         "publishResponse": {
             "success": "Panel_Set successfully published."
         },

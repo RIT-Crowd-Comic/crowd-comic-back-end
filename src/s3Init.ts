@@ -22,6 +22,7 @@ catch(error){ console.error('An error occurred during aws s3ver setup:', error);
 let s3 : S3Client;
 let bucketName : string | undefined;
 try{
+    //config for fakeS3
     const config = {
         forcePathStyle: true,
         credentials:    {
@@ -32,11 +33,15 @@ try{
         endpoint: 'http://localhost:5000'
     };
     
-    /* credentials: {
-        accessKeyId:     process.env.S3_ACCESS_KEY as string,
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string
-    },
-    region: process.env.BUCKET_REGION as string*/
+    //config for actual s3
+    const trueConfig = {
+        credentials: {
+            accessKeyId:     process.env.S3_ACCESS_KEY as string,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
+        },
+        region: process.env.BUCKET_REGION as string,
+    };
+
     s3 = new S3Client(config);
     bucketName = process.env.BUCKET_NAME;
 }

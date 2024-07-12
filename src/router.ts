@@ -7,6 +7,7 @@ import * as panel from './requestHandlers/panel';
 import * as panelSet from './requestHandlers/panelSet';
 import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
+import * as session from './requestHandlers/session';
 import * as publish from './requestHandlers/publish';
 import cors from 'cors';
 
@@ -41,6 +42,7 @@ export default (app: Express) => {
     app.get('/trunks', panelSet.getAllTrunkSets);
     app.get('/tree/:id', panelSet.getTree);
     app.get('/dumb', panelSet.dumbDumb);
+    app.get('/session/:id', session.getSession);
 
     app.get('*', utils.notFound);
 
@@ -51,6 +53,7 @@ export default (app: Express) => {
 
     // authentication needs to change soon
     app.post('/authenticate', user.authenticate);
+    app.post('/createSession', session.createSession);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName);
     app.post('/updatePanel', panel.updatePanel);

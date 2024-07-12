@@ -11,6 +11,7 @@ import { _saveImageController, validateImageFile } from './image';
 import { _createPanelSetController } from './panelSet';
 import { IPanelSet } from '../models';
 import crypto from 'crypto';
+import { S3Client } from '@aws-sdk/client-s3';
 
 // types 
 type hook = {position : Json, panel_index : number}
@@ -68,34 +69,34 @@ const _publishController = (sequelize : Sequelize) => async (
         });
 
         // create hooks and validate
-        const createdHooks = [] as Array<object>;
+        const createdHooks = [] as Array<number>;
         await Promise.all(hooks.map(async (hook) => {
             const matchedPanel = [panel1, panel2, panel3].find(panel => panel.index === hook.panel_index);
             if (matchedPanel === undefined) throw new Error('Hook panel_index was invalid');
-            createdHooks.push(await createHook(sequelize, t)({
+            createdHooks.push((await createHook(sequelize, t)({
                 position:          hook.position,
                 current_panel_id:  matchedPanel.id,
                 next_panel_set_id: null
-            }));
+            })).id);
         }));
 
         // save to amazon 
         const s3Image1 = await _saveImageController(image1Id, panelImage1.buffer, panelImage1.mimetype) as {id: string, } | Error;
 
-        if (s3Image1 instanceof Error) throw s3Image1;
+        if (s3Image1 instanceof Error) throw new Error(`S3 Error: ${s3Image1.message}`);
 
         const s3Image2 =  await _saveImageController(image2Id, panelImage2.buffer, panelImage2.mimetype) as {id: string, } | Error;
 
-        if (s3Image2 instanceof Error) throw s3Image2;
+        if (s3Image2 instanceof Error) throw new Error(`S3 Error: ${s3Image2.message}`);
 
         const s3Image3 = await _saveImageController(image3Id, panelImage3.buffer, panelImage3.mimetype) as {id: string, } | Error;
 
-        if (s3Image3 instanceof Error) throw s3Image3;
+        if (s3Image3 instanceof Error) throw new Error(`S3 Error: ${s3Image3.message}`);
 
         // if gotten this far, everything worked
         await t.commit();
         return {
-            success: `Panel_Set successfully published`, panel_set: panel_set, hook: hook, panel1: panel1, panel2: panel2, panel3: panel3, image1: s3Image1, image2: s3Image2, image3: s3Image3, hooks: createdHooks
+            panel_set: panel_set.id, parent_hook: hook_id, panels: [panel1.id, panel2.id, panel3.id], images: [s3Image1.id, s3Image2.id, s3Image3.id], hooks: createdHooks
         };
     }
     catch (err) {

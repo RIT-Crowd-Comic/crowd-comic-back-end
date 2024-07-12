@@ -48,7 +48,6 @@ const _createHookController = (sequelize: Sequelize) => async (position: Json, c
 const createHook = async (req: Request, res: Response): Promise<Response> => {
     const position : Json = req.body.position;
     const current_panel_id : number = req.body.current_panel_id;
-    const next_panel_set_id : number = req.body.next_panel_set_id;
 
     let validArgs = assertArgumentsDefined({ position, current_panel_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
@@ -58,7 +57,7 @@ const createHook = async (req: Request, res: Response): Promise<Response> => {
     if (!validArgs.success) return res.status(400).json(validArgs);
 
 
-    const response = await _createHookController(sequelize)(position, current_panel_id, next_panel_set_id);
+    const response = await _createHookController(sequelize)(position, current_panel_id, null);
 
     return sanitizeResponse(response, res);
 

@@ -16,12 +16,6 @@ const port = process.env.PORT || process.env.NODE_PORT || 4000;
 
 const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, './api-autogen-spec.json'), 'utf-8'));
 
-declare module 'express-session' {
-    interface SessionData {
-        userId: number;
-    }
-}
-
 // set up database before connecting server
 setupDatabase().then(() => {
     const app = express();
@@ -42,7 +36,6 @@ setupDatabase().then(() => {
     app.use(helpers.errorHandler);
 
     // session setup
-
 
     // host swagger OAS spec file
     app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));

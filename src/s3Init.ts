@@ -41,7 +41,7 @@ async function createBucket() {
         console.log('Bucket created successfully:', response);
     }
     catch (error) {
-        console.error('Error creating bucket:', error);
+        console.error('S3 Error: Error creating bucket:', error);
     }
 }
 

@@ -11,7 +11,6 @@ import { _saveImageController, validateImageFile } from './image';
 import { _createPanelSetController } from './panelSet';
 import { IPanelSet } from '../models';
 import crypto from 'crypto';
-import { S3Client } from '@aws-sdk/client-s3';
 
 // types 
 type hook = {position : Json, panel_index : number}

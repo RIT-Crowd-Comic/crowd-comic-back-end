@@ -5,13 +5,20 @@ import { getUserByID } from '../services/userService';
 import { assertArgumentsDefined, sanitizeResponse } from './utils';
 import { sequelize } from '../database';
 
+/**
+ * Creates a session
+ * @param {string} user_id ID of user to create a session for
+ * @returns Session ID and User ID or an error
+ */
 const _createSessionController = (sequelize: Sequelize) => async (user_id: string) => {
     try {
-        //Check if user exists
-        if(await getUserByID(sequelize)(user_id) == null) throw new Error(`no user found with id ${user_id}`);
 
-        return await sessionService.createSession(sequelize)({user_id: user_id});
-    } catch (err) {
+        // Check if user exists
+        if (await getUserByID(sequelize)(user_id) == null) throw new Error(`no user found with id ${user_id}`);
+
+        return await sessionService.createSession(sequelize)(user_id);
+    }
+    catch (err) {
         return err;
     }
 };
@@ -19,8 +26,8 @@ const _createSessionController = (sequelize: Sequelize) => async (user_id: strin
 const createSession = async (req: Request, res: Response): Promise<Response> => {
     const user_id: string = req.body.user_id;
 
-    const validArgs = assertArgumentsDefined({user_id});
-    if(!validArgs.success) return res.status(400).json(validArgs);
+    const validArgs = assertArgumentsDefined({ user_id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _createSessionController(sequelize)(user_id);
 
@@ -39,18 +46,24 @@ const createSession = async (req: Request, res: Response): Promise<Response> => 
     */
 };
 
+/**
+ * Get session data from a session id
+ * @param {string} id Session ID to query 
+ * @returns Data from the queried session
+ */
 const _getSessionController = (sequelize: Sequelize) => async (id: string) => {
     try {
         return await sessionService.getSession(sequelize)(id);
-    } catch (err) {
+    }
+    catch (err) {
         return err;
     }
 };
 
 const getSession = async (req: Request, res: Response): Promise<Response> => {
     const id = req.params.id;
-    const validArgs = assertArgumentsDefined({id});
-    if(!validArgs.success) return res.status(400).json(validArgs);
+    const validArgs = assertArgumentsDefined({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
 
     const response = await _getSessionController(sequelize)(id);
 
@@ -76,4 +89,6 @@ const getSession = async (req: Request, res: Response): Promise<Response> => {
     */
 };
 
-export {createSession, getSession, _createSessionController, _getSessionController}
+export {
+    createSession, getSession, _createSessionController, _getSessionController
+};

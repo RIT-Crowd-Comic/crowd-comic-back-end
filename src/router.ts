@@ -37,9 +37,8 @@ export default (app: Express) => {
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser);
     app.get('/trunks', panelSet.getAllTrunkSets);
     app.get('/tree/:id', panelSet.getTree);
-    app.get('/session/:id', session.getSession);
-
     app.get('/populate', populate.populate);
+    app.get('/session/:id', session.getSession);
     app.get('*', utils.notFound);
 
     app.post('/publish', upload.fields([

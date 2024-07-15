@@ -36,122 +36,6 @@
         }
       }
     },
-    "/publish": {
-      "post": {
-        "tags": [
-          "publish"
-        ],
-        "description": "",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "parameters": [
-          {
-            "name": "image1",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-1."
-          },
-          {
-            "name": "image2",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-2."
-          },
-          {
-            "name": "image3",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-3."
-          },
-          {
-            "name": "data",
-            "in": "formData",
-            "required": true,
-            "description": "author id and hook array",
-            "type": "string"
-          },
-          {
-            "name": "Data Template",
-            "in": "body",
-            "description": "Schema for the data",
-            "schema": {
-              "$ref": "#/definitions/publish"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/publishResponse"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/saveimage": {
-      "post": {
-        "tags": [
-          "image"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "image file",
-            "in": "body",
-            "description": "the image to save",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "image": {
-                  "type": "string",
-                  "example": "asdas3dfsdf.png"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns the id of the saved image",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/getImage/{id}": {
       "get": {
         "tags": [
@@ -164,14 +48,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "the id of the image to load",
-            "schema": {
-              "$ref": "#/definitions/getImage"
-            }
           }
         ],
         "responses": {
@@ -211,7 +87,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "number"
           }
@@ -259,7 +135,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "number"
           }
@@ -320,7 +196,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "number"
           }
@@ -374,7 +250,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "number"
           }
@@ -428,18 +304,34 @@
     },
     "/panel_sets/{ids}/panels": {
       "get": {
+        "tags": [
+          "panel"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "ids",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Array of numbers ex: 1-2-3-4"
           }
         ],
         "responses": {
+          "200": {
+            "description": "An array of panels",
+            "schema": {
+              "$ref": "#/definitions/panelArray"
+            }
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -453,7 +345,7 @@
         "parameters": [
           {
             "name": "panel_set_id",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "number"
           },
@@ -465,8 +357,8 @@
           },
           {
             "name": "id",
-            "in": "query",
-            "type": "number"
+            "type": "number",
+            "in": "query"
           }
         ],
         "responses": {
@@ -686,23 +578,50 @@
     },
     "/tree/{id}": {
       "get": {
+        "tags": [
+          "panel-set"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
+          "200": {
+            "description": "Returns an array of panel sets and their children"
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "a panel with the id of \"${id}\" cannot be found"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/dumb": {
+    "/populate": {
       "get": {
         "description": "",
         "responses": {
@@ -730,6 +649,118 @@
         }
       }
     },
+    "/publish": {
+      "post": {
+        "tags": [
+          "publish"
+        ],
+        "description": "",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "image1",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-1."
+          },
+          {
+            "name": "image2",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-2."
+          },
+          {
+            "name": "image3",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-3."
+          },
+          {
+            "name": "data",
+            "in": "formData",
+            "required": true,
+            "description": "author id and hook array",
+            "type": "string"
+          },
+          {
+            "name": "Data Template",
+            "in": "body",
+            "description": "Schema for the data",
+            "schema": {
+              "$ref": "#/definitions/publish"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/publishResponse"
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/saveimage": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "description": "",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "image",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image to save."
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "image-id"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/createHook": {
       "post": {
         "tags": [
@@ -747,9 +778,6 @@
                   "example": "any"
                 },
                 "current_panel_id": {
-                  "example": "any"
-                },
-                "next_panel_set_id": {
                   "example": "any"
                 }
               }
@@ -1172,10 +1200,68 @@
     },
     "/addSetToHook": {
       "patch": {
+        "tags": [
+          "hook"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Connect a hook to a panel_set",
+            "schema": {
+              "$ref": "#/definitions/addSetToHookDefinition"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "The altered hook",
+            "schema": {
+              "$ref": "#/definitions/hook"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -1233,14 +1319,8 @@
           "example": 0
         },
         "position": {
-          "type": "array",
-          "example": [
-            0,
-            0
-          ],
-          "items": {
-            "type": "number"
-          }
+          "type": "string",
+          "example": "{ [{\"x\": 4, \"y\": 1}, {\"x\": 4, \"y\": 1}] }"
         },
         "current_panel_id": {
           "type": "number",
@@ -1257,7 +1337,7 @@
       "properties": {
         "author_id": {
           "type": "string",
-          "example": "fda3215f-51a3-46e7-b1c4-b5c74f931f94"
+          "example": "ad64a986-16c6-4f59-a944-3f80b0cbfb05"
         },
         "hooks": {
           "type": "array",
@@ -1286,6 +1366,10 @@
               }
             }
           }
+        },
+        "hook_id": {
+          "type": "number",
+          "example": 1
         }
       }
     },
@@ -1310,6 +1394,35 @@
         }
       }
     },
+    "panelArray": {
+      "type": "object",
+      "properties": {
+        "panels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 0
+              },
+              "image": {
+                "type": "string",
+                "example": "path/to/image"
+              },
+              "index": {
+                "type": "number",
+                "example": 0
+              },
+              "panel_set_id": {
+                "type": "number",
+                "example": 0
+              }
+            }
+          }
+        }
+      }
+    },
     "session": {
       "type": "object",
       "properties": {
@@ -1321,9 +1434,13 @@
           "type": "string",
           "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
         },
-        "created_at": {
-          "type": "number",
-          "example": 1
+        "createdAt": {
+          "type": "string",
+          "example": "2024-07-12T15:29:19.550Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2024-07-12T15:29:19.550Z"
         }
       }
     },
@@ -1353,23 +1470,6 @@
         }
       }
     },
-    "publishDefinition": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string",
-          "example": "example@example.com"
-        },
-        "password": {
-          "type": "string",
-          "example": "asdfASDF1234"
-        },
-        "display_name": {
-          "type": "string",
-          "example": "John Doe"
-        }
-      }
-    },
     "publishResponse": {
       "type": "object",
       "properties": {
@@ -1379,12 +1479,16 @@
         }
       }
     },
-    "getImage": {
+    "addSetToHookDefinition": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string",
-          "example": "asdsdfwdf6sdf8e"
+        "hook_id": {
+          "type": "number",
+          "example": 1
+        },
+        "panel_set_id": {
+          "type": "number",
+          "example": 1
         }
       }
     }

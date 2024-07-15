@@ -9,7 +9,9 @@ import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
 import * as session from './requestHandlers/session';
 import * as publish from './requestHandlers/publish';
+import * as populate from './requestHandlers/populate';
 import cors from 'cors';
+
 
 /**
  * Route all incoming requests
@@ -23,12 +25,6 @@ export default (app: Express) => {
     app.use(cors());
     app.get('/', help);
 
-    app.post('/publish', upload.fields([
-        { name: 'image1', maxCount: 1 },
-        { name: 'image2', maxCount: 1 },
-        { name: 'image3', maxCount: 1 }
-    ]), publish.publish);
-    app.post('/saveimage', upload.single('image'), image.saveImage);
     app.get('/getImage/:id', image.getImage);
 
     app.get('/hook/:id', hook.getHook);
@@ -41,10 +37,17 @@ export default (app: Express) => {
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser);
     app.get('/trunks', panelSet.getAllTrunkSets);
     app.get('/tree/:id', panelSet.getTree);
-    app.get('/dumb', panelSet.dumbDumb);
     app.get('/session/:id', session.getSession);
 
+    app.get('/populate', populate.populate);
     app.get('*', utils.notFound);
+
+    app.post('/publish', upload.fields([
+        { name: 'image1', maxCount: 1 },
+        { name: 'image2', maxCount: 1 },
+        { name: 'image3', maxCount: 1 }
+    ]), publish.publish);
+    app.post('/saveimage', upload.single('image'), image.saveImage);
 
     app.post('/createHook', hook.createHook);
     app.post('/createPanel', panel.createPanel);

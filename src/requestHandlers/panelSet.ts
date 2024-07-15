@@ -5,10 +5,8 @@ import {
     assertArgumentsDefined, assertArgumentsNumber, assertArgumentsString, sanitizeResponse
 } from './utils';
 import { sequelize } from '../database';
-import * as PanelService from '../services/panelService';
 import * as UserService from '../services/userService';
-import * as HookService from '../services/hookService';
-import { IPanel, IPanelSet, IUser } from '../models';
+import { IPanelSet } from '../models';
 
 /**
  * Create a new panel set
@@ -77,7 +75,7 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
     /*  
         #swagger.tags = ['panel-set']
         #swagger.parameters['id'] = {
-            in: 'query',
+
             type: 'number'
         }
         #swagger.responses[200] = {
@@ -211,6 +209,23 @@ const getTree = async(request: Request, res: Response) : Promise<Response> => {
         } as PanelSetFrontEnd);
     }
     return sanitizeResponse(panel_sets, res, 'Custom 404 error');
+
+    /*  
+        #swagger.tags = ['panel-set']
+        #swagger.parameters['id'] = {
+            type: 'number'
+        }
+        #swagger.responses[200] = {
+            description: 'Returns an array of panel sets and their children',
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'a panel with the id of "${id}" cannot be found' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
@@ -234,68 +249,6 @@ const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
     }
 };
 
-// test methods so I don't have to run all of these queries every time I want to test something
-const dumbDumb = async (request: Request, res: Response) => {
-    const response = await _dumbDumbController(sequelize)();
-    return sanitizeResponse(response, res, '');
-};
-
-const _dumbDumbController = (sequelize: Sequelize) => async() => {
-    try {
-
-        // create a user
-        const user = await UserService.createUser(sequelize)({
-            password:     'Password!',
-            email:        'email@yaoo.com',
-            display_name: 'display'
-        }) as IUser;
-
-        // create panel sets
-        const panel_set_count = 10;
-        const panel_sets = [];
-        for (let i = 0; i < panel_set_count; i++) {
-            panel_sets.push(await PanelSetService.createPanelSet(sequelize)({ author_id: user.id }) as IPanelSet);
-        }
-        const panel_data = [1, 2, 3, 4, 4, 4];
-
-        // create 1 panel for each panel set
-        for (let i = 0; i < panel_data.length; i++) {
-            await PanelService.createPanel(sequelize)({
-                image:        '',
-                index:        0,
-                panel_set_id: panel_data[i],
-            }) as IPanel;
-        }
-
-        const hookConnection = [
-            { panel_id: 1, next_panel_set_id: 2 },
-            { panel_id: 1, next_panel_set_id: 3 },
-            { panel_id: 2, next_panel_set_id: 4 },
-            { panel_id: 4, next_panel_set_id: 5 },
-            { panel_id: 5, next_panel_set_id: 6 },
-            { panel_id: 6, next_panel_set_id: 7 }
-        ];
-
-        // add hooks
-        for (const hook of hookConnection) {
-            await HookService.createHook(sequelize)({
-                position: {
-                    conditions: {},
-                    path:       '',
-                    value:      ''
-                },
-                current_panel_id:  hook.panel_id,
-                next_panel_set_id: hook.next_panel_set_id
-            });
-        }
-
-        return { success: true };
-    }
-    catch (err) {
-        return err;
-    }
-};
-
 export {
-    _getTreeController, getTree, dumbDumb, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
+    _getTreeController, getTree, createPanelSet, getPanelSetByID, getAllPanelSetsFromUser, getAllTrunkSets, _createPanelSetController, _getAllPanelSetsFromUserController, _getPanelSetByIDController, _getAllTrunkSetsController
 };

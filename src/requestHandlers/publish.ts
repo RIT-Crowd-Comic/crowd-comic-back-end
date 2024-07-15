@@ -5,11 +5,12 @@ import {
 } from './utils';
 import { sequelize } from '../database';
 import { createPanel } from '../services/panelService';
-import { createHook } from '../services/hookService';
+import { addSetToHook, createHook } from '../services/hookService';
 import { Json } from 'sequelize/types/utils';
 import { _saveImageController, validateImageFile } from './image';
 import { _createPanelSetController } from './panelSet';
 import { IPanelSet } from '../models';
+import crypto from 'crypto';
 
 // types 
 type hook = {position : Json, panel_index : number}
@@ -20,13 +21,13 @@ const _publishController = (sequelize : Sequelize) => async (
     panelImage1 : Express.Multer.File,
     panelImage2 : Express.Multer.File,
     panelImage3: Express.Multer.File,
-    hooks : hookArray
+    hooks : hookArray,
+    hook_id : number | undefined
 ) => {
 
     // make transaction
     const t = await sequelize.transaction();
     try {
-        let finalResponseObject  = '';
 
         // make panel_set, call the controller as author validation is needed
         const panel_set = await _createPanelSetController(sequelize, t)(author_id) as IPanelSet | Error;
@@ -34,12 +35,18 @@ const _publishController = (sequelize : Sequelize) => async (
         // validate panel set creation, if not expected, its an error so throw it
         if (panel_set instanceof Error) throw panel_set;
 
-        finalResponseObject += JSON.stringify(panel_set);
+        // add setTohook
+        let hook;
+        if (hook_id) {
+            hook = await addSetToHook(sequelize, t)(hook_id, panel_set.id);
+            if (hook === undefined) throw new Error('Failure to create hook as the hook_id was invalid');
+        }
+
 
         // generate ids for each panel image
-        const image1Id = `${author_id}_${panel_set.id}_${panelImage1.originalname}`;
-        const image2Id = `${author_id}_${panel_set.id}_${panelImage2.originalname}`;
-        const image3Id = `${author_id}_${panel_set.id}_${panelImage3.originalname}`;
+        const image1Id = `${panel_set.id}_${crypto.randomUUID()}`;
+        const image2Id = `${panel_set.id}_${crypto.randomUUID()}`;
+        const image3Id = `${panel_set.id}_${crypto.randomUUID()}`;
 
         // make panels, call service as panel_set creation worked
         const panel1 = await createPanel(sequelize, t)({
@@ -60,41 +67,36 @@ const _publishController = (sequelize : Sequelize) => async (
             panel_set_id: panel_set.id,
         });
 
-        finalResponseObject += JSON.stringify(panel1);
-        finalResponseObject += JSON.stringify(panel2);
-        finalResponseObject += JSON.stringify(panel3);
-
-
         // create hooks and validate
+        const createdHooks = [] as Array<number>;
         await Promise.all(hooks.map(async (hook) => {
             const matchedPanel = [panel1, panel2, panel3].find(panel => panel.index === hook.panel_index);
             if (matchedPanel === undefined) throw new Error('Hook panel_index was invalid');
-            finalResponseObject += JSON.stringify(await createHook(sequelize, t)({
+            createdHooks.push((await createHook(sequelize, t)({
                 position:          hook.position,
                 current_panel_id:  matchedPanel.id,
                 next_panel_set_id: null
-            }));
+            })).id);
         }));
 
         // save to amazon 
         const s3Image1 = await _saveImageController(image1Id, panelImage1.buffer, panelImage1.mimetype) as {id: string, } | Error;
-        if (s3Image1 instanceof Error) throw s3Image1;
+
+        if (s3Image1 instanceof Error) throw new Error(`S3 Error: ${s3Image1.message}`);
 
         const s3Image2 =  await _saveImageController(image2Id, panelImage2.buffer, panelImage2.mimetype) as {id: string, } | Error;
-        if (s3Image2 instanceof Error) throw s3Image2;
+
+        if (s3Image2 instanceof Error) throw new Error(`S3 Error: ${s3Image2.message}`);
 
         const s3Image3 = await _saveImageController(image3Id, panelImage3.buffer, panelImage3.mimetype) as {id: string, } | Error;
-        if (s3Image3 instanceof Error) throw s3Image3;
 
-
-        finalResponseObject += JSON.stringify(s3Image1);
-        finalResponseObject += JSON.stringify(s3Image2);
-        finalResponseObject += JSON.stringify(s3Image3);
-
+        if (s3Image3 instanceof Error) throw new Error(`S3 Error: ${s3Image3.message}`);
 
         // if gotten this far, everything worked
         await t.commit();
-        return { success: `Panel_Set successfully published. ${finalResponseObject.toString()}` };
+        return {
+            panel_set: panel_set.id, parent_hook: hook_id, panels: [panel1.id, panel2.id, panel3.id], images: [s3Image1.id, s3Image2.id, s3Image3.id], hooks: createdHooks
+        };
     }
     catch (err) {
         await t.rollback();
@@ -123,6 +125,9 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     // get the author data
     const author_id = data.author_id;
 
+    // const parent
+    const hook_id = data.hook_id;
+
     // validate
     let validArgs = assertArgumentsDefined({ author_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
@@ -143,7 +148,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
     // make sure all three exist
     if (!panelImage1 || !panelImage2 || !panelImage3) {
-        return res.status(400).json({ message: 'All three files must be uploaded' });
+        return res.status(400).json({ message: 'Exactly three images files must be uploaded' });
     }
 
     // Validate all three images
@@ -164,7 +169,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     // ensure hooks exist
     if (!hooks) return res.status(400).json({ error: 'No hooks uploaded' });
 
-    if (!Array.isArray(hooks) || hooks.length < 3) return res.status(400).json({ error: 'At least 3 hooks need to be uploaded.' });
+    if (!Array.isArray(hooks) || hooks.length != 3) return res.status(400).json({ error: '3 hooks need to be uploaded.' });
 
     // validate
     for (let i = 0; i < hooks.length; i++) {
@@ -179,7 +184,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     }
 
     // call the controller
-    const response = await _publishController(sequelize)(author_id, panelImage1, panelImage2, panelImage3, hooks);
+    const response = await _publishController(sequelize)(author_id, panelImage1, panelImage2, panelImage3, hooks, hook_id);
 
     return sanitizeResponse(response, res);
 

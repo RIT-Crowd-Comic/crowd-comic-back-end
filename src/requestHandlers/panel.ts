@@ -151,7 +151,6 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
     /*
         #swagger.tags = ['panel']
         #swagger.parameters['id'] = {
-            in: 'query',
             type: 'number'
         }
         #swagger.responses[200] = {
@@ -196,11 +195,9 @@ const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Pro
     /*
         #swagger.tags = ['panel']
         #swagger.parameters['panel_set_id'] = {
-            in: 'query',
             type: 'number'
         }
             #swagger.parameters['id'] = {
-            in: 'query',
             type: 'number'
         }
         #swagger.responses[200] = {
@@ -241,6 +238,22 @@ const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Re
         return res.status(400).json(`"${arr.join(' ')}" contains items that are not numbers`);
     const response = await _getPanelsFromPanelSetIDsController(sequelize)(arr);
     return sanitizeResponse(response, res, `No panel set(s) with the id(s) ${arr.join(', ')} could be found`);
+
+    /*
+        #swagger.tags = ['panel']
+         #swagger.parameters['ids'] = {
+            type: 'string',
+            description: 'Array of numbers ex: 1-2-3-4'
+        }
+        #swagger.responses[200] = {
+            description: 'An array of panels',
+            schema: { $ref: '#/definitions/panelArray'  }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 export {

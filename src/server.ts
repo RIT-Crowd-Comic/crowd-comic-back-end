@@ -35,7 +35,7 @@ setupDatabase().then(() => {
     app.use(helpers.setCSP);
     app.use(helpers.errorHandler);
 
-    // we could probably use sessions to secure user logins
+    // session setup
 
     // host swagger OAS spec file
     app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));

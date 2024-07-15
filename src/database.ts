@@ -45,6 +45,9 @@ const setup = async () => {
     sequelize.models.panel_set.hasOne(sequelize.models.hook, { foreignKey: 'next_panel_set_id' });
     sequelize.models.hook.belongsTo(sequelize.models.panel_set, { foreignKey: 'next_panel_set_id' });
 
+    sequelize.models.user.hasOne(sequelize.models.session, { foreignKey: { name: 'user_id' } });
+    sequelize.models.session.belongsTo(sequelize.models.user, { foreignKey: { name: 'user_id' } });
+
     // sync the table columns, create any tables that don't exist
     await sequelize.sync({ force: true });
 

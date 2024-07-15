@@ -24,13 +24,22 @@ const _populate = (sequelize: Sequelize) => async() => {
             display_name: 'display'
         }) as IUser;
 
-        const image1 = {} as Express.Multer.File;
-        const image2 = {} as Express.Multer.File;
-        const image3 = {} as Express.Multer.File;
-        const hooks = [{ position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }, { position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }, { position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }];
-        const parent = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, undefined) as any;
-        const child = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, parent.hooks[0]);
-        return { parent: parent, child: child };
+        const image = {} as Express.Multer.File;
+        const hookString = JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`);
+
+        const hook1 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 1 }];
+        const hook2 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 1 }];
+        const hook3 = [{ position: hookString, panel_index: 1 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }];
+        const hook4 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }];
+        const hook5 = [{ position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }, { position: hookString, panel_index: 2 }];
+        const hook6 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }];
+        const publishes = [await _publishController(sequelize)(user.id, image, image, image, hook1, undefined) as any,
+            await _publishController(sequelize)(user.id, image, image, image, hook2, 1) as any,
+            await _publishController(sequelize)(user.id, image, image, image, hook3, 3) as any,
+            await _publishController(sequelize)(user.id, image, image, image, hook4, 2) as any,
+            await _publishController(sequelize)(user.id, image, image, image, hook5, 9) as any,
+            await _publishController(sequelize)(user.id, image, image, image, hook6, 4) as any];
+        return publishes.map(p => p instanceof Error ? p.message : p);
     }
     catch (err) {
         return err;

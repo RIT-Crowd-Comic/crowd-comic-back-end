@@ -29,7 +29,9 @@ const _populate = (sequelize: Sequelize) => async() => {
         const image3 = {} as Express.Multer.File;
         const hooks = [{ position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }, { position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }, { position: JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`), panel_index: 1 }];
         const parent = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, undefined) as any;
+        if(parent instanceof Error) throw new Error(`Populate had an error: ${parent.message}`);
         const child = await _publishController(sequelize)(user.id, image1, image2, image3, hooks, parent.hooks[0]);
+        if(child instanceof Error) throw new Error(`Populate had an error: ${parent.message}`);
         return { parent: parent, child: child };
     }
     catch (err) {

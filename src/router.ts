@@ -29,6 +29,7 @@ export default (app: Express) => {
 
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
+    app.get('/panel_sets/:id/hooks', hook.getAllHooksByPanelSetId);
     app.get('/panel/:id/hooks', hook.getPanelHooks);
     app.get('/panel_set/:id', panelSet.getPanelSetByID);
     app.get('/panel_sets/:ids/panels', panel.getPanelsFromPanelSetIDs);

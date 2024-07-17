@@ -54,7 +54,6 @@ export default (app: Express) => {
     app.post('/createPanelSet', panelSet.createPanelSet);
     app.post('/createUser', user.createUser);
 
-    // authentication needs to change soon
     app.post('/authenticate', user.authenticate);
     app.post('/createSession', session.createSession);
     app.post('/changePassword', user.changePassword);

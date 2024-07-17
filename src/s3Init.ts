@@ -10,7 +10,8 @@ try {
     const aws = new s3rver({
         port:      5000,
         silent:    true,
-        directory: '/tmp/s3rver_test_directory'
+        directory: '/tmp/s3rver_test_directory',
+        resetOnClose: true
     });
 
     aws.run(() => {

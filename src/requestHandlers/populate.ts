@@ -55,6 +55,10 @@ const _populate = (sequelize: Sequelize, panelImages: Array<Express.Multer.File>
         if(panelImages.length === 0){
             panelImages.push({} as Express.Multer.File);
             panelImages.push({} as Express.Multer.File);
+            panelImages.push({} as Express.Multer.File);
+            panelImages.push({} as Express.Multer.File);
+            panelImages.push({} as Express.Multer.File);
+            panelImages.push({} as Express.Multer.File);
         }
         const hookString = JSON.parse(`{ "position":[{"x": 1, "y": 1}]}`);
 

@@ -109,7 +109,7 @@ const assertArguments = (
     args: { [key: string]: any },
     predicate: (value: any) => boolean,
     message: string
-): { success: boolean, messages?: string[] } => {
+): { success: boolean, message?: string } => {
 
     // collect a list of error messages for invalid arguments
     const messages: string[] = [];
@@ -118,7 +118,7 @@ const assertArguments = (
     });
     if (messages.length > 0) return {
         success: false,
-        messages
+        message: messages.join('. ')
     };
     return { success: true };
 };

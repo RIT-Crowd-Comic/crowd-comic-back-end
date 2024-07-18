@@ -119,7 +119,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
         data = JSON.parse(request.body.data);
     }
     catch (e) {
-        return res.status(400).json({ error: 'data is not valid JSON and cannot be accepted' });
+        return res.status(400).json({ message: 'data is not valid JSON and cannot be accepted' });
     }
 
     // get the author data
@@ -153,13 +153,13 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
 
     // Validate all three images
     if (!validateImageFile(panelImage1)) {
-        return res.status(400).json({ error: 'Uploaded file 1 must be an image' });
+        return res.status(400).json({ message: 'Uploaded file 1 must be an image' });
     }
     if (!validateImageFile(panelImage2)) {
-        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
+        return res.status(400).json({ message: 'Uploaded file 2 must be an image' });
     }
     if (!validateImageFile(panelImage3)) {
-        return res.status(400).json({ error: 'Uploaded file 3 must be an image' });
+        return res.status(400).json({ message: 'Uploaded file 3 must be an image' });
     }
 
 
@@ -167,9 +167,9 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     const hooks = data.hooks;
 
     // ensure hooks exist
-    if (!hooks) return res.status(400).json({ error: 'No hooks uploaded' });
+    if (!hooks) return res.status(400).json({ message: 'No hooks uploaded' });
 
-    if (!Array.isArray(hooks) || hooks.length != 3) return res.status(400).json({ error: '3 hooks need to be uploaded.' });
+    if (!Array.isArray(hooks) || hooks.length != 3) return res.status(400).json({ message: '3 hooks need to be uploaded.' });
 
     // validate
     for (let i = 0; i < hooks.length; i++) {

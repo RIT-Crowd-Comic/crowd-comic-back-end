@@ -1,7 +1,6 @@
 import { Sequelize, Transaction } from 'sequelize';
-import { IHook, IPanel, IPanelSet } from '../models';
+import { IHook, IPanel } from '../models';
 import { Json } from 'sequelize/types/utils';
-import { sequelize } from '../database';
 
 interface HookConfig {
     position: Json,
@@ -42,18 +41,22 @@ const createHook = (sequelize: Sequelize, transaction?: Transaction) => async (n
 
 const getAllHooksByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: number) => {
     return await sequelize.models.hook.findAll({
-        include: [{
-          model: sequelize.models.panel,
-          required: true,
-          include: [{
-            model: sequelize.models.panel_set,
-            where: { id: panel_set_id },
-            required: true
-          }]
-        }],
+        include: [
+            {
+                model:    sequelize.models.panel,
+                required: true,
+                include:  [
+                    {
+                        model:    sequelize.models.panel_set,
+                        where:    { id: panel_set_id },
+                        required: true
+                    }
+                ]
+            }
+        ],
         order: [ ['id', 'ASC'] ]
-      });
-}
+    });
+};
 
 /**
  * Gets a single hook based on id

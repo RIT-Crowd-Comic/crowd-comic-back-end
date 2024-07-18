@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { IUser } from '../models';
+import { ISession, IUser } from '../models';
 import bcrypt from 'bcrypt';
 
 /**
@@ -96,6 +96,17 @@ const getUserByID = (sequelize: Sequelize) => async (id: string) => {
     return await sequelize.models.user.findByPk(id) as IUser;
 };
 
+/**
+ * Gets a user object from a session id
+ * @param {string} session_id ID of session to query
+ * @returns {IUser} User associated with given session
+ */
+const getUserBySession = (sequelize: Sequelize) => async (session_id: string) => {
+    const session = await sequelize.models.session.findByPk(session_id) as ISession;
+    if (!session) return null;
+    return await sequelize.models.user.findByPk(session.user_id) as IUser;
+};
+
 export {
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession
 };

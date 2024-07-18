@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as UserService from '../services/userService';
+import { getSession } from '../services/sessionService';
 import { Sequelize } from 'sequelize';
 import {
     validatePassword,
@@ -314,7 +315,51 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
     */
 };
 
+/**
+ * Get a user with a session id
+ * @param {string} session_id ID of session to get user from
+ * @returns 
+ */
+const _getUserBySessionController = (sequelize: Sequelize) => async (session_id: string) => {
+    try {
+        const session = await getSession(sequelize)(session_id ?? '');
+        if (session == null) throw new Error(`Session with an id of "${session_id}" does not exist`);
+
+        return await UserService.getUserBySession(sequelize)(session_id);
+    }
+    catch (err) {
+        return err;
+    }
+};
+
+const getUserBySession = async (req: Request, res: Response) => {
+    const id = (typeof req.params.id === 'string') ? req.params.id : '';
+    const validArgs = assertArgumentsString({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await _getUserBySessionController(sequelize)(id);
+    return sanitizeResponse(response, res, `No user could be found at session id ${id}`);
+
+    // API documentation
+    /*  
+        #swagger.tags = ['user']
+        #swagger.parameters['id'] = {
+            type: 'string'
+        }
+        #swagger.responses[200] = {
+            description: 'A user',
+            schema: [{ $ref: '#/definitions/user' }]
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: `No user could be found at session id ${id}` }
+        }
+        #swagger.responses[500] = {}
+    */
+};
+
 export {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController, _getUserBySessionController, getUserBySession
 };

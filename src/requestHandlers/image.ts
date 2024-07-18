@@ -1,5 +1,4 @@
 import * as imageService from '../services/imageService';
-import * as panelSetService from '../services/panelSetService';
 
 import { sanitizeResponse, assertArgumentsString, assertArgumentsNumber } from './utils';
 import { Request, Response } from 'express';
@@ -100,10 +99,11 @@ const _getAllImageUrlsByPanelSetIdController = async (id: number) => {
     try {
         const panels = await imageService.getAllImagesByPanelSetId(sequelize)(id) as IPanel[];
         return await Promise.all(panels.map(async (panel) => await imageService.getImage(panel.image)));
-    } catch (error) {
+    }
+    catch (error) {
         return error;
     }
-}
+};
 
 
 // save an image request
@@ -124,5 +124,5 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
 
 
 export {
-    getAllImageUrlsByPanelSetId,  _getAllImageUrlsByPanelSetIdController, saveImage, getImage, _saveImageController, _getImageController, validateImageFile
+    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, saveImage, getImage, _saveImageController, _getImageController, validateImageFile
 };

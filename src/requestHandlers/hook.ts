@@ -274,16 +274,17 @@ const getAllHooksByPanelSetId = async (req: Request, res: Response): Promise<Res
     const id = req.params.id;
     const response = await _getAllHooksByPanelSetIdController(sequelize)(Number(id));
     return sanitizeResponse(response, res, `A panel set with a id of ${id} doesn't exist`);
-}
+};
 
 /**
  * @param panel_set_id the id of the panel set that is being checked for hooks
  */
-const _getAllHooksByPanelSetIdController = (sequelize: Sequelize) => async(panel_set_id: number) =>  {
+const _getAllHooksByPanelSetIdController = (sequelize: Sequelize) => async(panel_set_id: number) => {
     try {
-        //verify panel_set exists
+
+        // verify panel_set exists
         const panelSet = await sequelize.models.panel_set.findByPk(panel_set_id, { include: sequelize.models.panel }) as IPanelSet;
-        if(panelSet === null) {
+        if (panelSet === null) {
             throw new Error(`A panel set with the id of ${panel_set_id} doesn't exist`);
         }
         return hookService.getAllHooksByPanelSetId(sequelize)(panel_set_id);
@@ -291,7 +292,7 @@ const _getAllHooksByPanelSetIdController = (sequelize: Sequelize) => async(panel
     catch (err) {
         return err;
     }
-}
+};
 export {
     getAllHooksByPanelSetId, createHook, getHook, getPanelHooks, addSetToHook, _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController, _validateHookConnectionController, _getAllHooksByPanelSetIdController
 };

@@ -28,10 +28,10 @@ const uploadImagesPopulate = async (request: Request, res: Response) => {
     // get specific image data
     const panelImage1 = files['image1'] ? files['image1'][0] : null;
     const panelImage2 = files['image2'] ? files['image2'][0] : null;
-    const panelImage3 = files['image1'] ? files['image1'][0] : null;
-    const panelImage4 = files['image2'] ? files['image2'][0] : null;
-    const panelImage5 = files['image1'] ? files['image1'][0] : null;
-    const panelImage6 = files['image2'] ? files['image2'][0] : null;
+    const panelImage3 = files['image3'] ? files['image3'][0] : null;
+    const panelImage4 = files['image4'] ? files['image4'][0] : null;
+    const panelImage5 = files['image5'] ? files['image5'][0] : null;
+    const panelImage6 = files['image6'] ? files['image6'][0] : null;
 
 
     // make sure all six exist

@@ -28,10 +28,14 @@ const uploadImagesPopulate = async (request: Request, res: Response) => {
     // get specific image data
     const panelImage1 = files['image1'] ? files['image1'][0] : null;
     const panelImage2 = files['image2'] ? files['image2'][0] : null;
+    const panelImage3 = files['image1'] ? files['image1'][0] : null;
+    const panelImage4 = files['image2'] ? files['image2'][0] : null;
+    const panelImage5 = files['image1'] ? files['image1'][0] : null;
+    const panelImage6 = files['image2'] ? files['image2'][0] : null;
 
 
-    // make sure all three exist
-    if (!panelImage1 || !panelImage2) {
+    // make sure all six exist
+    if (!panelImage1 || !panelImage2 || !panelImage3 || !panelImage4 || !panelImage5 ||  !panelImage6) {
         return res.status(400).json({ message: 'Exactly three images files must be uploaded' });
     }
 
@@ -42,8 +46,20 @@ const uploadImagesPopulate = async (request: Request, res: Response) => {
     if (!validateImageFile(panelImage2)) {
         return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
     }
+    if (!validateImageFile(panelImage3)) {
+        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
+    }
+    if (!validateImageFile(panelImage4)) {
+        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
+    }
+    if (!validateImageFile(panelImage5)) {
+        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
+    }
+    if (!validateImageFile(panelImage6)) {
+        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
+    }
 
-    const response = await _populate(sequelize, [panelImage1, panelImage2])();
+    const response = await _populate(sequelize, [panelImage1, panelImage2, panelImage3, panelImage4, panelImage5, panelImage6])();
     return sanitizeResponse(response, res, '');
 };
 
@@ -69,12 +85,12 @@ const _populate = (sequelize: Sequelize, panelImages: Array<Express.Multer.File>
         const hook4 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }];
         const hook5 = [{ position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }, { position: hookString, panel_index: 2 }];
         const hook6 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }];
-        const publishes = [await _publishController(sequelize)(user.id, panelImages[0], panelImages[0], panelImages[0], hook1, undefined) as any,
-            await _publishController(sequelize)(user.id, panelImages[1], panelImages[1], panelImages[1], hook2, 1) as any,
-            await _publishController(sequelize)(user.id, panelImages[1], panelImages[1], panelImages[1], hook3, 3) as any,
-            await _publishController(sequelize)(user.id, panelImages[0], panelImages[0], panelImages[0], hook4, 2) as any,
-            await _publishController(sequelize)(user.id, panelImages[0], panelImages[0], panelImages[0], hook5, 9) as any,
-            await _publishController(sequelize)(user.id, panelImages[0], panelImages[0], panelImages[0], hook6, 4) as any];
+        const publishes = [await _publishController(sequelize)(user.id, panelImages[0], panelImages[1], panelImages[2], hook1, undefined) as any,
+            await _publishController(sequelize)(user.id, panelImages[3], panelImages[4], panelImages[5], hook2, 1) as any,
+            await _publishController(sequelize)(user.id, panelImages[3], panelImages[4], panelImages[5], hook3, 3) as any,
+            await _publishController(sequelize)(user.id, panelImages[0], panelImages[1], panelImages[2], hook4, 2) as any,
+            await _publishController(sequelize)(user.id, panelImages[0], panelImages[1], panelImages[2], hook5, 9) as any,
+            await _publishController(sequelize)(user.id, panelImages[0], panelImages[1], panelImages[2], hook6, 4) as any];
         return publishes.map(p => p instanceof Error ? p.message : p);
     }
     catch (err) {

@@ -1,7 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { ISession, IUser } from '../models';
 import bcrypt from 'bcrypt';
-import { sequelize } from '../database';
 
 /**
  * Information required to create a new user
@@ -104,7 +103,7 @@ const getUserByID = (sequelize: Sequelize) => async (id: string) => {
  */
 const getUserBySession = (sequelize: Sequelize) => async (session_id: string) => {
     const session = await sequelize.models.session.findByPk(session_id) as ISession;
-    if(!session) return null;
+    if (!session) return null;
     return await sequelize.models.user.findByPk(session.user_id) as IUser;
 };
 

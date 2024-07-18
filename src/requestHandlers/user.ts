@@ -326,7 +326,8 @@ const _getUserBySessionController = (sequelize: Sequelize) => async (session_id:
         if (session == null) throw new Error(`Session with an id of "${session_id}" does not exist`);
 
         return await UserService.getUserBySession(sequelize)(session_id);
-    } catch (err) {
+    }
+    catch (err) {
         return err;
     }
 };
@@ -356,7 +357,7 @@ const getUserBySession = async (req: Request, res: Response) => {
         }
         #swagger.responses[500] = {}
     */
-}
+};
 
 export {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,

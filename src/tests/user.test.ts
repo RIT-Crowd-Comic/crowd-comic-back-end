@@ -133,5 +133,5 @@ describe('Get User By Session (Controller)', () => {
         (userService.getUserBySession as jest.Mock).mockReturnValue(() => { throw new Error(); });
         const response = await _getUserBySessionController(sequelizeMock())(undefined as any);
         expect(response).toBeInstanceOf(Error);
-    })
+    });
 });

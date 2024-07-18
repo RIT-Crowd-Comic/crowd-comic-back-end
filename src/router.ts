@@ -48,6 +48,10 @@ export default (app: Express) => {
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
     app.post('/saveimage', upload.single('image'), image.saveImage);
+    app.post('/uploadImages',upload.fields([
+        { name: 'image1', maxCount: 1 },
+        { name: 'image2', maxCount: 1 }]
+    ), populate.uploadImagesPopulate);
 
     app.post('/createHook', hook.createHook);
     app.post('/createPanel', panel.createPanel);

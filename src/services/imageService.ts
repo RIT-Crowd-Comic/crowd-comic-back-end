@@ -32,12 +32,11 @@ const getImage = async(id : string) =>{
     return { url: url };
 };
 
-const getAllImagessByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: number) => {
-    const images = sequelize.models.panel_set.findAll({
-        where: {
-            panel_set_id: panel_set_id 
-        },
+const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: number) => {
+    return sequelize.models.panel.findAll({
+        where: { panel_set_id: panel_set_id },
+        attributes: ['image', 'id'],
+        order: [ ['id', 'ASC'] ]
       });
-      console.log(images);
 }
-export { saveImage, getImage };
+export { saveImage, getImage, getAllImagesByPanelSetId };

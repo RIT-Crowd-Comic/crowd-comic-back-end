@@ -2,6 +2,7 @@ import { _getImageController, _saveImageController } from '../requestHandlers/im
 import * as imageService from '../services/imageService';
 jest.mock('../services/imageService');
 
+//todo: make tests for _getAllImagesByPanelSetIdController
 
 describe('Save Image', () => {
     const buffer: Buffer = Buffer.from([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]);

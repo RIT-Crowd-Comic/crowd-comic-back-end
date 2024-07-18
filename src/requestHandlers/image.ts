@@ -1,7 +1,11 @@
 import * as imageService from '../services/imageService';
-import { sanitizeResponse, assertArgumentsString } from './utils';
+import * as panelSetService from '../services/panelSetService';
+
+import { sanitizeResponse, assertArgumentsString, assertArgumentsNumber } from './utils';
 import { Request, Response } from 'express';
 import crypto from 'crypto';
+import { sequelize } from '../database';
+import { IPanel } from '../models';
 
 /**
  * saves an image in s3
@@ -92,12 +96,33 @@ const getImage = async (req: Request, res: Response): Promise<Response> => {
     */
 };
 
+const _getAllImageUrlsByPanelSetIdController = async (id: number) => {
+    try {
+        const panels = await imageService.getAllImagesByPanelSetId(sequelize)(id) as IPanel[];
+        return await Promise.all(panels.map(async (panel) => await imageService.getImage(panel.image)));
+    } catch (error) {
+        return error;
+    }
+}
+
+
+// save an image request
+const getAllImageUrlsByPanelSetId = async (req: Request, res: Response): Promise<Response> => {
+    const id = req.params.id;
+    const validArgs = assertArgumentsNumber({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    const response = await _getAllImageUrlsByPanelSetIdController(Number(id));
+    return sanitizeResponse(response, res, `A panel set with an id of ${id} does not exist`);
+
+};
+
 const validateImageFile = (file: Express.Multer.File | null): boolean => {
     if (!file) return false;
     const mimetype = typeof file.mimetype === 'string' ? file.mimetype : '';
     return mimetype.includes('image');
 };
 
+
 export {
-    saveImage, getImage, _saveImageController, _getImageController, validateImageFile
+    getAllImageUrlsByPanelSetId,  _getAllImageUrlsByPanelSetIdController, saveImage, getImage, _saveImageController, _getImageController, validateImageFile
 };

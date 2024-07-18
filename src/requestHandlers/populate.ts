@@ -18,48 +18,27 @@ const populate = async (request: Request, res: Response) => {
 const uploadImagesPopulate = async (request: Request, res: Response) => {
 
      // get image files
-    const files = request.files as { [fieldname: string]: Express.Multer.File[] };
+    const files = request.files as Express.Multer.File[] ;
 
     // check if not there
     if (!files) {
         return res.status(400).json({ message: 'No files uploaded' });
     }
 
-    // get specific image data
-    const panelImage1 = files['image1'] ? files['image1'][0] : null;
-    const panelImage2 = files['image2'] ? files['image2'][0] : null;
-    const panelImage3 = files['image3'] ? files['image3'][0] : null;
-    const panelImage4 = files['image4'] ? files['image4'][0] : null;
-    const panelImage5 = files['image5'] ? files['image5'][0] : null;
-    const panelImage6 = files['image6'] ? files['image6'][0] : null;
-
-
     // make sure all six exist
-    if (!panelImage1 || !panelImage2 || !panelImage3 || !panelImage4 || !panelImage5 ||  !panelImage6) {
+    if (files.length !== 6) {
         return res.status(400).json({ message: 'Exactly three images files must be uploaded' });
     }
 
-    // Validate all three images
-    if (!validateImageFile(panelImage1)) {
-        return res.status(400).json({ error: 'Uploaded file 1 must be an image' });
-    }
-    if (!validateImageFile(panelImage2)) {
-        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
-    }
-    if (!validateImageFile(panelImage3)) {
-        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
-    }
-    if (!validateImageFile(panelImage4)) {
-        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
-    }
-    if (!validateImageFile(panelImage5)) {
-        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
-    }
-    if (!validateImageFile(panelImage6)) {
-        return res.status(400).json({ error: 'Uploaded file 2 must be an image' });
-    }
+    files.forEach(file =>{
+         // Validate all three images
+        if (!validateImageFile(file)) {
+            return res.status(400).json({ error: 'Uploaded file 1 must be an image' });
+        }
+    })
 
-    const response = await _populate(sequelize, [panelImage1, panelImage2, panelImage3, panelImage4, panelImage5, panelImage6])();
+
+    const response = await _populate(sequelize, files)();
     return sanitizeResponse(response, res, '');
 };
 

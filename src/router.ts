@@ -34,6 +34,7 @@ export default (app: Express) => {
     app.get('/panel_sets/:ids/panels', panel.getPanelsFromPanelSetIDs);
     app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
     app.get('/user/:id', user.getUserByID);
+    app.get('/session/:id/user', user.getUserBySession);
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser);
     app.get('/trunks', panelSet.getAllTrunkSets);
     app.get('/tree/:id', panelSet.getTree);

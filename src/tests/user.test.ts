@@ -2,13 +2,16 @@
 import { Sequelize } from 'sequelize';
 import {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
-    _getUserByIDController
+    _getUserByIDController,
+    _getUserBySessionController
 } from '../requestHandlers/user';
 import {
     describe, test, expect, jest
 } from '@jest/globals';
 import * as userService from '../services/userService';
+import { getSession } from '../services/sessionService';
 jest.mock('../services/userService');
+jest.mock('../services/sessionService');
 
 
 const sequelizeMock = () => ({} as jest.Mocked<Sequelize>);
@@ -111,4 +114,24 @@ describe('Get User By ID (Controller)', () => {
         const response = await _getUserByIDController(sequelizeMock())(undefined as any);
         expect(response).toBeInstanceOf(Error);
     });
+});
+
+describe('Get User By Session (Controller)', () => {
+    test('Finding a user should return the user', async () => {
+        (getSession as jest.Mock).mockReturnValue(() => Promise.resolve('session'));
+        (userService.getUserBySession as jest.Mock).mockReturnValue(() => Promise.resolve(userResponse));
+        const response = await _getUserBySessionController(sequelizeMock())('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee');
+        expect(response).toEqual(userResponse);
+    });
+    test('Failure to find a session will return an Error', async () => {
+        (getSession as jest.Mock).mockReturnValue(() => { throw new Error(); });
+        const response = await _getUserBySessionController(sequelizeMock())(undefined as any);
+        expect(response).toBeInstanceOf(Error);
+    });
+    test('Failure to find a user will return an Error', async () => {
+        (getSession as jest.Mock).mockReturnValue(() => Promise.resolve('session'));
+        (userService.getUserBySession as jest.Mock).mockReturnValue(() => { throw new Error(); });
+        const response = await _getUserBySessionController(sequelizeMock())(undefined as any);
+        expect(response).toBeInstanceOf(Error);
+    })
 });

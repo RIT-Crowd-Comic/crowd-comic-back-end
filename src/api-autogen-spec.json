@@ -28,7 +28,7 @@
   "paths": {
     "/": {
       "get": {
-        "description": "",
+        "description": "Help Page",
         "responses": {
           "default": {
             "description": ""
@@ -1344,6 +1344,16 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/destroy": {
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }

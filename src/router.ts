@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import help from './requestHandlers/help';
+import * as misc from './requestHandlers/misc';
 import multer from 'multer';
 import * as user from './requestHandlers/user';
 import * as hook from './requestHandlers/hook';
@@ -23,10 +23,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 export default (app: Express) => {
     app.use(cors());
-    app.get('/', help);
-
+    app.get('/', misc.help);
     app.get('/getImage/:id', image.getImage);
-
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
     app.get('/panel_sets/:id/hooks', hook.getAllHooksByPanelSetId);
@@ -66,4 +64,7 @@ export default (app: Express) => {
 
     app.patch('/addSetToHook', hook.addSetToHook);
     app.patch('*', utils.notFound);
+
+    app.delete('/destroy', misc.clearDB);
+    app.delete('*', utils.notFound);
 };

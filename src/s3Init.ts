@@ -8,9 +8,9 @@ dotenv.config();
 
 try {
     const aws = new s3rver({
-        port:      5000,
-        silent:    true,
-        directory: '/tmp/s3rver_test_directory',
+        port:         5000,
+        silent:       true,
+        directory:    '/tmp/s3rver_test_directory',
         resetOnClose: true
     });
 

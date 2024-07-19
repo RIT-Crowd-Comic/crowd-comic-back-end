@@ -1,9 +1,6 @@
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 import { Sequelize } from 'sequelize';
-import {
-    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition
-} from './utils';
-import * as miscServices from '../services/miscServices'
+import * as miscServices from '../services/miscServices';
 import { sequelize } from '../database';
 const help = (req: Request, res: Response) => {
     res.redirect('/help');
@@ -22,10 +19,11 @@ const clearDB = async (req: Request, res: Response) => {
 const _clearDBController = (sequelize: Sequelize) => async () => {
     try {
         return await miscServices.clearDB(sequelize)();
-    }catch (err) {
+    }
+    catch (err) {
         return err;
     }
-}
+};
 
 
-export {help, clearDB};
+export { help, clearDB };

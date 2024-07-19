@@ -29,7 +29,9 @@ export default (app: Express) => {
 
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
+    app.get('/panel_sets/:id/hooks', hook.getAllHooksByPanelSetId);
     app.get('/panel/:id/hooks', hook.getPanelHooks);
+    app.get('/panel_set/:id/images', image.getAllImageUrlsByPanelSetId);
     app.get('/panel_set/:id', panelSet.getPanelSetByID);
     app.get('/panel_sets/:ids/panels', panel.getPanelsFromPanelSetIDs);
     app.get('/panel_set/:panel_set_id/:index/panel', panel.getPanelBasedOnPanelSetAndIndex);
@@ -48,13 +50,13 @@ export default (app: Express) => {
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
     app.post('/saveimage', upload.single('image'), image.saveImage);
+    app.post('/uploadImages', upload.array('images', 6), populate.uploadImagesPopulate);
 
     app.post('/createHook', hook.createHook);
     app.post('/createPanel', panel.createPanel);
     app.post('/createPanelSet', panelSet.createPanelSet);
     app.post('/createUser', user.createUser);
 
-    // authentication needs to change soon
     app.post('/authenticate', user.authenticate);
     app.post('/createSession', session.createSession);
     app.post('/changePassword', user.changePassword);

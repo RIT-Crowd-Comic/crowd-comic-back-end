@@ -1,6 +1,7 @@
 import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { s3, bucketName } from '../s3Init';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { Sequelize } from 'sequelize';
 
 const saveImage = async(id : string, buffer: Buffer, mimetype : string)=>{
 
@@ -31,4 +32,11 @@ const getImage = async(id : string) =>{
     return { url: url };
 };
 
-export { saveImage, getImage };
+const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: number) => {
+    return sequelize.models.panel.findAll({
+        where:      { panel_set_id: panel_set_id },
+        attributes: ['image', 'id'],
+        order:      [ ['id', 'ASC'] ]
+    });
+};
+export { saveImage, getImage, getAllImagesByPanelSetId };

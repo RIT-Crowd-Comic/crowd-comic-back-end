@@ -39,6 +39,25 @@ const createHook = (sequelize: Sequelize, transaction?: Transaction) => async (n
     } as HookCreateInfo;
 };
 
+const getAllHooksByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: number) => {
+    return await sequelize.models.hook.findAll({
+        include: [
+            {
+                model:    sequelize.models.panel,
+                required: true,
+                include:  [
+                    {
+                        model:    sequelize.models.panel_set,
+                        where:    { id: panel_set_id },
+                        required: true
+                    }
+                ]
+            }
+        ],
+        order: [ ['id', 'ASC'] ]
+    });
+};
+
 /**
  * Gets a single hook based on id
  * @param {number} id Hook id
@@ -108,5 +127,5 @@ const addSetToHook = (sequelize: Sequelize, transaction? : Transaction) => async
 };
 
 export {
-    createHook, getHook, getPanelHooks, addSetToHook
+    createHook, getHook, getPanelHooks, addSetToHook, getAllHooksByPanelSetId
 };

@@ -36,7 +36,7 @@ try {
     };
 
     // config for actual s3
-    /*const trueConfig = {
+    /* const trueConfig = {
         credentials: {
             accessKeyId:     process.env.S3_ACCESS_KEY as string,
             secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,

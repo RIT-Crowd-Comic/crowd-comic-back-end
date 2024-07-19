@@ -272,6 +272,8 @@ const _validateHookConnectionController = (sequelize : Sequelize) => async(next_
 
 const getAllHooksByPanelSetId = async (req: Request, res: Response): Promise<Response> => {
     const id = req.params.id;
+    const validArgs = assertArgumentsNumber({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getAllHooksByPanelSetIdController(sequelize)(Number(id));
     return sanitizeResponse(response, res, `A panel set with a id of ${id} doesn't exist`);
 };

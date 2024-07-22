@@ -180,7 +180,7 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
         validArgs = assertArgumentsPosition(hooks[i].position);
         if (!validArgs.success) return res.status(400).json(validArgs);
     }
-    const name = request.body.name ?? null;
+    const name = !request.body.name && request.body.name != null ? null : request.body.name;
 
     // call the controller
     const response = await _publishController(sequelize)(author_id, name, panelImage1, panelImage2, panelImage3, hooks, hook_id);

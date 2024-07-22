@@ -1,12 +1,9 @@
 import { Request, Response } from 'express';
 import * as hookService from '../services/hookService';
-import {
-    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition
-} from './utils';
+import { assertArgumentsNumber, sanitizeResponse } from './utils';
 import { getPanel } from '../services/panelService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
-import { Json } from 'sequelize/types/utils';
 import { IPanelSet } from '../models';
 import { _getAllTrunkSetsController } from './panelSet';
 

@@ -19,30 +19,31 @@ const uploadImagesPopulate = async (request: Request, res: Response) => {
 
     // get image files
     const files = request.files as { [fieldname: string]: Express.Multer.File[] };
+
     // check if not there
     if (!files) {
         return res.status(400).json({ message: 'No files uploaded' });
     }
 
     const images = [] as any;
-    for(let i = 1; i < 7; i++) {
-        images.push(files[`image${i}`] ? files[`image${i}`][0] : null)
+    for (let i = 1; i < 7; i++) {
+        images.push(files[`image${i}`] ? files[`image${i}`][0] : null);
     }
 
-    if(images.some((image: any) => !image)) {
+    if (images.some((image: any) => !image)) {
         return res.status(400).json({ message: 'Exactly 6 images files must be uploaded' });
     }
 
     // Validate all 6 images
-    for(let i = 0; i < 6; i++) {
-        if(!validateImageFile(images[i]))
+    for (let i = 0; i < 6; i++) {
+        if (!validateImageFile(images[i]))
             return res.status(400).json({ message: `Uploaded file ${i + 1} must be an image` });
     }
 
     const response = await _populate(sequelize, images)();
     return sanitizeResponse(response, res, '');
 
-     // API documentation
+    // API documentation
     /*
     #swagger.tags = ['populate']
 
@@ -134,15 +135,15 @@ const _populate = (sequelize: Sequelize, panelImages: Array<Express.Multer.File>
         const ps18hooks = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 2 }, { position: hookString, panel_index: 2 }];
         const ps19hooks = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 0 }, { position: hookString, panel_index: 2 }];
         const ps20hooks = [{ position: hookString, panel_index: 1 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 1 }];
-    
+
         const publishes = [
-        await _publishController(sequelize)(user.id, "Tree 1", panelImages[0], panelImages[1], panelImages[2], ps1hooks, undefined) as any,
+        await _publishController(sequelize)(user.id, 'Tree 1', panelImages[0], panelImages[1], panelImages[2], ps1hooks, undefined) as any,
             await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], ps2hooks, 1) as any,
             await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], ps3hooks, 3) as any,
             await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], ps4hooks, 2) as any,
             await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], ps5hooks, 9) as any,
             await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], ps6hooks, 4) as any,
-        await _publishController(sequelize)(user.id, "Tree 2", panelImages[0], panelImages[1], panelImages[2], ps7hooks, undefined) as any,
+        await _publishController(sequelize)(user.id, 'Tree 2', panelImages[0], panelImages[1], panelImages[2], ps7hooks, undefined) as any,
             await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], ps8hooks, 19) as any,
             await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], ps9hooks, 20) as any,
             await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], ps10hooks, 21) as any,
@@ -151,11 +152,11 @@ const _populate = (sequelize: Sequelize, panelImages: Array<Express.Multer.File>
             await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], ps13hooks, 27) as any,
             await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], ps14hooks, 30) as any,
             await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], ps15hooks, 40) as any,
-        await _publishController(sequelize)(user.id, "Tree 3", panelImages[3], panelImages[4], panelImages[5], ps16hooks, undefined) as any,
+        await _publishController(sequelize)(user.id, 'Tree 3', panelImages[3], panelImages[4], panelImages[5], ps16hooks, undefined) as any,
             await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], ps17hooks, 47) as any,
             await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], ps18hooks, 48) as any,
-        await _publishController(sequelize)(user.id, "Tree 4", panelImages[0], panelImages[1], panelImages[2], ps19hooks, undefined) as any,
-        await _publishController(sequelize)(user.id, "Tree 5", panelImages[3], panelImages[4], panelImages[5], ps20hooks, undefined) as any,
+        await _publishController(sequelize)(user.id, 'Tree 4', panelImages[0], panelImages[1], panelImages[2], ps19hooks, undefined) as any,
+        await _publishController(sequelize)(user.id, 'Tree 5', panelImages[3], panelImages[4], panelImages[5], ps20hooks, undefined) as any,
         ];
         return publishes.map(p => (p instanceof Error ? p.message : p));
     }

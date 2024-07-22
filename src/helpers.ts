@@ -8,7 +8,7 @@ import { RequestWithUser } from './requestHandlers/utils';
 dotenv.config();
 
 //setup key
-const key = new TextEncoder().encode(process.env.SECRET_KEY);
+const key = new TextEncoder().encode(process.env.SECRET_SESSION_KEY);
 /**
  * Set the content security policy for our server.
  * @returns 

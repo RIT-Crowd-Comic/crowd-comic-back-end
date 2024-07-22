@@ -146,7 +146,6 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     const panelImage2 = files['image2'] ? files['image2'][0] : null;
     const panelImage3 = files['image3'] ? files['image3'][0] : null;
 
-
     // make sure all three exist
     if (!panelImage1 || !panelImage2 || !panelImage3) {
         return res.status(400).json({ message: 'Exactly three images files must be uploaded' });

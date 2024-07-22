@@ -19,61 +19,6 @@ import { _getAllTrunkSetsController } from './panelSet';
  * @returns response or error
  */
 
-
-const _createHookController = (sequelize: Sequelize) => async (position: Json, current_panel_id: number, next_panel_set_id: number|null) => {
-    try {
-        const panel = await getPanel(sequelize)(current_panel_id);
-        if (panel == null) throw new Error('no panel exists for given panel id');
-        if (next_panel_set_id != null) {
-            const valid = await _validateHookConnectionController(sequelize)(next_panel_set_id);
-            if (valid instanceof Error) throw valid;
-        }
-        return await hookService.createHook(sequelize)({
-            position,
-            current_panel_id,
-            next_panel_set_id
-        });
-    }
-    catch (err) {
-        return err;
-    }
-};
-
-/**
- * Create Hook request
- * @param {Request} req 
- * @param {Response} res 
- * @returns 
- */
-const createHook = async (req: Request, res: Response): Promise<Response> => {
-    const position : Json = req.body.position;
-    const current_panel_id : number = req.body.current_panel_id;
-
-    let validArgs = assertArgumentsDefined({ position, current_panel_id });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-
-    // validate position
-    validArgs = assertArgumentsPosition(position);
-    if (!validArgs.success) return res.status(400).json(validArgs);
-
-
-    const response = await _createHookController(sequelize)(position, current_panel_id, null);
-
-    return sanitizeResponse(response, res);
-
-    /*
-        #swagger.tags = ['hook']
-        #swagger.responses[200] = {
-            description: 'A hook',
-            schema: { $ref: '#/definitions/hook' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[500] = {}
-    */
-};
-
 /**
  * Get a hook from its id
  * @param {number} id Hook's id
@@ -296,5 +241,5 @@ const _getAllHooksByPanelSetIdController = (sequelize: Sequelize) => async(panel
     }
 };
 export {
-    getAllHooksByPanelSetId, createHook, getHook, getPanelHooks, addSetToHook, _createHookController, _getHookController, _getPanelHooksController, _addSetToHookController, _validateHookConnectionController, _getAllHooksByPanelSetIdController
+    getAllHooksByPanelSetId, getHook, getPanelHooks, addSetToHook, _getHookController, _getPanelHooksController, _addSetToHookController, _validateHookConnectionController, _getAllHooksByPanelSetIdController
 };

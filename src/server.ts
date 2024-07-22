@@ -33,9 +33,12 @@ setupDatabase().then(() => {
 
     // set content security policy
     app.use(helpers.setCSP);
-    app.use(helpers.errorHandler);
 
     // session setup
+    app.use(helpers.validateSessionPost)
+
+    //error handling 
+    app.use(helpers.errorHandler);
 
     // host swagger OAS spec file
     app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));

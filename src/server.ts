@@ -35,9 +35,9 @@ setupDatabase().then(() => {
     app.use(helpers.setCSP);
 
     // session setup
-    app.use(helpers.validateSessionPost)
+    app.use(helpers.validateSessionPost);
 
-    //error handling 
+    // error handling 
     app.use(helpers.errorHandler);
 
     // host swagger OAS spec file

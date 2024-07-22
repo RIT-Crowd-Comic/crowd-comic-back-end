@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { jwtVerify } from "jose";
+import { jwtVerify } from 'jose';
 
 import dotenv from 'dotenv';
 import { getUserBySession } from './services/userService';
@@ -7,8 +7,9 @@ import { sequelize } from './database';
 import { RequestWithUser } from './requestHandlers/utils';
 dotenv.config();
 
-//setup key
+// setup key
 const key = new TextEncoder().encode(process.env.SECRET_SESSION_KEY);
+
 /**
  * Set the content security policy for our server.
  * @returns 
@@ -42,44 +43,48 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
  * @returns 
  */
 const decrypt = async (input: string) : Promise<any> => {
-    const {payload} = await jwtVerify(input, key, {
-        algorithms: ['HS256']
-    });
+    const { payload } = await jwtVerify(input, key, { algorithms: ['HS256'] });
     return payload;
 };
+
 /**
  * Validates the session for a post and grabs the user if valid
  */
 
-const validateSessionPost = async(req :  RequestWithUser, res : Response, next: NextFunction) =>{
-    //if not a post continue, or createUser
+const validateSessionPost = async(req : RequestWithUser, res : Response, next: NextFunction) =>{
+
+    // if not a post continue, or createUser
     if (req.method !== 'POST' || req.url === '/createUser' || req.url === '/authenticate' || req.url === '/createSession' || req.url === '/uploadImages') {
         return next();
     }
 
-    try{    
-        const sessionCookie = req.header('Session-Cookie')
-        //check if cookie and if session
+    try {
+        const sessionCookie = req.header('Session-Cookie');
+
+        // check if cookie and if session
         if (!sessionCookie) {
-            throw(new Error('No session cookie is present in the request. Access denied.'));
+            throw new Error('No session cookie is present in the request. Access denied.');
         }
 
         const session = JSON.parse(sessionCookie);
-        if(session.name !== 'session'){
-            throw(new Error('No session cookie is present in the request. Access denied.'));
+        if (session.name !== 'session') {
+            throw new Error('No session cookie is present in the request. Access denied.');
         }
 
         const sessionID = await decrypt(session.value);
         const user = await getUserBySession(sequelize)(sessionID.sessionId);
         if (user === null) throw new Error(`Session with id ${sessionID.sessionId} does not exist and/or failed to get the user by session id. Ensure the session exists on the cookie.`);
         req.user_id = user.id;
-        //set user
+
+        // set user
         return next();
     }
-    catch(e){
+    catch (e) {
         return next(e);
     }
-}
+};
 
 
-export { setCSP, swaggerCSP, errorHandler, validateSessionPost };
+export {
+    setCSP, swaggerCSP, errorHandler, validateSessionPost
+};

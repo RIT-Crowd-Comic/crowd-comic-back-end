@@ -9,8 +9,6 @@ import { createPanel } from '../services/panelService';
 import { addSetToHook, createHook } from '../services/hookService';
 import { Json } from 'sequelize/types/utils';
 import { _saveImageController, validateImageFile } from './image';
-import { _createPanelSetController } from './panelSet';
-import { IPanelSet } from '../models';
 import crypto from 'crypto';
 import { createPanelSet } from '../services/panelSetService';
 
@@ -33,7 +31,7 @@ const _publishController = (sequelize : Sequelize) => async (
     try {
 
         // make panel_set, call the controller as author validation is needed
-        const panel_set = await createPanelSet(sequelize, t)({author_id: author_id});
+        const panel_set = await createPanelSet(sequelize, t)({ author_id: author_id });
 
         // add setTohook
         let hook;
@@ -124,7 +122,7 @@ const publish = async (request: RequestWithUser, res: Response) : Promise<Respon
 
     // get the author data
     const author_id = request.user_id;
-    if(!author_id) return res.status(400).json({ message: 'Missing Author Id' });
+    if (!author_id) return res.status(400).json({ message: 'Missing Author Id' });
 
     // const parent
     const hook_id = data.hook_id;

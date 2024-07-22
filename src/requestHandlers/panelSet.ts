@@ -31,9 +31,10 @@ const _createPanelSetController = (sequelize : Sequelize, transaction?: Transact
  * @returns 
  */
 const createPanelSet = async (request: RequestWithUser, res: Response) : Promise<Response> => {
+
     // get the author data
     const author_id = request.user_id;
-    if(!author_id) return res.status(400).json({ message: 'Missing Author Id' });
+    if (!author_id) return res.status(400).json({ message: 'Missing Author Id' });
     const validArgs = assertArgumentsDefined({ author_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _createPanelSetController(sequelize)(author_id);

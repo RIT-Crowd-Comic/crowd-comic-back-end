@@ -6,6 +6,7 @@ import { IPanel, IHook } from '../models';
 interface IPanelSet extends Model<InferAttributes<IPanelSet>, InferCreationAttributes<IPanelSet>> {
     id: CreationOptional<number>,
     author_id: string,
+    name: string,
     panels?: NonAttribute<IPanel[]>,
     hook?: NonAttribute<IHook[]>
 }
@@ -22,6 +23,10 @@ const define = (sequelize: Sequelize): void => {
             author_id: {
                 type:      DataTypes.UUID,
                 allowNull: false,
+            },
+            name: {
+                type: DataTypes.STRING,
+                allowNull: true
             }
         },
         {

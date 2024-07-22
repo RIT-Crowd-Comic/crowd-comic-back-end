@@ -41,6 +41,29 @@ const uploadImagesPopulate = async (request: Request, res: Response) => {
 
     const response = await _populate(sequelize, files)();
     return sanitizeResponse(response, res, '');
+
+     // API documentation
+    /*
+    #swagger.tags = ['populate']
+
+    #swagger.consumes = ['multipart/form-data']
+
+    #swagger.parameters['images'] = {
+        in: 'formData',
+        type: 'file[]',
+        required: true,
+        description: 'Files.'
+    }
+
+
+    #swagger.responses[200] = {
+        schema: { $ref: '#/definitions/publishResponse' }
+    }
+    #swagger.responses[400] = {
+        schema: { $ref: '#/definitions/error' }
+    }
+    #swagger.responses[500] = {}
+*/
 };
 
 const _populate = (sequelize: Sequelize, panelImages: Array<Express.Multer.File> = []) => async() => {
@@ -70,12 +93,12 @@ const _populate = (sequelize: Sequelize, panelImages: Array<Express.Multer.File>
         const hook5 = [{ position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }, { position: hookString, panel_index: 2 }];
         const hook6 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 2 }];
         const publishes = [
-await _publishController(sequelize)(user.id, panelImages[0], panelImages[1], panelImages[2], hook1, undefined) as any,
-            await _publishController(sequelize)(user.id, panelImages[3], panelImages[4], panelImages[5], hook2, 1) as any,
-            await _publishController(sequelize)(user.id, panelImages[3], panelImages[4], panelImages[5], hook3, 3) as any,
-            await _publishController(sequelize)(user.id, panelImages[0], panelImages[1], panelImages[2], hook4, 2) as any,
-            await _publishController(sequelize)(user.id, panelImages[0], panelImages[1], panelImages[2], hook5, 9) as any,
-            await _publishController(sequelize)(user.id, panelImages[0], panelImages[1], panelImages[2], hook6, 4) as any
+await _publishController(sequelize)(user.id, "name", panelImages[0], panelImages[1], panelImages[2], hook1, undefined) as any,
+            await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], hook2, 1) as any,
+            await _publishController(sequelize)(user.id, null, panelImages[3], panelImages[4], panelImages[5], hook3, 3) as any,
+            await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], hook4, 2) as any,
+            await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], hook5, 9) as any,
+            await _publishController(sequelize)(user.id, null, panelImages[0], panelImages[1], panelImages[2], hook6, 4) as any
         ];
         return publishes.map(p => (p instanceof Error ? p.message : p));
     }

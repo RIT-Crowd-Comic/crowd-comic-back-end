@@ -13,11 +13,11 @@ import { IPanelSet } from '../models';
  * @param author_id the id of the author who made the panel set
  * @returns 
  */
-const _createPanelSetController = (sequelize : Sequelize, transaction?: Transaction) => async (author_id: string) => {
+const _createPanelSetController = (sequelize : Sequelize, transaction?: Transaction) => async (author_id: string, name: string | null) => {
     try {
         const user = await UserService.getUserByID(sequelize)(author_id);
         if (user == null) throw new Error(`An author with the id "${author_id}" does not exist`);
-        return await PanelSetService.createPanelSet(sequelize, transaction)({ author_id });
+        return await PanelSetService.createPanelSet(sequelize, transaction)({ author_id, name });
     }
     catch (err) {
         return err;
@@ -32,9 +32,10 @@ const _createPanelSetController = (sequelize : Sequelize, transaction?: Transact
  */
 const createPanelSet = async (request: Request, res: Response) : Promise<Response> => {
     const author_id = (typeof request.body.author_id === 'string') ? request.body.author_id : '';
+    const name = !request.body.name && request.body.name !== null ? null : request.body.name;
     const validArgs = assertArgumentsDefined({ author_id });
     if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _createPanelSetController(sequelize)(author_id);
+    const response = await _createPanelSetController(sequelize)(author_id, name);
     return sanitizeResponse(response, res);
 
     // API documentation

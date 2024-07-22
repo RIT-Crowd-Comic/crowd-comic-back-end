@@ -835,10 +835,37 @@
     },
     "/uploadImages": {
       "post": {
+        "tags": [
+          "populate"
+        ],
         "description": "",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "images",
+            "in": "formData",
+            "type": "file[]",
+            "required": true,
+            "description": "Files."
+          }
+        ],
         "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/publishResponse"
+            },
+            "description": "OK"
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -934,6 +961,9 @@
               "type": "object",
               "properties": {
                 "author_id": {
+                  "example": "any"
+                },
+                "name": {
                   "example": "any"
                 }
               }

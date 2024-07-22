@@ -18,6 +18,7 @@ type hookArray = Array<hook>;
 
 const _publishController = (sequelize : Sequelize) => async (
     author_id: string,
+    name: string | null,
     panelImage1 : Express.Multer.File,
     panelImage2 : Express.Multer.File,
     panelImage3: Express.Multer.File,
@@ -30,7 +31,7 @@ const _publishController = (sequelize : Sequelize) => async (
     try {
 
         // make panel_set, call the controller as author validation is needed
-        const panel_set = await _createPanelSetController(sequelize, t)(author_id) as IPanelSet | Error;
+        const panel_set = await _createPanelSetController(sequelize, t)(author_id, name) as IPanelSet | Error;
 
         // validate panel set creation, if not expected, its an error so throw it
         if (panel_set instanceof Error) throw panel_set;
@@ -162,8 +163,6 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
         return res.status(400).json({ message: 'Uploaded file 3 must be an image' });
     }
 
-
-
     const hooks = data.hooks;
 
     // ensure hooks exist
@@ -182,9 +181,10 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
         validArgs = assertArgumentsPosition(hooks[i].position);
         if (!validArgs.success) return res.status(400).json(validArgs);
     }
+    const name = request.body.name ?? null;
 
     // call the controller
-    const response = await _publishController(sequelize)(author_id, panelImage1, panelImage2, panelImage3, hooks, hook_id);
+    const response = await _publishController(sequelize)(author_id, name, panelImage1, panelImage2, panelImage3, hooks, hook_id);
 
     return sanitizeResponse(response, res);
 

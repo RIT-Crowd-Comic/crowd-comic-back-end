@@ -1,6 +1,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylisticTs from '@stylistic/eslint-plugin-ts';
+import globals from "globals";
 
 export default tseslint.config(
     eslint.configs.recommended,
@@ -110,6 +111,9 @@ export default tseslint.config(
             'yield-star-spacing':          0,
             "@typescript-eslint/no-explicit-any": 0
             // ...
+        },
+        languageOptions: {
+            globals: globals.node
         }
    }
 );

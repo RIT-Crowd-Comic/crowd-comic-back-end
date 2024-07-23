@@ -1,19 +1,14 @@
 'use strict';
 
+/* eslint-disable @typescript-eslint/no-var-requires */
 const bcrypt = require('bcrypt');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-    async up(queryInterface, Sequelize) {
+    async up(queryInterface) {
 
         /**
-         * Add seed commands here.
-         *
-         * Example:
-         * await queryInterface.bulkInsert('People', [{
-         *   name: 'John Doe',
-         *   isBetaMember: false
-         * }], {});
+         * Create an example user
         */
 
         await queryInterface.bulkInsert('users', [
@@ -29,13 +24,10 @@ module.exports = {
         ]);
     },
 
-    async down(queryInterface, Sequelize) {
+    async down(queryInterface) {
 
         /**
-         * Add commands to revert seed here.
-         *
-         * Example:
-         * await queryInterface.bulkDelete('People', null, {});
+         * Delete example user
          */
         await queryInterface.bulkDelete('users', { email: 'example@example.com' });
     }

@@ -79,7 +79,7 @@ async function setBucketPolicy() {
 
     try {
         const putBucketPolicyCommand = new PutBucketPolicyCommand(params);
-        const response = await s3.send(putBucketPolicyCommand);
+        await s3.send(putBucketPolicyCommand);
         console.log(`Bucket policy set to make bucket ${bucketName} public.`);
     }
     catch (error) {

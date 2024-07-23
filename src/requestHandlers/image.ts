@@ -98,7 +98,7 @@ const getImageSigned = async (req: Request, res: Response): Promise<Response> =>
 const _getAllImageUrlsByPanelSetIdController = async (id: number) => {
     try {
         const panels = await imageService.getAllImagesByPanelSetId(sequelize)(id) as IPanel[];
-        return await Promise.all(panels.map(async (panel) => await imageService.getImage(panel.image)));
+        return (panels.map( (panel) => panel.image));
     }
     catch (error) {
         return error;

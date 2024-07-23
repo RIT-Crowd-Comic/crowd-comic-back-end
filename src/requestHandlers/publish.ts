@@ -11,6 +11,7 @@ import { _saveImageController, validateImageFile } from './image';
 import { _createPanelSetController } from './panelSet';
 import { IPanelSet } from '../models';
 import crypto from 'crypto';
+import { getImage } from '../services/imageService';
 
 // types 
 type hook = {position : Json, panel_index : number}
@@ -47,22 +48,25 @@ const _publishController = (sequelize : Sequelize) => async (
         const image1Id = `${panel_set.id}_${crypto.randomUUID()}`;
         const image2Id = `${panel_set.id}_${crypto.randomUUID()}`;
         const image3Id = `${panel_set.id}_${crypto.randomUUID()}`;
+        const image1Link = getImage(image1Id);
+        const image2Link = getImage(image2Id);
+        const image3Link = getImage(image3Id);
 
         // make panels, call service as panel_set creation worked
         const panel1 = await createPanel(sequelize, t)({
-            image:        image1Id,
+            image:        image1Link,
             index:        0,
             panel_set_id: panel_set.id,
         });
 
         const panel2 = await createPanel(sequelize, t)({
-            image:        image2Id,
+            image:        image2Link,
             index:        1,
             panel_set_id: panel_set.id,
         });
 
         const panel3 = await createPanel(sequelize, t)({
-            image:        image3Id,
+            image:        image3Link,
             index:        2,
             panel_set_id: panel_set.id,
         });
@@ -95,7 +99,7 @@ const _publishController = (sequelize : Sequelize) => async (
         // if gotten this far, everything worked
         await t.commit();
         return {
-            panel_set: panel_set.id, parent_hook: hook_id, panels: [panel1.id, panel2.id, panel3.id], images: [s3Image1.id, s3Image2.id, s3Image3.id], hooks: createdHooks
+            panel_set: panel_set.id, parent_hook: hook_id, panels: [panel1.id, panel2.id, panel3.id], images: [image1Link, image2Link, image3Link], hooks: createdHooks
         };
     }
     catch (err) {

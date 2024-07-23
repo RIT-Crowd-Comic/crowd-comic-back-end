@@ -196,6 +196,10 @@ const assertArgumentsPosition = (positionsObjects : Json)=>{
     );
 };
 
+interface RequestWithUser extends Request {
+    user_id?: string;
+}
+
 export {
     validatePassword,
     validateDisplayName,
@@ -207,5 +211,6 @@ export {
     assertArgumentsString,
     sanitizeResponse,
     notFound,
-    assertArgumentsPosition
+    assertArgumentsPosition,
+    RequestWithUser
 };

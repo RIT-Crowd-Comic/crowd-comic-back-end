@@ -40,37 +40,6 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
     }
 };
 
-// the actual request 
-const createPanel = async (req: Request, res: Response): Promise<Response> => {
-
-    const image: string = req.body.image;
-    const panel_set_id: number = req.body.panel_set_id;
-
-    const validArgs = assertArgumentsDefined({ image, panel_set_id });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-
-    const response = await _createPanelController(sequelize)(image, panel_set_id);
-
-    return sanitizeResponse(response, res);
-
-    /*
-        #swagger.tags = ['panel']
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'Create Panel',
-            schema: { $ref: '#/definitions/panelCreate' }
-        } 
-        #swagger.responses[200] = {
-            description: 'A newly created panel',
-            schema: { $ref: '#/definitions/panel' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[500] = {}
-    */
-};
-
 /**
  * gets a panel based on id
  * @param id The id of the panel
@@ -257,5 +226,5 @@ const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Re
 };
 
 export {
-    _getPanelsFromPanelSetIDsController, getPanelsFromPanelSetIDs, createPanel, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
+    _getPanelsFromPanelSetIDsController, getPanelsFromPanelSetIDs, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
 };

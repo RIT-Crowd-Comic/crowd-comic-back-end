@@ -1,4 +1,4 @@
-import  { S3Client, CreateBucketCommand, PutBucketPolicyCommand } from '@aws-sdk/client-s3';
+import  { S3Client, CreateBucketCommand, PutBucketPolicyCommand, ListObjectsV2Command, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
 import dotenv from 'dotenv';
 
@@ -10,7 +10,7 @@ try {
     const aws = new s3rver({
         port:         5000,
         silent:       true,
-        directory:    '/tmp/s3rve_test_directory',
+        directory:    '/tmp/s3rver_test_directory',
         resetOnClose: true
     });
 
@@ -83,6 +83,24 @@ async function setBucketPolicy() {
     }
 }
 
+async function deleteBucketContents() {
+    try {
+        // First, empty the bucket by listing and deleting all objects
+        const listObjectsCommand = new ListObjectsV2Command({ Bucket: bucketName });
+        const listedObjects = await s3.send(listObjectsCommand);
+
+        if (listedObjects.Contents && listedObjects.Contents.length > 0) {
+            for (const obj of listedObjects.Contents) {
+                const deleteObjectCommand = new DeleteObjectCommand({ Bucket: bucketName, Key: obj.Key });
+                await s3.send(deleteObjectCommand);
+                console.log(`Deleted object ${obj.Key} from bucket ${bucketName}.`);
+            }
+        }
+    } catch (error) {
+        console.error("Error deleting bucket:", error);
+    }
+}
+deleteBucketContents();
 setBucketPolicy();
 
 

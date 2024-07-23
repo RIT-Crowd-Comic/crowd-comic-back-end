@@ -1,37 +1,39 @@
 {
     "info": {
-        "title":       "Crowd Comic API",
+        "title": "Crowd Comic API",
         "description": "API endpoints for Crowd Comic. Keep in mind many of these endpoints are subject to change as the API continues to grow. Authentication is likely the first thing to change when the site implements logging in and session based authentication.",
-        "contact":     {
-            "name":  "",
+        "contact": {
+            "name": "",
             "email": "",
-            "url":   ""
+            "url": ""
         },
         "version": "1.0.0"
     },
     "host": "localhost:4000",
     "servers": [
         {
-            "url":         "http://localhost:4000/",
+            "url": "http://localhost:4000/",
             "description": "Local server"
         },
         {
-            "url":         "<your live url here>",
+            "url": "<your live url here>",
             "description": "Live server"
         }
     ],
     "definitions": {
         "userDefinition": {
-            "email":        "example@example.com",
-            "password":     "asdfASDF1234",
+            "email": "example@example.com",
+            "password": "asdfASDF1234",
             "display_name": "John Doe"
         },
         "userResponse": {
-            "email":        "example@example.com",
+            "email": "example@example.com",
             "display_name": "John Doe",
-            "id":           "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+            "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
         },
-        "error": { "message": "string | string[]" },
+        "error": {
+            "message": "string | string[]"
+        },
         "hook": {
             "id": 0,
             "position": "{ [{\"x\": 4, \"y\": 1}, {\"x\": 4, \"y\": 1}] }",
@@ -46,12 +48,11 @@
                         {
                             "x": 4,
                             "y": 1
-                        }
-                    ],
-                    "panel_index": 0
-                },
-                {
-                    "position": [
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
                         {
                             "x": 4,
                             "y": 1
@@ -61,6 +62,31 @@
                 },
                 {
                     "position": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        }
+                    ],
+                    "panel_index": 0
+                },
+                {
+                    "position": [
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
+                        {
+                            "x": 4,
+                            "y": 1
+                        },
                         {
                             "x": 4,
                             "y": 1
@@ -78,12 +104,14 @@
             "panel_set_id": 0
         },
         "panelArray": {
-            "panels":[{
-            "id": 0,
-            "image": "path/to/image",
-            "index": 0,
-            "panel_set_id": 0
-        }]
+            "panels": [
+                {
+                    "id": 0,
+                    "image": "path/to/image",
+                    "index": 0,
+                    "panel_set_id": 0
+                }
+            ]
         },
         "session": {
             "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
@@ -91,18 +119,18 @@
             "createdAt": "2024-07-12T15:29:19.550Z",
             "updatedAt": "2024-07-12T15:29:19.550Z"
         },
-        "panelCreate":{
+        "panelCreate": {
             "image": "sdfe34refergfer4trffs",
             "panel_set_id": 0
         },
-        "panelUpdate":{
+        "panelUpdate": {
             "id": 0,
             "image": "sdfe34refergfer4trffs"
         },
         "publishResponse": {
             "success": "Panel_Set successfully published."
         },
-        "addSetToHookDefinition":{
+        "addSetToHookDefinition": {
             "hook_id": 1,
             "panel_set_id": 1
         }

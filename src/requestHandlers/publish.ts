@@ -20,6 +20,7 @@ type hookArray = Array<hook>;
 
 const _publishController = (sequelize : Sequelize) => async (
     author_id: string,
+    name: string | null,
     panelImage1 : Express.Multer.File,
     panelImage2 : Express.Multer.File,
     panelImage3: Express.Multer.File,
@@ -32,7 +33,7 @@ const _publishController = (sequelize : Sequelize) => async (
     try {
 
         // make panel_set, call the controller as author validation is needed
-        const panel_set = await createPanelSet(sequelize, t)({ author_id: author_id });
+        const panel_set = await createPanelSet(sequelize, t)({ author_id, name });
 
         // add setTohook
         let hook;
@@ -148,7 +149,6 @@ const publish = async (request: RequestWithUser, res: Response) : Promise<Respon
     const panelImage2 = files['image2'] ? files['image2'][0] : null;
     const panelImage3 = files['image3'] ? files['image3'][0] : null;
 
-
     // make sure all three exist
     if (!panelImage1 || !panelImage2 || !panelImage3) {
         return res.status(400).json({ message: 'Exactly three images files must be uploaded' });
@@ -164,8 +164,6 @@ const publish = async (request: RequestWithUser, res: Response) : Promise<Respon
     if (!validateImageFile(panelImage3)) {
         return res.status(400).json({ message: 'Uploaded file 3 must be an image' });
     }
-
-
 
     const hooks = data.hooks;
 
@@ -185,9 +183,10 @@ const publish = async (request: RequestWithUser, res: Response) : Promise<Respon
         validArgs = assertArgumentsPosition(hooks[i].position);
         if (!validArgs.success) return res.status(400).json(validArgs);
     }
+    const name = !request.body.name && request.body.name != null ? null : request.body.name;
 
     // call the controller
-    const response = await _publishController(sequelize)(author_id, panelImage1, panelImage2, panelImage3, hooks, hook_id);
+    const response = await _publishController(sequelize)(author_id, name, panelImage1, panelImage2, panelImage3, hooks, hook_id);
 
     return sanitizeResponse(response, res);
 

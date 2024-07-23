@@ -61,7 +61,7 @@ const _populate = (sequelize: Sequelize, panelImages: Array<Express.Multer.File>
             panelImages.push({} as Express.Multer.File);
             panelImages.push({} as Express.Multer.File);
         }
-        const hookString = JSON.parse(`[{"x": 1, "y": 1}]`);
+        const hookString = JSON.parse(`[{"x": 1, "y": 1}, {"x": 201, "y": 1}, {"x": 201, "y": 201}, {"x": 1, "y": 201}]`);
 
         const hook1 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 1 }];
         const hook2 = [{ position: hookString, panel_index: 0 }, { position: hookString, panel_index: 1 }, { position: hookString, panel_index: 1 }];

@@ -1,4 +1,4 @@
-import  { S3Client, CreateBucketCommand, PutBucketPolicyCommand, DeleteBucketCommand, ListObjectsV2Command, DeleteObjectsCommand  } from '@aws-sdk/client-s3';
+import  { S3Client, CreateBucketCommand, PutBucketPolicyCommand } from '@aws-sdk/client-s3';
 
 import dotenv from 'dotenv';
 
@@ -54,16 +54,6 @@ catch (error) {
 }
 
 //THE FOLLOWING 4 FUNCTIONS ARE FOR TESTING ALTHOUGH THEY COULD BE USED FOR 1 TIME DB setup
-async function createBucket() {
-    try {
-        const createBucketCommand = new CreateBucketCommand({ Bucket: bucketName });
-        const response = await s3.send(createBucketCommand);
-        console.log('Bucket created successfully:', response);
-    }
-    catch (error) {
-        console.error('S3 Error: Error creating bucket. Ensure that .env is setup properly:', error);
-    }
-}
 
 async function setBucketPolicy() {
     const bucketPolicy = {

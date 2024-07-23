@@ -1,12 +1,15 @@
 import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { s3, bucketName } from '../s3Init';
+import { endpoint, s3 } from '../s3Init';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Sequelize } from 'sequelize';
+
+import dotenv from 'dotenv';
+dotenv.config();
 
 const saveImage = async(id : string, buffer: Buffer, mimetype : string)=>{
 
     const params = {
-        Bucket:      bucketName,
+        Bucket:      process.env.BUCKET_NAME,
         Key:         id,
         Body:        buffer,
         ContentType: mimetype
@@ -18,9 +21,9 @@ const saveImage = async(id : string, buffer: Buffer, mimetype : string)=>{
     return { id: id }; // return id to show valid save
 };
 
-const getImage = async(id : string) =>{
+const getImageSigned = async(id : string) =>{
     const params = {
-        Bucket: bucketName,
+        Bucket: process.env.BUCKET_NAME,
         Key:    id
     };
 
@@ -32,6 +35,13 @@ const getImage = async(id : string) =>{
     return { url: url };
 };
 
+
+const getImage = (id : string) =>{
+    if(endpoint)
+        return `http://${endpoint}/${process.env.BUCKET_NAME}/${id}`;
+    return `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/${id}`;//https://your-bucket-name.s3.amazonaws.com/path/to/your/file.txt
+};
+
 const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: number) => {
     return sequelize.models.panel.findAll({
         where:      { panel_set_id: panel_set_id },
@@ -39,4 +49,4 @@ const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: 
         order:      [ ['id', 'ASC'] ]
     });
 };
-export { saveImage, getImage, getAllImagesByPanelSetId };
+export { saveImage, getImageSigned, getAllImagesByPanelSetId, getImage };

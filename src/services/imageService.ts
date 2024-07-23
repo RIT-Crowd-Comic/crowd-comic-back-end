@@ -37,9 +37,9 @@ const getImageSigned = async(id : string) =>{
 
 
 const getImage = (id : string) =>{
-    if(endpoint)
+    if (endpoint)
         return `http://${endpoint}/${process.env.BUCKET_NAME}/${id}`;
-    return `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/${id}`;//https://your-bucket-name.s3.amazonaws.com/path/to/your/file.txt
+    return `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/${id}`;// https://your-bucket-name.s3.amazonaws.com/path/to/your/file.txt
 };
 
 const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: number) => {
@@ -49,4 +49,6 @@ const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: 
         order:      [ ['id', 'ASC'] ]
     });
 };
-export { saveImage, getImageSigned, getAllImagesByPanelSetId, getImage };
+export {
+    saveImage, getImageSigned, getAllImagesByPanelSetId, getImage
+};

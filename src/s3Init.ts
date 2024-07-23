@@ -1,4 +1,5 @@
-import  { S3Client, CreateBucketCommand, PutBucketPolicyCommand, ListObjectsV2Command, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import  { S3Client, PutBucketPolicyCommand, ListObjectsV2Command, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import path from 'path'
 
 import dotenv from 'dotenv';
 
@@ -10,7 +11,7 @@ try {
     const aws = new s3rver({
         port:         5000,
         silent:       true,
-        directory:    '/tmp/s3rver_test_directory',
+        directory:    path.resolve(__dirname +'/tmp/s3rver_test_directory'),
         resetOnClose: true
     });
 

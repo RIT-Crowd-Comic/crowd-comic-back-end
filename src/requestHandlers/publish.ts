@@ -32,7 +32,7 @@ const _publishController = (sequelize : Sequelize) => async (
     try {
 
         // make panel_set, call the controller as author validation is needed
-        const panel_set = await createPanelSet(sequelize, t)({ author_id, name: author_id });
+        const panel_set = await createPanelSet(sequelize, t)({ author_id, name });
 
         // add setTohook
         let hook;

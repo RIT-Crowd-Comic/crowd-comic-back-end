@@ -1,16 +1,17 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Sequelize } from 'sequelize';
 import {
-    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition
+    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition,
+    RequestWithUser
 } from './utils';
 import { sequelize } from '../database';
 import { createPanel } from '../services/panelService';
 import { addSetToHook, createHook } from '../services/hookService';
 import { Json } from 'sequelize/types/utils';
 import { _saveImageController, validateImageFile } from './image';
-import { _createPanelSetController } from './panelSet';
-import { IPanelSet } from '../models';
 import crypto from 'crypto';
+import { createPanelSet } from '../services/panelSetService';
+
 
 // types 
 type hook = {position : Json, panel_index : number}
@@ -30,10 +31,7 @@ const _publishController = (sequelize : Sequelize) => async (
     try {
 
         // make panel_set, call the controller as author validation is needed
-        const panel_set = await _createPanelSetController(sequelize, t)(author_id) as IPanelSet | Error;
-
-        // validate panel set creation, if not expected, its an error so throw it
-        if (panel_set instanceof Error) throw panel_set;
+        const panel_set = await createPanelSet(sequelize, t)({ author_id: author_id });
 
         // add setTohook
         let hook;
@@ -110,7 +108,7 @@ const _publishController = (sequelize : Sequelize) => async (
  * @param res 
  * @returns 
  */
-const publish = async (request: Request, res: Response) : Promise<Response> => {
+const publish = async (request: RequestWithUser, res: Response) : Promise<Response> => {
 
     let data;
 
@@ -123,7 +121,8 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     }
 
     // get the author data
-    const author_id = data.author_id;
+    const author_id = request.user_id;
+    if (!author_id) return res.status(400).json({ message: 'Missing Author Id' });
 
     // const parent
     const hook_id = data.hook_id;

@@ -24,7 +24,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 export default (app: Express) => {
     app.use(cors());
     app.get('/', misc.help);
-    app.get('/getImage/:id', image.getImage);
+    app.get('/getImage/:id', image.getImageSigned);
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
     app.get('/panel_sets/:id/hooks', hook.getAllHooksByPanelSetId);

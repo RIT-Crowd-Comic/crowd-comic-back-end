@@ -49,7 +49,7 @@ const setup = async () => {
     sequelize.models.session.belongsTo(sequelize.models.user, { foreignKey: { name: 'user_id' } });
 
     // sync the table columns, create any tables that don't exist
-    await sequelize.sync({ force: true });
+    // await sequelize.sync({ force: true });
 
 };
 

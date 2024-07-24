@@ -11,9 +11,13 @@
     "prestart-watch": "npm run setup",
     "start-watch": "nodemon",
     "start-heroku": "",
-    "lint": "npx eslint src",
-    "lint-fix": "npx eslint src --fix",
-    "swagger": "npx ts-node src/swagger-autogen.ts"
+    "lint": "npx eslint src migrations seeders",
+    "lint-fix": "npx eslint src migrations seeders --fix",
+    "swagger": "npx ts-node src/swagger-autogen.ts",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "seed:all": "npx sequelize-cli db:seed:all",
+    "seed:undo": "npx sequelize-cli db:seed:undo",
+    "seed:undo:all": "npx sequelize-cli db:seed:undo:all"
   },
   "nodemonConfig": {
     "watch": "src/**",
@@ -50,8 +54,10 @@
     "@types/swagger-ui-express": "^4.1.6",
     "babel-jest": "^29.7.0",
     "eslint": "^8.57.0",
+    "globals": "^15.8.0",
     "nodemon": "^3.1.4",
     "s3rver": "^2.2.9",
+    "sequelize-cli": "^6.6.2",
     "swagger-autogen": "^2.23.7",
     "ts-node": "^10.9.2",
     "typescript-eslint": "^7.13.1"

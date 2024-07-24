@@ -9,52 +9,78 @@ import dotenv from 'dotenv';
 import s3rver from 's3rver';
 dotenv.config();
 
-try {
-    const aws = new s3rver({
-        port:         5000,
-        silent:       true,
-        directory:    path.resolve(__dirname + '/tmp/s3rver_test_directory'),
-        resetOnClose: true
-    });
-
-    aws.run(() => {
-        console.log('Server for aws running.');
-    });
-}
-catch (error) { console.error('An error occurred during aws s3ver setup:', error); }
-
 let s3 : S3Client;
 let endpoint : string | undefined;
 let bucketName : string | undefined;
-try {
+if(process.env.NODE_ENV === 'development'){
+    try {
+        const aws = new s3rver({
+            port:         5000,
+            silent:       true,
+            directory:    path.resolve(__dirname + '/tmp/s3rver_test_directory'),
+            resetOnClose: true
+        });
+    
+        aws.run(() => {
+            console.log('Server for aws running.');
+        });
+    }
+    catch (error) { console.error('An error occurred during aws s3ver setup:', error); }  
+    
+    try {
+        // config for fakeS3
+        const config = {
+            forcePathStyle: true,
+            credentials:    {
+                accessKeyId:     'S3RVER',
+                secretAccessKey: 'S3RVER',
+            },
+            region:   process.env.BUCKET_REGION as string,
+            endpoint: 'http://localhost:5000'
+        };
+    
+        // config for actual s3
+        /* const trueConfig = {
+            credentials: {
+                accessKeyId:     process.env.S3_ACCESS_KEY as string,
+                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
+            },
+            region: process.env.BUCKET_REGION as string,
+        };*/
+    
+        s3 = new S3Client(config);
+        bucketName = process.env.BUCKET_NAME;
+        endpoint = 'localhost:5000'; // SET TO UNDEFINED WHEN NOT TESTING LOCALLY
 
-    // config for fakeS3
-    const config = {
-        forcePathStyle: true,
-        credentials:    {
-            accessKeyId:     'S3RVER',
-            secretAccessKey: 'S3RVER',
-        },
-        region:   process.env.BUCKET_REGION as string,
-        endpoint: 'http://localhost:5000'
-    };
-
-    // config for actual s3
-    /* const trueConfig = {
-        credentials: {
-            accessKeyId:     process.env.S3_ACCESS_KEY as string,
-            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
-        },
-        region: process.env.BUCKET_REGION as string,
-    };*/
-
-    s3 = new S3Client(config);
-    bucketName = process.env.BUCKET_NAME;
-    endpoint = 'localhost:5000'; // SET TO UNDEFINED WHEN NOT TESTING LOCALLY
+        deleteBucketContents();
+        setBucketPolicy();
+    }
+    catch (error) {
+        console.error('An error occurred s3 setup. Ensure that .env is setup properly and endpoint is correct.', error);
+    }
 }
-catch (error) {
-    console.error('An error occurred s3 setup. Ensure that .env is setup properly and endpoint is correct.', error);
+else{
+
+    try{
+        // config for actual s3
+        const config = {
+            credentials: {
+                accessKeyId:     process.env.S3_ACCESS_KEY as string,
+                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
+            },
+            region: process.env.BUCKET_REGION as string,
+        };
+
+        s3 = new S3Client(config);
+        bucketName = process.env.BUCKET_NAME;
+        endpoint = undefined; // SET TO UNDEFINED WHEN NOT TESTING LOCALLY
+    }
+    catch (error) {
+        console.error('An error occurred s3 setup. Ensure that .env is setup properly and endpoint is correct.', error);
+    }
 }
+
+
 
 // THE FOLLOWING 4 FUNCTIONS ARE FOR TESTING ALTHOUGH THEY COULD BE USED FOR 1 TIME DB setup
 
@@ -106,8 +132,5 @@ async function deleteBucketContents() {
         console.error('Error deleting bucket:', error);
     }
 }
-deleteBucketContents();
-setBucketPolicy();
-
 
 export { s3, bucketName, endpoint };

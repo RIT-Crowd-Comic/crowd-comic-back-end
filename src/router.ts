@@ -24,7 +24,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 export default (app: Express) => {
     app.use(cors());
     app.get('/', misc.help);
-    app.get('/getImage/:id', image.getImage);
+    app.get('/getImage/:id', image.getImageSigned);
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
     app.get('/panel_sets/:id/hooks', hook.getAllHooksByPanelSetId);
@@ -48,13 +48,16 @@ export default (app: Express) => {
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
     app.post('/saveimage', upload.single('image'), image.saveImage);
-    app.post('/uploadImages', upload.array('images', 6), populate.uploadImagesPopulate);
+    app.post('/uploadImages', upload.fields([
+        { name: 'image1', maxCount: 1 },
+        { name: 'image2', maxCount: 1 },
+        { name: 'image3', maxCount: 1 },
+        { name: 'image4', maxCount: 1 },
+        { name: 'image5', maxCount: 1 },
+        { name: 'image6', maxCount: 1 },
+    ]), populate.uploadImagesPopulate);
 
-    app.post('/createHook', hook.createHook);
-    app.post('/createPanel', panel.createPanel);
-    app.post('/createPanelSet', panelSet.createPanelSet);
     app.post('/createUser', user.createUser);
-
     app.post('/authenticate', user.authenticate);
     app.post('/createSession', session.createSession);
     app.post('/changePassword', user.changePassword);

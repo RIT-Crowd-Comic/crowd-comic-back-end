@@ -1,12 +1,14 @@
 import { Sequelize, Transaction } from 'sequelize';
 import { IPanelSet, IUser } from '../models';
 interface PanelSetConfig {
-    author_id: string
+    author_id: string,
+    name: string | null
 }
 
 interface PanelSetInfo {
     id: number;
-    author_id: string
+    author_id: string,
+    name: string | null
 }
 
 
@@ -15,9 +17,9 @@ interface PanelSetInfo {
  * @param {} panelSet 
 */
 const createPanelSet = (sequelize: Sequelize, transaction? : Transaction) => async (panelSet: PanelSetConfig): Promise<PanelSetInfo> => {
-    const { id, author_id } =
-    await sequelize.models.panel_set.create({ author_id: panelSet.author_id }, transaction ? { transaction } : {}) as IPanelSet;
-    return { author_id, id };
+    const { id, author_id, name } =
+    await sequelize.models.panel_set.create({ author_id: panelSet.author_id, name: panelSet.name }, transaction ? { transaction } : {}) as IPanelSet;
+    return { author_id, id, name };
 };
 
 /**

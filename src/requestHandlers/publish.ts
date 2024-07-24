@@ -1,16 +1,18 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Sequelize } from 'sequelize';
 import {
-    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition
+    assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse, assertArgumentsPosition,
+    RequestWithUser
 } from './utils';
 import { sequelize } from '../database';
 import { createPanel } from '../services/panelService';
 import { addSetToHook, createHook } from '../services/hookService';
 import { Json } from 'sequelize/types/utils';
 import { _saveImageController, validateImageFile } from './image';
-import { _createPanelSetController } from './panelSet';
-import { IPanelSet } from '../models';
 import crypto from 'crypto';
+import { getImage } from '../services/imageService';
+import { createPanelSet } from '../services/panelSetService';
+
 
 // types 
 type hook = {position : Json, panel_index : number}
@@ -18,6 +20,7 @@ type hookArray = Array<hook>;
 
 const _publishController = (sequelize : Sequelize) => async (
     author_id: string,
+    name: string | null,
     panelImage1 : Express.Multer.File,
     panelImage2 : Express.Multer.File,
     panelImage3: Express.Multer.File,
@@ -30,10 +33,7 @@ const _publishController = (sequelize : Sequelize) => async (
     try {
 
         // make panel_set, call the controller as author validation is needed
-        const panel_set = await _createPanelSetController(sequelize, t)(author_id) as IPanelSet | Error;
-
-        // validate panel set creation, if not expected, its an error so throw it
-        if (panel_set instanceof Error) throw panel_set;
+        const panel_set = await createPanelSet(sequelize, t)({ author_id, name });
 
         // add setTohook
         let hook;
@@ -47,22 +47,25 @@ const _publishController = (sequelize : Sequelize) => async (
         const image1Id = `${panel_set.id}_${crypto.randomUUID()}`;
         const image2Id = `${panel_set.id}_${crypto.randomUUID()}`;
         const image3Id = `${panel_set.id}_${crypto.randomUUID()}`;
+        const image1Link = getImage(image1Id);
+        const image2Link = getImage(image2Id);
+        const image3Link = getImage(image3Id);
 
         // make panels, call service as panel_set creation worked
         const panel1 = await createPanel(sequelize, t)({
-            image:        image1Id,
+            image:        image1Link,
             index:        0,
             panel_set_id: panel_set.id,
         });
 
         const panel2 = await createPanel(sequelize, t)({
-            image:        image2Id,
+            image:        image2Link,
             index:        1,
             panel_set_id: panel_set.id,
         });
 
         const panel3 = await createPanel(sequelize, t)({
-            image:        image3Id,
+            image:        image3Link,
             index:        2,
             panel_set_id: panel_set.id,
         });
@@ -95,7 +98,7 @@ const _publishController = (sequelize : Sequelize) => async (
         // if gotten this far, everything worked
         await t.commit();
         return {
-            panel_set: panel_set.id, parent_hook: hook_id, panels: [panel1.id, panel2.id, panel3.id], images: [s3Image1.id, s3Image2.id, s3Image3.id], hooks: createdHooks
+            panel_set: panel_set.id, parent_hook: hook_id, panels: [panel1.id, panel2.id, panel3.id], images: [image1Link, image2Link, image3Link], hooks: createdHooks
         };
     }
     catch (err) {
@@ -110,7 +113,7 @@ const _publishController = (sequelize : Sequelize) => async (
  * @param res 
  * @returns 
  */
-const publish = async (request: Request, res: Response) : Promise<Response> => {
+const publish = async (request: RequestWithUser, res: Response) : Promise<Response> => {
 
     let data;
 
@@ -123,7 +126,8 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     }
 
     // get the author data
-    const author_id = data.author_id;
+    const author_id = request.user_id;
+    if (!author_id) return res.status(400).json({ message: 'Missing Author Id' });
 
     // const parent
     const hook_id = data.hook_id;
@@ -145,7 +149,6 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     const panelImage2 = files['image2'] ? files['image2'][0] : null;
     const panelImage3 = files['image3'] ? files['image3'][0] : null;
 
-
     // make sure all three exist
     if (!panelImage1 || !panelImage2 || !panelImage3) {
         return res.status(400).json({ message: 'Exactly three images files must be uploaded' });
@@ -161,8 +164,6 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
     if (!validateImageFile(panelImage3)) {
         return res.status(400).json({ message: 'Uploaded file 3 must be an image' });
     }
-
-
 
     const hooks = data.hooks;
 
@@ -182,9 +183,10 @@ const publish = async (request: Request, res: Response) : Promise<Response> => {
         validArgs = assertArgumentsPosition(hooks[i].position);
         if (!validArgs.success) return res.status(400).json(validArgs);
     }
+    const name = !request.body.name && request.body.name != null ? null : request.body.name;
 
     // call the controller
-    const response = await _publishController(sequelize)(author_id, panelImage1, panelImage2, panelImage3, hooks, hook_id);
+    const response = await _publishController(sequelize)(author_id, name, panelImage1, panelImage2, panelImage3, hooks, hook_id);
 
     return sanitizeResponse(response, res);
 

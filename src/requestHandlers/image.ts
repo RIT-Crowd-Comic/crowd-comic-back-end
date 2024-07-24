@@ -63,9 +63,9 @@ const saveImage = async (req: Request, res: Response): Promise<Response> => {
  * @param id The id of the panel
  * @returns response or genericErrorResponse
  */
-const _getImageController = async (id : string) => {
+const _getImageControllerSigned = async (id : string) => {
     try {
-        return await imageService.getImage(id);
+        return await imageService.getImageSigned(id);
     }
     catch (err) {
         if (err instanceof Error)
@@ -74,11 +74,11 @@ const _getImageController = async (id : string) => {
 };
 
 // save an image request
-const getImage = async (req: Request, res: Response): Promise<Response> => {
+const getImageSigned = async (req: Request, res: Response): Promise<Response> => {
     const id = (typeof req.params.id === 'string') ? req.params.id : '';
     const validArgs = assertArgumentsString({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _getImageController(id);
+    const response = await _getImageControllerSigned(id);
     return sanitizeResponse(response, res);
 
     // API documentation
@@ -98,7 +98,7 @@ const getImage = async (req: Request, res: Response): Promise<Response> => {
 const _getAllImageUrlsByPanelSetIdController = async (id: number) => {
     try {
         const panels = await imageService.getAllImagesByPanelSetId(sequelize)(id) as IPanel[];
-        return await Promise.all(panels.map(async (panel) => await imageService.getImage(panel.image)));
+        return panels.map((panel) => ({ url: panel.image }));
     }
     catch (error) {
         return error;
@@ -124,5 +124,5 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
 
 
 export {
-    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, saveImage, getImage, _saveImageController, _getImageController, validateImageFile
+    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, saveImage, getImageSigned, _saveImageController, _getImageControllerSigned, validateImageFile
 };

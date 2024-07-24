@@ -340,34 +340,18 @@
     },
     "/panel_sets/{ids}/panels": {
       "get": {
-        "tags": [
-          "panel"
-        ],
         "description": "",
         "parameters": [
           {
             "name": "ids",
             "in": "path",
             "required": true,
-            "type": "string",
-            "description": "Array of numbers ex: 1-2-3-4"
+            "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "An array of panels",
-            "schema": {
-              "$ref": "#/definitions/panelArray"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -835,131 +819,63 @@
     },
     "/uploadImages": {
       "post": {
-        "description": "",
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/createHook": {
-      "post": {
         "tags": [
-          "hook"
+          "populate"
         ],
         "description": "",
+        "consumes": [
+          "multipart/form-data"
+        ],
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "position": {
-                  "example": "any"
-                },
-                "current_panel_id": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A hook",
-            "schema": {
-              "$ref": "#/definitions/hook"
-            }
+            "name": "image1",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-1."
           },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/createPanel": {
-      "post": {
-        "tags": [
-          "panel"
-        ],
-        "description": "",
-        "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "description": "Create Panel",
-            "schema": {
-              "$ref": "#/definitions/panelCreate"
-            }
+            "name": "image2",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-2."
+          },
+          {
+            "name": "image3",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-3."
+          },
+          {
+            "name": "image4",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-3."
+          },
+          {
+            "name": "image5",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-3."
+          },
+          {
+            "name": "image6",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "The file of the image for panel-3."
           }
         ],
         "responses": {
           "200": {
-            "description": "A newly created panel",
             "schema": {
-              "$ref": "#/definitions/panel"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/createPanelSet": {
-      "post": {
-        "tags": [
-          "panel-set"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "author_id": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/publishResponse"
             },
-            "description": "Create a new panel set"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns the new panel set",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 0
-                },
-                "author_id": {
-                  "type": "string",
-                  "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
+            "description": "OK"
           },
           "400": {
             "description": "Bad Request",

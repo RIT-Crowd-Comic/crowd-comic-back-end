@@ -37,7 +37,7 @@ module.exports = {
             await queryInterface.bulkInsert('panels', [
                 {
                     id:           1,
-                    image:        'http://localhost:5000/crowd-comic/1_d767a6f4-fab7-4580-8b16-21463e6d181a',
+                    image:        "http://localhost:5000/crowd-comic/1_9eb775c0-cd4f-4227-9dd8-1af7f9412604",
                     index:        0,
                     panel_set_id: 1,
                     created_at:   '2024-07-23 09:38:33.841-07',
@@ -45,7 +45,7 @@ module.exports = {
                 },
                 {
                     id:           2,
-                    image:        'http://localhost:5000/crowd-comic/1_d767a6f4-fab7-4580-8b16-21463e6d181a',
+                    image:        "http://localhost:5000/crowd-comic/1_eb071f2a-fe89-43f1-b73b-02175ed77819",
                     index:        1,
                     panel_set_id: 1,
                     created_at:   '2024-07-23 09:38:33.841-07',
@@ -53,7 +53,7 @@ module.exports = {
                 },
                 {
                     id:           3,
-                    image:        'http://localhost:5000/crowd-comic/1_d767a6f4-fab7-4580-8b16-21463e6d181a',
+                    image:        "http://localhost:5000/crowd-comic/1_d94663cb-1d58-4e5f-bf9c-5eba27862475",
                     index:        2,
                     panel_set_id: 1,
                     created_at:   '2024-07-23 09:38:33.841-07',

@@ -106,7 +106,7 @@ async function deleteBucketContents() {
         console.error('Error deleting bucket:', error);
     }
 }
-deleteBucketContents();
+//deleteBucketContents();
 setBucketPolicy();
 
 

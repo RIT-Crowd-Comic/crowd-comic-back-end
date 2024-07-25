@@ -50,7 +50,6 @@ if(process.env.NODE_ENV === 'development'){
         bucketName = process.env.BUCKET_NAME;
         endpoint = 'localhost:5000'; // SET TO UNDEFINED WHEN NOT TESTING LOCALLY
 
-        deleteBucketContents();
         setBucketPolicy();
     }
     catch (error) {

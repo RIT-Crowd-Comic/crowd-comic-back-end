@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface) {
+
+        // ensure that changes are rolled back on error. We don't want only some data to be created
         const transaction = await queryInterface.sequelize.transaction();
         try {
 
@@ -97,6 +99,8 @@ module.exports = {
     },
 
     async down(queryInterface, { Op }) {
+
+        // ensure that changes are rolled back on error. We don't want only some data to be deleted
         const transaction = await queryInterface.sequelize.transaction();
         try {
 

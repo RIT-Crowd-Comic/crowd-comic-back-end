@@ -9,7 +9,7 @@ import swaggerUI from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
 import router from './router';
-import { setup as setupDatabase } from './database';
+import { setup as setupDatabase, sequelize } from './database';
 import * as helpers from './helpers';
 
 const port = process.env.PORT || process.env.NODE_PORT || 4000;
@@ -46,6 +46,27 @@ setupDatabase().then(() => {
     router(app);
 
     // start the server
-
     app.listen(port, () => console.log(`Listening to port ${port}`));
+
+    if (process.platform === "win32") {
+        var rl = require("readline").createInterface({
+          input: process.stdin,
+          output: process.stdout
+        });
+      
+        rl.on("SIGINT", function () {
+          process.emit("SIGINT");
+        });
+      }
+      
+      process.on("SIGINT", function () {
+        //graceful shutdown
+        process.exit();
+      });
+    process.on('exit', function() {
+    // sync the table columns, create any tables that don't exist
+        if(process.env.NODE_ENV !== "production")
+            sequelize.sync({ force: true });
+      });
+
 });

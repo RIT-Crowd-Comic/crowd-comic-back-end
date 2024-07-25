@@ -9,6 +9,17 @@ module.exports = {
         // ensure that changes are rolled back on error. We don't want only some data to be created
         const transaction = await queryInterface.sequelize.transaction();
         try {
+            await queryInterface.bulkInsert('users', [
+                {
+                    id:           'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce',
+                    display_name: 'Admin',
+                    email:        'example@example.com',
+                    password:     await bcrypt.hash('Password!', 10),
+                    created_at:   '2024-07-23 09:38:33.841-07',
+                    updated_at:   '2024-07-23 09:38:33.841-07'
+                }
+            ], { transaction });
+
             // create panel_sets
             await queryInterface.bulkInsert('panel_sets', [
                 {
@@ -78,7 +89,7 @@ module.exports = {
             ], { transaction });
             await transaction.commit();
         }
-        
+
         catch (error) {
             await transaction.rollback();
             console.log(error);
@@ -91,6 +102,7 @@ module.exports = {
         // ensure that changes are rolled back on error. We don't want only some data to be deleted
         const transaction = await queryInterface.sequelize.transaction();
         try {
+
             // delete panel_set
             await queryInterface.bulkDelete('panel_sets', { id: 1 }, { transaction });
 
@@ -100,6 +112,10 @@ module.exports = {
             // delete hooks
             await queryInterface.bulkDelete('hooks', null, { transaction });
             await queryInterface.bulkDelete('hooks', { [Op.or]: [{ id: 1 }, { id: 2 }, { id: 3 }] }, { transaction });
+
+            // delete user after all the dependent tables are deleted
+            await queryInterface.bulkDelete('users', { id: 'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce' });
+
             await transaction.commit();
         }
         catch (error) {

@@ -126,7 +126,7 @@ const publish = async (request: RequestWithUser, res: Response) : Promise<Respon
     }
 
     // get the author data
-    const author_id = request.user_id;
+    const author_id = request.user?.id;
     if (!author_id) return res.status(400).json({ message: 'Missing Author Id' });
 
     // const parent

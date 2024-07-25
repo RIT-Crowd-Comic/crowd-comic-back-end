@@ -1,14 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { jwtVerify } from 'jose';
 
 import dotenv from 'dotenv';
 import { getUserBySession } from './services/userService';
 import { sequelize } from './database';
 import { RequestWithUser } from './requestHandlers/utils';
 dotenv.config();
-
-// setup key
-const key = new TextEncoder().encode(process.env.SECRET_SESSION_KEY);
 
 /**
  * Set the content security policy for our server.
@@ -38,16 +34,6 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 };
 
 /**
- * Decrypt a value
- * @param input 
- * @returns 
- */
-const decrypt = async (input: string) : Promise<any> => {
-    const { payload } = await jwtVerify(input, key, { algorithms: ['HS256'] });
-    return payload;
-};
-
-/**
  * Validates the session for a post and grabs the user if valid
  */
 
@@ -71,9 +57,8 @@ const validateSessionPost = async(req : RequestWithUser, res : Response, next: N
             throw new Error('No session cookie is present in the request. Access denied.');
         }
 
-        const sessionID = await decrypt(session.value);
-        const user = await getUserBySession(sequelize)(sessionID.sessionId);
-        if (user === null) throw new Error(`Session with id ${sessionID.sessionId} does not exist and/or failed to get the user by session id. Ensure the session on the cookie is for a valid user.`);
+        const user = await getUserBySession(sequelize)(session.value);
+        if (user === null) throw new Error(`Session with id ${session.value} does not exist and/or failed to get the user by session id. Ensure the session on the cookie is for a valid user.`);
         req.user_id = user.id;
 
         // set user

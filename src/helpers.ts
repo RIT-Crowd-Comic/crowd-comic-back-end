@@ -59,7 +59,7 @@ const validateSessionPost = async(req : RequestWithUser, res : Response, next: N
 
         const user = await getUserBySession(sequelize)(session.value);
         if (user === null) throw new Error(`Session with id ${session.value} does not exist and/or failed to get the user by session id. Ensure the session on the cookie is for a valid user.`);
-        req.user_id = user.id;
+        req.user = user;
 
         // set user
         return next();

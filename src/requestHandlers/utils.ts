@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import PasswordValidator from 'password-validator';
 import { ValidationError } from 'sequelize';
 import { Json } from 'sequelize/types/utils';
+import { IUser } from '../models';
 
 
 // /**
@@ -197,7 +198,7 @@ const assertArgumentsPosition = (positionsObjects : Json)=>{
 };
 
 interface RequestWithUser extends Request {
-    user_id?: string;
+    user?: IUser;
 }
 
 export {

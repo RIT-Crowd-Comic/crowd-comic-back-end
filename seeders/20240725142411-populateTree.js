@@ -1,5 +1,4 @@
 'use strict';
-const { Op } = require('sequelize');
 /* eslint-disable @typescript-eslint/no-var-requires */
 const bcrypt = require('bcrypt');
 
@@ -97,7 +96,7 @@ module.exports = {
         }
     },
 
-    async down(queryInterface) {
+    async down(queryInterface, { Op }) {
         const transaction = await queryInterface.sequelize.transaction();
         try {
 
@@ -115,7 +114,7 @@ module.exports = {
             await queryInterface.bulkDelete('hooks', { [Op.or]: [{ id: 1 }, { id: 2 }, { id: 3 }] }, { transaction });
             await transaction.commit();
         }
-        catch {
+        catch (error) {
             await transaction.rollback();
             console.log(error);
             console.log('[Fail] Reverting failed after transaction rollback.');

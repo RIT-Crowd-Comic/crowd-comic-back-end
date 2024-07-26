@@ -10,7 +10,7 @@ dotenv.config();
 let s3 : S3Client;
 let endpoint : string | undefined;
 let bucketName : string | undefined;
-if(process.env.NODE_ENV === 'development'){
+if (process.env.NODE_ENV === 'development') {
     try {
         const aws = new s3rver({
             port:         5000,
@@ -18,14 +18,15 @@ if(process.env.NODE_ENV === 'development'){
             directory:    path.resolve(__dirname + '/tmp/s3rver_test_directory'),
             resetOnClose: true
         });
-    
+
         aws.run(() => {
             console.log('Server for aws running.');
         });
     }
-    catch (error) { console.error('An error occurred during aws s3ver setup:', error); }  
-    
+    catch (error) { console.error('An error occurred during aws s3ver setup:', error); }
+
     try {
+
         // config for fakeS3
         const config = {
             forcePathStyle: true,
@@ -36,7 +37,7 @@ if(process.env.NODE_ENV === 'development'){
             region:   process.env.BUCKET_REGION as string,
             endpoint: 'http://localhost:5000'
         };
-    
+
         // config for actual s3
         /* const trueConfig = {
             credentials: {
@@ -45,7 +46,7 @@ if(process.env.NODE_ENV === 'development'){
             },
             region: process.env.BUCKET_REGION as string,
         };*/
-    
+
         s3 = new S3Client(config);
         bucketName = process.env.BUCKET_NAME;
         endpoint = 'localhost:5000'; // SET TO UNDEFINED WHEN NOT TESTING LOCALLY
@@ -56,9 +57,10 @@ if(process.env.NODE_ENV === 'development'){
         console.error('An error occurred s3 setup. Ensure that .env is setup properly and endpoint is correct.', error);
     }
 }
-else{
+else {
 
-    try{
+    try {
+
         // config for actual s3
         const config = {
             credentials: {

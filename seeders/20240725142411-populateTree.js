@@ -20,7 +20,7 @@ module.exports = {
                 }
             ], { transaction });
 
-        // create panel_sets
+            // create panel_sets
             await queryInterface.bulkInsert('panel_sets', [
                 {
                     id:         -1,

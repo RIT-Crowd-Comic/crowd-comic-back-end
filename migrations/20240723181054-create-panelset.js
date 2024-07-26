@@ -15,6 +15,10 @@ module.exports = {
                     primaryKey:    true,
                     autoIncrement: true
                 },
+                name: {
+                    type:      Sequelize.STRING,
+                    allowNull: true,
+                },
                 created_at: {
                     allowNull: false,
                     type:      Sequelize.DATE

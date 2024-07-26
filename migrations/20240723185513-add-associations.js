@@ -19,7 +19,8 @@ module.exports = {
                     model: 'users',
                     key:   'id'
                 },
-                onUpdate: 'CASCADE'
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             }
         );
 
@@ -35,7 +36,8 @@ module.exports = {
                     model: 'panel_sets',
                     key:   'id'
                 },
-                onUpdate: 'CASCADE'
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             },
         );
 
@@ -51,7 +53,8 @@ module.exports = {
                     model: 'panels',
                     key:   'id'
                 },
-                onUpdate: 'CASCADE'
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             }
         );
 
@@ -68,7 +71,8 @@ module.exports = {
                     model: 'panel_sets',
                     key:   'id'
                 },
-                onUpdate: 'CASCADE'
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             }
         );
 
@@ -84,8 +88,8 @@ module.exports = {
                     model: 'users',
                     key:   'id'
                 },
-                onUpdate: 'CASCADE'
-
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             }
         );
     },

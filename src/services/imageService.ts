@@ -46,7 +46,7 @@ const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: 
     return sequelize.models.panel.findAll({
         where:      { panel_set_id: panel_set_id },
         attributes: ['image', 'id'],
-        order:      [ ['id', 'ASC'] ]
+        order:      [ ['index', 'ASC'] ]
     });
 };
 export {

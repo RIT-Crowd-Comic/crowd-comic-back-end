@@ -34,7 +34,7 @@ module.exports = {
             // create panel
             await queryInterface.bulkInsert('panels', [
                 {
-                   // id:           1,
+                    id:           1,
                     image:        'http://localhost:5000/crowd-comic/1_9eb775c0-cd4f-4227-9dd8-1af7f9412604',
                     index:        0,
                     panel_set_id: 1,
@@ -42,7 +42,7 @@ module.exports = {
                     updated_at:   '2024-07-23 09:38:33.841-07'
                 },
                 {
-                    //id:           2,
+                    id:           2,
                     image:        'http://localhost:5000/crowd-comic/1_eb071f2a-fe89-43f1-b73b-02175ed77819',
                     index:        1,
                     panel_set_id: 1,
@@ -50,7 +50,7 @@ module.exports = {
                     updated_at:   '2024-07-23 09:38:33.841-07'
                 },
                 {
-                   // id:           3,
+                    id:           3,
                     image:        'http://localhost:5000/crowd-comic/1_d94663cb-1d58-4e5f-bf9c-5eba27862475',
                     index:        2,
                     panel_set_id: 1,
@@ -62,7 +62,7 @@ module.exports = {
             // create hooks
             await queryInterface.bulkInsert('hooks', [
                 {
-                    //id:                1,
+                    id:                1,
                     position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
                     current_panel_id:  1,
                     next_panel_set_id: null,
@@ -70,7 +70,7 @@ module.exports = {
                     updated_at:        '2024-07-23 09:38:33.841-07'
                 },
                 {
-                    //id:                2,
+                    id:                2,
                     position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
                     current_panel_id:  2,
                     next_panel_set_id: null,
@@ -78,7 +78,7 @@ module.exports = {
                     updated_at:        '2024-07-23 09:38:33.841-07'
                 },
                 {
-                    //id:                3,
+                    id:                3,
                     position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
                     current_panel_id:  3,
                     next_panel_set_id: null,

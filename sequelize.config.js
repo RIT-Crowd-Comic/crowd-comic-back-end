@@ -39,5 +39,12 @@ npx sequelize-cli db:migrate --url 'postgres://root:password@host.com/database_n
 */
 module.exports = {
     development: parseDBString(process.env.DATABASE_URL),
-    production:  parseDBString(process.env.DATABASE_URL)
+    production:  {
+        ...parseDBString(process.env.DATABASE_URL),
+
+        /**
+         * SSL is required for Heroku Postgres
+         */
+        dialectOptions: { ssl: { rejectUnauthorized: false }, }
+    }
 };

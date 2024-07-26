@@ -66,10 +66,8 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
 const changePassword = (sequelize : Sequelize) => async (email: string, password: string, newPassword: string): Promise<boolean> => {
 
     // check if current email/password are correct
-    const auth = await authenticate(sequelize)(email, password);
-    if (!auth) return false;
-
-    const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
+    const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;;
+    if (!user || password!=user.password) return false;
 
     await user.update({ password: await bcrypt.hash(newPassword, PASSWORD_SALT_ROUNDS) });
     return true;
@@ -83,10 +81,8 @@ const changePassword = (sequelize : Sequelize) => async (email: string, password
 const changeDisplayName = (sequelize : Sequelize) => async (email: string, password: string, newDisplayName: string): Promise<boolean> => {
 
     // check if current email/password are correct
-    const auth = await authenticate(sequelize)(email, password);
-    if (!auth) return false;
-
-    const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
+    const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;;
+    if (!user || password!=user.password) return false;
 
     await user.update({ display_name: newDisplayName });
     return true;

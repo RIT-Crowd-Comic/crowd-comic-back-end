@@ -68,8 +68,9 @@ setupDatabase().then(() => {
     process.on('exit', function() {
 
         // sync the table columns, create any tables that don't exist
-        if (process.env.NODE_ENV !== 'production')
+        if (process.env.WIPE_DATA) {
             sequelize.sync({ force: true });
+        }
     });
 
 });

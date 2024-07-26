@@ -29,8 +29,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         return next(err);
     }
     res.setHeader('Content-Type', 'application/json');
-    res.status(500);
-    res.send(JSON.stringify(err));
+    res.status(500).send(JSON.stringify({message: err.message}));
 };
 
 /**
@@ -48,7 +47,7 @@ const validateSessionPost = async(req : RequestWithUser, res : Response, next: N
         const sessionCookie = req.header('Session-Cookie');
 
         // check if cookie and if session
-        if (!sessionCookie) {
+        if (!sessionCookie || sessionCookie === 'undefined') {
             throw new Error('No session cookie is present in the request. Access denied.');
         }
 

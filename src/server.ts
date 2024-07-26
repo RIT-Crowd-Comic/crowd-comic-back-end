@@ -49,6 +49,7 @@ setupDatabase().then(() => {
     app.listen(port, () => console.log(`Listening to port ${port}`));
 
     if (process.platform === 'win32') {
+        /* eslint-disable @typescript-eslint/no-var-requires*/
         const rl = require('readline').createInterface({
             input:  process.stdin,
             output: process.stdout
@@ -67,8 +68,9 @@ setupDatabase().then(() => {
     process.on('exit', function() {
 
         // sync the table columns, create any tables that don't exist
-        if (process.env.NODE_ENV !== 'production')
+        if (process.env.WIPE_DATA) {
             sequelize.sync({ force: true });
+        }
     });
 
 });

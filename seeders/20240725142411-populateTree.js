@@ -18,69 +18,64 @@ module.exports = {
                     created_at:   '2024-07-23 09:38:33.841-07',
                     updated_at:   '2024-07-23 09:38:33.841-07'
                 }
-            ], { transaction });
+            ], { returning: ['id'], transaction });
 
             // create panel_sets
-            await queryInterface.bulkInsert('panel_sets', [
+            const panelSets = await queryInterface.bulkInsert('panel_sets', [
                 {
-                    id:         -1,
                     author_id:  'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce',
                     name:       'Trunk 1',
                     created_at: '2024-07-23 09:38:33.841-07',
                     updated_at: '2024-07-23 09:38:33.841-07'
                 }
-            ], { transaction });
+            ], { returning: ['id'], transaction });
+
+            const panelSetId = panelSets[0].id;
 
             // create panel
-            await queryInterface.bulkInsert('panels', [
+            const panels=await queryInterface.bulkInsert('panels', [
                 {
-                    id:           -1,
                     image:        'http://localhost:5000/crowd-comic/1_9eb775c0-cd4f-4227-9dd8-1af7f9412604',
                     index:        0,
-                    panel_set_id: -1,
+                    panel_set_id: panelSetId,
                     created_at:   '2024-07-23 09:38:33.841-07',
                     updated_at:   '2024-07-23 09:38:33.841-07'
                 },
                 {
-                    id:           -2,
                     image:        'http://localhost:5000/crowd-comic/1_eb071f2a-fe89-43f1-b73b-02175ed77819',
                     index:        1,
-                    panel_set_id: -1,
+                    panel_set_id: panelSetId,
                     created_at:   '2024-07-23 09:38:33.841-07',
                     updated_at:   '2024-07-23 09:38:33.841-07'
                 },
                 {
-                    id:           -3,
                     image:        'http://localhost:5000/crowd-comic/1_d94663cb-1d58-4e5f-bf9c-5eba27862475',
                     index:        2,
-                    panel_set_id: -1,
+                    panel_set_id: panelSetId,
                     created_at:   '2024-07-23 09:38:33.841-07',
                     updated_at:   '2024-07-23 09:38:33.841-07'
                 },
-            ], { transaction });
+            ], {returning: ['id'], transaction });
 
             // create hooks
             await queryInterface.bulkInsert('hooks', [
                 {
-                    id:                -1,
                     position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
-                    current_panel_id:  -1,
+                    current_panel_id:  panels[0].id,
                     next_panel_set_id: null,
                     created_at:        '2024-07-23 09:38:33.841-07',
                     updated_at:        '2024-07-23 09:38:33.841-07'
                 },
                 {
-                    id:                -2,
                     position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
-                    current_panel_id:  -2,
+                    current_panel_id:   panels[1].id,
                     next_panel_set_id: null,
                     created_at:        '2024-07-23 09:38:33.841-07',
                     updated_at:        '2024-07-23 09:38:33.841-07'
                 },
                 {
-                    id:                -3,
                     position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
-                    current_panel_id:  -3,
+                    current_panel_id:   panels[2].id,
                     next_panel_set_id: null,
                     created_at:        '2024-07-23 09:38:33.841-07',
                     updated_at:        '2024-07-23 09:38:33.841-07'

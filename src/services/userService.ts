@@ -67,7 +67,9 @@ const changePassword = (sequelize : Sequelize) => async (email: string, password
 
     // check if current email/password are correct
     const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;;
-    if (!user || password!=user.password) return false;
+    if (!user) return false;
+    const match = await bcrypt.compare(password, user.password);
+    if(!match) return false;
 
     await user.update({ password: await bcrypt.hash(newPassword, PASSWORD_SALT_ROUNDS) });
     return true;

@@ -49,6 +49,7 @@ setupDatabase().then(() => {
     app.listen(port, () => console.log(`Listening to port ${port}`));
 
     if (process.platform === 'win32') {
+        /* eslint-disable @typescript-eslint/no-var-requires*/
         const rl = require('readline').createInterface({
             input:  process.stdin,
             output: process.stdout

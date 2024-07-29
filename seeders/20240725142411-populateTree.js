@@ -35,7 +35,7 @@ module.exports = {
             const panelSetId = panelSets[0].id;
 
             // create panel
-            const panels=await queryInterface.bulkInsert('panels', [
+            const panels = await queryInterface.bulkInsert('panels', [
                 {
                     image:        process.env.NODE_ENV === 'production' ? `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/1_9eb775c0-cd4f-4227-9dd8-1af7f9412604` : 'http://localhost:5000/crowd-comic/1_9eb775c0-cd4f-4227-9dd8-1af7f9412604',
                     index:        0,
@@ -51,13 +51,13 @@ module.exports = {
                     updated_at:   '2024-07-23 09:38:33.841-07'
                 },
                 {
-                    image:         process.env.NODE_ENV === 'production' ? `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/1_d94663cb-1d58-4e5f-bf9c-5eba27862475` : 'http://localhost:5000/crowd-comic/1_d94663cb-1d58-4e5f-bf9c-5eba27862475',
+                    image:        process.env.NODE_ENV === 'production' ? `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/1_d94663cb-1d58-4e5f-bf9c-5eba27862475` : 'http://localhost:5000/crowd-comic/1_d94663cb-1d58-4e5f-bf9c-5eba27862475',
                     index:        2,
                     panel_set_id: panelSetId,
                     created_at:   '2024-07-23 09:38:33.841-07',
                     updated_at:   '2024-07-23 09:38:33.841-07'
                 },
-            ], {returning: ['id'], transaction });
+            ], { returning: ['id'], transaction });
 
             // create hooks
             await queryInterface.bulkInsert('hooks', [
@@ -70,14 +70,14 @@ module.exports = {
                 },
                 {
                     position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
-                    current_panel_id:   panels[1].id,
+                    current_panel_id:  panels[1].id,
                     next_panel_set_id: null,
                     created_at:        '2024-07-23 09:38:33.841-07',
                     updated_at:        '2024-07-23 09:38:33.841-07'
                 },
                 {
                     position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
-                    current_panel_id:   panels[2].id,
+                    current_panel_id:  panels[2].id,
                     next_panel_set_id: null,
                     created_at:        '2024-07-23 09:38:33.841-07',
                     updated_at:        '2024-07-23 09:38:33.841-07'

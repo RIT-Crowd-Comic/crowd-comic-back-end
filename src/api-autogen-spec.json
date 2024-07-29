@@ -677,16 +677,6 @@
         }
       }
     },
-    "/populate": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/session/{id}": {
       "get": {
         "description": "",
@@ -756,52 +746,6 @@
           "200": {
             "schema": {
               "$ref": "#/definitions/publishResponse"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/saveimage": {
-      "post": {
-        "tags": [
-          "image"
-        ],
-        "description": "",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "parameters": [
-          {
-            "name": "image",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image to save."
-          }
-        ],
-        "responses": {
-          "200": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "example": "image-id"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
             },
             "description": "OK"
           },
@@ -1192,84 +1136,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/addSetToHook": {
-      "patch": {
-        "tags": [
-          "hook"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Connect a hook to a panel_set",
-            "schema": {
-              "$ref": "#/definitions/addSetToHookDefinition"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The altered hook",
-            "schema": {
-              "$ref": "#/definitions/hook"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "object"
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "unable to link panel set with id ${panel_set_id} to hook with id ${hook_id}"
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/destroy": {
-      "delete": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         }
       }

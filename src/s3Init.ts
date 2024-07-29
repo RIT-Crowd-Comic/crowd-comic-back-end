@@ -8,9 +8,28 @@ import s3rver from 's3rver';
 dotenv.config();
 
 let s3 : S3Client;
-let endpoint : string | undefined;
 let bucketName : string | undefined;
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'production') {
+
+    try {
+
+        // config for actual s3
+        const config = {
+            credentials: {
+                accessKeyId:     process.env.S3_ACCESS_KEY as string,
+                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
+            },
+            region: process.env.BUCKET_REGION as string,
+        };
+
+        s3 = new S3Client(config);
+        bucketName = process.env.BUCKET_NAME;
+    }
+    catch (error) {
+        console.error('An error occurred s3 setup. Ensure that .env is setup properly and endpoint is correct.', error);
+    }
+}
+else {
     try {
         const aws = new s3rver({
             port:         5000,
@@ -49,30 +68,8 @@ if (process.env.NODE_ENV === 'development') {
 
         s3 = new S3Client(config);
         bucketName = process.env.BUCKET_NAME;
-        endpoint = 'localhost:5000'; // SET TO UNDEFINED WHEN NOT TESTING LOCALLY
 
         setBucketPolicy();
-    }
-    catch (error) {
-        console.error('An error occurred s3 setup. Ensure that .env is setup properly and endpoint is correct.', error);
-    }
-}
-else {
-
-    try {
-
-        // config for actual s3
-        const config = {
-            credentials: {
-                accessKeyId:     process.env.S3_ACCESS_KEY as string,
-                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
-            },
-            region: process.env.BUCKET_REGION as string,
-        };
-
-        s3 = new S3Client(config);
-        bucketName = process.env.BUCKET_NAME;
-        endpoint = undefined; // SET TO UNDEFINED WHEN NOT TESTING LOCALLY
     }
     catch (error) {
         console.error('An error occurred s3 setup. Ensure that .env is setup properly and endpoint is correct.', error);
@@ -115,4 +112,4 @@ async function setBucketPolicy() {
 setBucketPolicy();
 
 
-export { s3, bucketName, endpoint };
+export { s3, bucketName };

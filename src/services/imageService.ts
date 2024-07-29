@@ -37,8 +37,7 @@ const getImageSigned = async(id : string) =>{
 
 
 const getImage = (id : string) =>{
-    if (process.env.NODE_ENV === 'production') return `http://5000/${process.env.BUCKET_NAME}/${id}`;
-    else  return `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/${id}`;
+    return process.env.NODE_ENV === 'production' ?  `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/${id}` : `http://localhost:5000/${process.env.BUCKET_NAME}/${id}`;
 };
 
 const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: number) => {

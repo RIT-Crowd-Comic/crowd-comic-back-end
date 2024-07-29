@@ -1,4 +1,4 @@
-const dotenv = require('dotenv');
+const dotenv = require('dotenv'); // eslint-disable-line @typescript-eslint/no-var-requires
 dotenv.config();
 
 /**
@@ -26,8 +26,11 @@ const parseDBString = dbstr => {
     };
 };
 
-console.log(parseDBString(process.env.DATABASE_URL));
-
+// probably temporary
+if (process.env.NODE_ENV !== 'development') {
+    console.log('If you are working on a local environment, migrations will likely not work for the live database');
+    console.log('If you intend on working with the live database, it is better to use the server-side CLI');
+}
 
 /*
 Alternatively, you can do something like this
@@ -37,11 +40,11 @@ npx sequelize-cli db:migrate --url 'postgres://root:password@host.com/database_n
 module.exports = {
     development: parseDBString(process.env.DATABASE_URL),
     production:  {
-        username: 'username',
-        password: 'password',
-        database: 'db',
-        host:     'localhost',
-        dialect:  'postgres',
-        port:     '5432',
+        ...parseDBString(process.env.DATABASE_URL),
+
+        /**
+         * SSL is required for Heroku Postgres
+         */
+        dialectOptions: { ssl: { rejectUnauthorized: false }, }
     }
 };

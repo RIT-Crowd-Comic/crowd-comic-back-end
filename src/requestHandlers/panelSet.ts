@@ -69,7 +69,14 @@ const _getPanelSetByIDController = (sequelize: Sequelize) => async(id: number) =
 };
 
 const getPanelSetByID = async (request: Request, res: Response) : Promise<Response> => {
-    const id = Number(request.params.id);
+    let id = Number(request.params.id);
+
+    // Endpoint should return the trunk id if no id was provided (no id entered provides NaN as a param)
+    if (isNaN(id)) {
+        const trunks = await PanelSetService.getAllTrunkSets(sequelize) as IPanelSet[];
+        const trunk = trunks[0] as IPanelSet;
+        id = trunk.id;
+    }
     const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getPanelSetByIDController(sequelize)(id);
@@ -188,6 +195,11 @@ interface PanelSetFrontEnd {
     childrenIds: number[]
 }
 
+/**
+ * @param request 
+ * @param res 
+ * @returns 
+ */
 const getTree = async(request: Request, res: Response) : Promise<Response> => {
     const panel_set_id = request.params.id;
     const validArgs = assertArgumentsNumber({ panel_set_id });
@@ -232,6 +244,10 @@ const getTree = async(request: Request, res: Response) : Promise<Response> => {
     */
 };
 
+/**
+ * @param sequelize 
+ * @returns 
+ */
 const _getTreeController = (sequelize: Sequelize) => async(id: number) => {
     try {
         const response = await _getPanelSetByIDController(sequelize)(id);

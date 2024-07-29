@@ -9,6 +9,7 @@ import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
 import * as session from './requestHandlers/session';
 import * as publish from './requestHandlers/publish';
+import * as populate from './requestHandlers/populate';
 import cors from 'cors';
 
 
@@ -47,6 +48,15 @@ export default (app: Express) => {
         { name: 'image2', maxCount: 1 },
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
+
+    app.post('/uploadImages', upload.fields([
+        { name: 'image1', maxCount: 1 },
+        { name: 'image2', maxCount: 1 },
+        { name: 'image3', maxCount: 1 },
+        { name: 'image4', maxCount: 1 },
+        { name: 'image5', maxCount: 1 },
+        { name: 'image6', maxCount: 1 },
+    ]), populate.uploadImagesPopulate);
 
     app.post('/createUser', user.createUser);
     app.post('/authenticate', user.authenticate);

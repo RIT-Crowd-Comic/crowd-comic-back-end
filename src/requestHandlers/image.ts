@@ -2,7 +2,6 @@ import * as imageService from '../services/imageService';
 
 import { sanitizeResponse, assertArgumentsString, assertArgumentsNumber } from './utils';
 import { Request, Response } from 'express';
-import crypto from 'crypto';
 import { sequelize } from '../database';
 import { IPanel } from '../models';
 
@@ -18,44 +17,6 @@ const _saveImageController = async (id : string, buffer: Buffer, mimetype: strin
     catch (err) {
         return err;
     }
-};
-
-// save an image request
-const saveImage = async (req: Request, res: Response): Promise<Response> => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    if (!validateImageFile(req.file)) {
-        return res.status(400).json({ error: 'Uploaded file must be an image' });
-    }
-    const mimetype = req.file.mimetype;
-    const buffer = req.file.buffer;
-    const id = crypto.randomUUID();
-
-    const response = await _saveImageController(id, buffer, mimetype);
-    return sanitizeResponse(response, res);
-
-    // API documentation
-    /*
-    #swagger.tags = ['image']
-
-    #swagger.consumes = ['multipart/form-data']
-
-    #swagger.parameters['image'] = {
-        in: 'formData',
-        type: 'file',
-        required: true,
-        description: 'The file of the image to save.'
-    }
-    #swagger.responses[200] = {
-        schema: { "id": 'image-id' }
-    }
-    #swagger.responses[400] = {
-        schema: { $ref: '#/definitions/error' }
-    }
-    #swagger.responses[500] = {}
-*/
 };
 
 /**
@@ -124,5 +85,5 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
 
 
 export {
-    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, saveImage, getImageSigned, _saveImageController, _getImageControllerSigned, validateImageFile
+    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned, _saveImageController, _getImageControllerSigned, validateImageFile
 };

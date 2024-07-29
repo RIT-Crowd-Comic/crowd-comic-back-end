@@ -37,8 +37,9 @@ export default (app: Express) => {
     app.get('/session/:id/user', user.getUserBySession);
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser);
     app.get('/trunks', panelSet.getAllTrunkSets);
+
+    // low priority for now, fully implement/use in future
     app.get('/tree/:id', panelSet.getTree);
-    app.get('/populate', populate.populate);
     app.get('/session/:id', session.getSession);
     app.get('*', utils.notFound);
 
@@ -47,7 +48,7 @@ export default (app: Express) => {
         { name: 'image2', maxCount: 1 },
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
-    app.post('/saveimage', upload.single('image'), image.saveImage);
+
     app.post('/uploadImages', upload.fields([
         { name: 'image1', maxCount: 1 },
         { name: 'image2', maxCount: 1 },
@@ -65,9 +66,7 @@ export default (app: Express) => {
     app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
-    app.patch('/addSetToHook', hook.addSetToHook);
     app.patch('*', utils.notFound);
 
-    app.delete('/destroy', misc.clearDB);
     app.delete('*', utils.notFound);
 };

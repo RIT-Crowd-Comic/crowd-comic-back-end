@@ -2,7 +2,6 @@ import * as imageService from '../services/imageService';
 
 import { sanitizeResponse, assertArgumentsString, assertArgumentsNumber } from './utils';
 import { Request, Response } from 'express';
-import crypto from 'crypto';
 import { sequelize } from '../database';
 import { IPanel } from '../models';
 

@@ -33,8 +33,13 @@ const createSession = async (req: Request, res: Response): Promise<Response> => 
 
     return sanitizeResponse(response, res);
 
+    //API Documentation
     /*
         #swagger.tags = ['session']
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Create a new user session',
+        } 
         #swagger.responses[200] = {
             description: 'A new session created',
             schema: { $ref: '#/definitions/session' }
@@ -69,6 +74,7 @@ const getSession = async (req: Request, res: Response): Promise<Response> => {
 
     return sanitizeResponse(response, res, `Could not find session with id ${id}`);
 
+    //API Documentation
     /*
         #swagger.tags = ['session']
         #swagger.parameters['id'] = {

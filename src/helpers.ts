@@ -29,7 +29,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         return next(err);
     }
     res.setHeader('Content-Type', 'application/json');
-    res.status(500).send(JSON.stringify({message: err.message}));
+    res.status(500).send(JSON.stringify({ message: err.message }));
 };
 
 /**
@@ -39,7 +39,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 const validateSessionPost = async(req : RequestWithUser, res : Response, next: NextFunction) =>{
 
     // if not a post continue, or createUser
-    if (req.method !== 'POST' || req.url === '/createUser' || req.url === '/authenticate' || req.url === '/createSession' || req.url === '/uploadImages') {
+    if (req.method !== 'POST' || req.url === '/createUser' || req.url === '/authenticate' || req.url === '/createSession') {
         return next();
     }
 

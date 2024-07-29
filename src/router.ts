@@ -9,7 +9,6 @@ import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
 import * as session from './requestHandlers/session';
 import * as publish from './requestHandlers/publish';
-import * as populate from './requestHandlers/populate';
 import cors from 'cors';
 
 
@@ -37,8 +36,9 @@ export default (app: Express) => {
     app.get('/session/:id/user', user.getUserBySession);
     app.get('/user/:id/panel_sets', panelSet.getAllPanelSetsFromUser);
     app.get('/trunks', panelSet.getAllTrunkSets);
-    app.get('/tree/:id', panelSet.getTree);
-    app.get('/populate', populate.populate);
+
+    // low priority for now, fully implement/use in future
+    // app.get('/tree/:id', panelSet.getTree);
     app.get('/session/:id', session.getSession);
     app.get('*', utils.notFound);
 
@@ -47,15 +47,6 @@ export default (app: Express) => {
         { name: 'image2', maxCount: 1 },
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
-    app.post('/saveimage', upload.single('image'), image.saveImage);
-    app.post('/uploadImages', upload.fields([
-        { name: 'image1', maxCount: 1 },
-        { name: 'image2', maxCount: 1 },
-        { name: 'image3', maxCount: 1 },
-        { name: 'image4', maxCount: 1 },
-        { name: 'image5', maxCount: 1 },
-        { name: 'image6', maxCount: 1 },
-    ]), populate.uploadImagesPopulate);
 
     app.post('/createUser', user.createUser);
     app.post('/authenticate', user.authenticate);
@@ -65,9 +56,7 @@ export default (app: Express) => {
     app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
-    app.patch('/addSetToHook', hook.addSetToHook);
     app.patch('*', utils.notFound);
 
-    app.delete('/destroy', misc.clearDB);
     app.delete('*', utils.notFound);
 };

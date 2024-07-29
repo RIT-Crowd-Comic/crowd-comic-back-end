@@ -20,44 +20,6 @@ const _saveImageController = async (id : string, buffer: Buffer, mimetype: strin
     }
 };
 
-// save an image request
-const saveImage = async (req: Request, res: Response): Promise<Response> => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    if (!validateImageFile(req.file)) {
-        return res.status(400).json({ error: 'Uploaded file must be an image' });
-    }
-    const mimetype = req.file.mimetype;
-    const buffer = req.file.buffer;
-    const id = crypto.randomUUID();
-
-    const response = await _saveImageController(id, buffer, mimetype);
-    return sanitizeResponse(response, res);
-
-    // API documentation
-    /*
-    #swagger.tags = ['image']
-
-    #swagger.consumes = ['multipart/form-data']
-
-    #swagger.parameters['image'] = {
-        in: 'formData',
-        type: 'file',
-        required: true,
-        description: 'The file of the image to save.'
-    }
-    #swagger.responses[200] = {
-        schema: { "id": 'image-id' }
-    }
-    #swagger.responses[400] = {
-        schema: { $ref: '#/definitions/error' }
-    }
-    #swagger.responses[500] = {}
-*/
-};
-
 /**
  * saves an image in s3
  * @param id The id of the panel
@@ -124,5 +86,5 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
 
 
 export {
-    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, saveImage, getImageSigned, _saveImageController, _getImageControllerSigned, validateImageFile
+    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned, _saveImageController, _getImageControllerSigned, validateImageFile
 };

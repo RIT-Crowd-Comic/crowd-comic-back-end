@@ -29,7 +29,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         return next(err);
     }
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', 'no-cors');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(500).json({message: err.message});
 };
 

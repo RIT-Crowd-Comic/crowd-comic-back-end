@@ -36,11 +36,12 @@
         }
       }
     },
-    "/getImage/{id}": {
+    "/image/{id}": {
       "get": {
         "tags": [
           "image"
         ],
+        "summary": "Get an image by its id",
         "description": "",
         "parameters": [
           {
@@ -83,6 +84,7 @@
         "tags": [
           "hook"
         ],
+        "summary": "Get a hook by its id",
         "description": "",
         "parameters": [
           {
@@ -131,6 +133,7 @@
         "tags": [
           "panel"
         ],
+        "summary": "Get a panel by its id",
         "description": "",
         "parameters": [
           {
@@ -192,7 +195,7 @@
         "tags": [
           "hook"
         ],
-        "summary": "Get all of the hooks connected a panel set",
+        "summary": "Get all of the hooks connected to a panel set",
         "description": "",
         "parameters": [
           {
@@ -217,6 +220,7 @@
         "tags": [
           "hook"
         ],
+        "summary": "Get all hooks connected to a specific panel",
         "description": "",
         "parameters": [
           {
@@ -268,6 +272,10 @@
     },
     "/panel_set/{id}/images": {
       "get": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Get all images from a panel set",
         "description": "",
         "parameters": [
           {
@@ -347,18 +355,35 @@
     },
     "/panel_sets/{ids}/panels": {
       "get": {
+        "tags": [
+          "panel"
+        ],
+        "summary": "Get all panels in a panel set",
         "description": "",
         "parameters": [
           {
             "name": "ids",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Array of numbers ex: 1-2-3-4"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "An array of panels",
+            "schema": {
+              "$ref": "#/definitions/panelArray"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -368,6 +393,7 @@
         "tags": [
           "panel"
         ],
+        "summary": "Get a panel given the panel set it came from and its index",
         "description": "",
         "parameters": [
           {
@@ -686,18 +712,49 @@
     },
     "/session/{id}": {
       "get": {
+        "tags": [
+          "session"
+        ],
+        "summary": "get a session by its id",
         "description": "",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "in": "query",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "A session",
+            "schema": {
+              "$ref": "#/definitions/session"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find session with id ${req.params.id}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -1117,6 +1174,7 @@
         "tags": [
           "panel"
         ],
+        "summary": "Change a panel",
         "description": "",
         "parameters": [
           {
@@ -1126,13 +1184,29 @@
             "schema": {
               "$ref": "#/definitions/panelUpdate"
             }
+          },
+          {
+            "name": "id",
+            "type": "number",
+            "in": "query"
+          },
+          {
+            "name": "panel_set_id",
+            "type": "number",
+            "in": "query"
+          },
+          {
+            "name": "ids",
+            "type": "string",
+            "description": "Array of numbers ex: 1-2-3-4",
+            "in": "query"
           }
         ],
         "responses": {
           "200": {
-            "description": "An updated Panel",
+            "description": "An array of panels",
             "schema": {
-              "$ref": "#/definitions/panel"
+              "$ref": "#/definitions/panelArray"
             }
           },
           "400": {
@@ -1140,6 +1214,21 @@
             "schema": {
               "$ref": "#/definitions/error"
             }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find panel with panel_set_id ${panel_set_id} and index of ${index}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"

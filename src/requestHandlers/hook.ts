@@ -47,6 +47,7 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
 
     /*
         #swagger.tags = ['hook']
+        #swagger.summary = 'Get a hook by its id'
         #swagger.parameters['id'] = {
             type: 'number'
         }
@@ -97,6 +98,7 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
 
     /*
         #swagger.tags = ['hook']
+        #swagger.summary = 'Get all hooks connected to a specific panel'
         #swagger.parameters['id'] = {
             type: 'number'
         }
@@ -221,11 +223,11 @@ const getAllHooksByPanelSetId = async (req: Request, res: Response): Promise<Res
 
     /*
         #swagger.tags = ['hook']
-        #swagger.summary = 'Get all of the hooks connected a panel set
+        #swagger.summary = 'Get all of the hooks connected to a panel set'
         #swagger.parameters = {
-            in: [path]
-            name: id
-            description: test
+            name:  'id'
+            type: 'number'
+            description: 'the id of the panel set'
         }
         #swagger.responses[200] = {
             description: 'Finish this',
@@ -233,7 +235,7 @@ const getAllHooksByPanelSetId = async (req: Request, res: Response): Promise<Res
         #swagger.responses[400] = {
             description: 'check other possible responses',
         }
-        }
+        
     */
 };
 

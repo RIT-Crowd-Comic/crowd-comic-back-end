@@ -51,20 +51,6 @@ const createSession = async (req: Request, res: Response): Promise<Response> => 
     */
 };
 
-/**
- * Get session data from a session id
- * @param {string} id Session ID to query 
- * @returns Data from the queried session
- */
-const _getSessionController = (sequelize: Sequelize) => async (id: string) => {
-    try {
-        return await sessionService.getSession(sequelize)(id);
-    }
-    catch (err) {
-        return err;
-    }
-};
-
 const getSession = async (req: Request, res: Response): Promise<Response> => {
     const id = req.params.id;
     const validArgs = assertArgumentsDefined({ id });
@@ -77,6 +63,7 @@ const getSession = async (req: Request, res: Response): Promise<Response> => {
     //API Documentation
     /*
         #swagger.tags = ['session']
+        #swagger.summary = 'get a session by its id'
         #swagger.parameters['id'] = {
             in: 'query',
             type: 'string'
@@ -93,6 +80,20 @@ const getSession = async (req: Request, res: Response): Promise<Response> => {
         }
         #swagger.responses[500] = {}
     */
+};
+
+/**
+ * Get session data from a session id
+ * @param {string} id Session ID to query 
+ * @returns Data from the queried session
+ */
+const _getSessionController = (sequelize: Sequelize) => async (id: string) => {
+    try {
+        return await sessionService.getSession(sequelize)(id);
+    }
+    catch (err) {
+        return err;
+    }
 };
 
 export {

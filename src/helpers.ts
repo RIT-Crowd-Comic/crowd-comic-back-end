@@ -30,7 +30,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     }
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    return res.status(500).json({message: err.message});
+    return res.status(500).json({ message: err.message });
 };
 
 /**

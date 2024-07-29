@@ -10,7 +10,7 @@
     "start": "npx ts-node src/server.ts",
     "prestart-watch": "npm run setup",
     "start-watch": "nodemon",
-    "start-heroku": "",
+    "start-heroku": "npx ts-node src/server.ts",
     "lint": "npx eslint src migrations seeders",
     "lint-fix": "npx eslint src migrations seeders --fix",
     "swagger": "npx ts-node src/swagger-autogen.ts",

@@ -53,13 +53,13 @@
     "eslint": "^8.57.0",
     "globals": "^15.8.0",
     "nodemon": "^3.1.4",
-    "s3rver": "^2.2.9",
     "sequelize-cli": "^6.6.2",
-    "swagger-autogen": "^2.23.7",
-    "ts-node": "^10.9.2",
     "typescript-eslint": "^7.13.1"
   },
   "dependencies": {
+    "swagger-autogen": "^2.23.7",
+    "s3rver": "^2.2.9",
+    "ts-node": "^10.9.2",
     "@aws-sdk/client-s3": "^3.614.0",
     "@aws-sdk/s3-request-presigner": "^3.606.0",
     "@types/cors": "^2.8.17",

@@ -218,6 +218,23 @@ const getAllHooksByPanelSetId = async (req: Request, res: Response): Promise<Res
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getAllHooksByPanelSetIdController(sequelize)(Number(id));
     return sanitizeResponse(response, res, `A panel set with a id of ${id} doesn't exist`);
+
+    /*
+        #swagger.tags = ['hook']
+        #swagger.summary = 'Get all of the hooks connected a panel set
+        #swagger.parameters = {
+            in: [path]
+            name: id
+            description: test
+        }
+        #swagger.responses[200] = {
+            description: 'Finish this',
+        }
+        #swagger.responses[400] = {
+            description: 'check other possible responses',
+        }
+        }
+    */
 };
 
 /**

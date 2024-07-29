@@ -189,6 +189,10 @@
     },
     "/panel_sets/{id}/hooks": {
       "get": {
+        "tags": [
+          "hook"
+        ],
+        "summary": "Get all of the hooks connected a panel set",
         "description": "",
         "parameters": [
           {
@@ -199,8 +203,11 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Finish this"
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "check other possible responses"
           }
         }
       }

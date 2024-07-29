@@ -3,7 +3,6 @@ import {
 } from '../requestHandlers/hook';
 import * as hookService from '../services/hookService';
 import * as panelService from '../services/panelService';
-import * as panelSet from '../requestHandlers/panelSet';
 import { Sequelize } from 'sequelize';
 jest.mock('../services/hookService');
 jest.mock('../services/panelService');

@@ -38,7 +38,7 @@ export default (app: Express) => {
     app.get('/trunks', panelSet.getAllTrunkSets);
 
     // low priority for now, fully implement/use in future
-    // app.get('/tree/:id', panelSet.getTree);
+    app.get('/tree/:id', panelSet.getTree);
     app.get('/session/:id', session.getSession);
     app.get('*', utils.notFound);
 

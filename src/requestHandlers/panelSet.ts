@@ -196,7 +196,6 @@ interface PanelSetFrontEnd {
 }
 
 /**
- * CURRENTLY UNUSED
  * @param request 
  * @param res 
  * @returns 
@@ -246,7 +245,6 @@ const getTree = async(request: Request, res: Response) : Promise<Response> => {
 };
 
 /**
- * CURRENTLY UNUSED
  * @param sequelize 
  * @returns 
  */

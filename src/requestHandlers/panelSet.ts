@@ -70,7 +70,8 @@ const _getPanelSetByIDController = (sequelize: Sequelize) => async(id: number) =
 
 const getPanelSetByID = async (request: Request, res: Response) : Promise<Response> => {
     let id = Number(request.params.id);
-    if(isNaN(id)){
+    //Endpoint should return the trunk id if no id was provided (no id entered provides NaN as a param)
+    if (isNaN(id)) {
         const trunks = await PanelSetService.getAllTrunkSets(sequelize) as IPanelSet[];
         const trunk = trunks[0] as IPanelSet;
         id = trunk.id;

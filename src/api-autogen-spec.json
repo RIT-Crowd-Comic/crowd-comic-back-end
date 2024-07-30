@@ -59,7 +59,7 @@
               "properties": {
                 "url": {
                   "type": "string",
-                  "example": "link-to-image"
+                  "example": "link/to/image"
                 }
               },
               "xml": {
@@ -113,7 +113,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find hook with id ${req.body.id}"
+                  "example": "could not find hook with id ${id}"
                 }
               },
               "xml": {
@@ -179,7 +179,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find panel with id ${req.body.id}"
+                  "example": "could not find panel with id ${id}"
                 }
               },
               "xml": {
@@ -321,7 +321,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns the link to the image",
+            "description": "Returns array of all image urls",
             "schema": {
               "type": "array",
               "items": {
@@ -329,7 +329,7 @@
                 "properties": {
                   "url": {
                     "type": "string",
-                    "example": "link-to-image"
+                    "example": "link/to/image"
                   }
                 }
               },
@@ -355,6 +355,7 @@
         "tags": [
           "panel-set"
         ],
+        "summary": "get a panel set by its id",
         "description": "",
         "parameters": [
           {
@@ -521,6 +522,7 @@
         "tags": [
           "user"
         ],
+        "summary": "get a user by its id",
         "description": "",
         "parameters": [
           {
@@ -569,6 +571,7 @@
         "tags": [
           "user"
         ],
+        "summary": "get a user from a session given a session id",
         "description": "",
         "parameters": [
           {
@@ -584,7 +587,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/user"
+                "$ref": "#/definitions/userResponse"
               },
               "xml": {
                 "name": "main"
@@ -605,37 +608,28 @@
         "tags": [
           "panel-set"
         ],
+        "summary": "get an array of panel sets from a user given the user",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
           "200": {
-            "description": "Get all panel sets from a user",
             "schema": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "number",
-                    "example": 0
-                  },
-                  "author_id": {
-                    "type": "string",
-                    "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-                  }
-                }
+                "$ref": "#/definitions/panel_set"
               },
               "xml": {
                 "name": "main"
               }
-            }
+            },
+            "description": "Returns an array of panel sets and their children"
           },
           "400": {
             "description": "Bad Request",
@@ -649,7 +643,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "User with an id of \"${id}\" does not exist"
+                  "example": "a panel set with the id of \"${id}\" cannot be found"
                 }
               },
               "xml": {
@@ -669,6 +663,7 @@
         "tags": [
           "panel-set"
         ],
+        "summary": "Get all panel sets in database that are trunks",
         "description": "",
         "responses": {
           "200": {
@@ -676,17 +671,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "number",
-                    "example": 0
-                  },
-                  "author_id": {
-                    "type": "string",
-                    "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-                  }
-                }
+                "$ref": "#/definitions/panel_set"
               },
               "xml": {
                 "name": "main"
@@ -705,7 +690,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "Error occured, no trunks were found"
+                  "example": "No trunks were found"
                 }
               },
               "xml": {
@@ -725,6 +710,7 @@
         "tags": [
           "panel-set"
         ],
+        "summary": "get all panel sets that belong to the tree starting at the given panel set",
         "description": "",
         "parameters": [
           {
@@ -736,7 +722,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns an array of panel sets and their children"
+            "description": "Returns an array of panel sets and their children",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/panel_set"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
@@ -750,7 +745,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "a panel with the id of \"${id}\" cannot be found"
+                  "example": "a panel set with the id of \"${id}\" cannot be found"
                 }
               },
               "xml": {
@@ -799,7 +794,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find session with id ${req.params.id}"
+                  "example": "could not find session with id ${id}"
                 }
               },
               "xml": {
@@ -819,6 +814,7 @@
         "tags": [
           "publish"
         ],
+        "summary": "Create a new panel set, three panels, and three hooks together and link the panel set to an existing hook",
         "description": "",
         "consumes": [
           "multipart/form-data"
@@ -885,6 +881,7 @@
         "tags": [
           "populate"
         ],
+        "summary": "Populate the database with a preset selection of completed panel sets",
         "description": "",
         "consumes": [
           "multipart/form-data"
@@ -957,6 +954,7 @@
         "tags": [
           "user"
         ],
+        "summary": "Create a new user",
         "description": "",
         "parameters": [
           {
@@ -992,23 +990,26 @@
         "tags": [
           "user"
         ],
+        "summary": "Provide user credentials to get user information",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Provide user email and password",
             "schema": {
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "example@email.com"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Password!"
                 }
               }
-            },
-            "description": "Authenticate a user. This is likely to change when when we start using sessions for authentication."
+            }
           }
         ],
         "responses": {
@@ -1050,20 +1051,22 @@
         "tags": [
           "session"
         ],
+        "summary": "Create a session for the given user",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "ID of user to create the session for",
             "schema": {
               "type": "object",
               "properties": {
                 "user_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
                 }
               }
-            },
-            "description": "Create a new user session"
+            }
           }
         ],
         "responses": {
@@ -1090,6 +1093,7 @@
         "tags": [
           "user"
         ],
+        "summary": "Change a user",
         "description": "",
         "parameters": [
           {
@@ -1099,87 +1103,19 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "example@email.com"
                 },
                 "password": {
-                  "example": "any"
-                },
-                "newPassword": {
-                  "example": "any"
-                }
-              }
-            },
-            "description": "Change the password for a user"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
                   "type": "string",
-                  "example": "Successfully changed password"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "description": "Response code is likely to change when we start using sessions to authenticate",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "could not find user with provided email/password"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/changeDisplayName": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
+                  "example": "Password!"
                 },
                 "newDisplayName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "newName"
                 }
               }
-            },
-            "description": "Change the display name for a user"
+            }
           }
         ],
         "responses": {
@@ -1205,7 +1141,82 @@
             }
           },
           "404": {
-            "description": "Response code is likely to change when we start using sessions to authenticate",
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find user with specified email/password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/changeDisplayName": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Change the given user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "example@email.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Password!"
+                },
+                "newDisplayName": {
+                  "type": "string",
+                  "example": "newName"
+                }
+              }
+            }
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/userResponse"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "schema": {
               "type": "object",
               "properties": {
@@ -1382,6 +1393,19 @@
         }
       }
     },
+    "panel_set": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 0
+        },
+        "author_id": {
+          "type": "string",
+          "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        }
+      }
+    },
     "session": {
       "type": "object",
       "properties": {
@@ -1392,14 +1416,6 @@
         "user-id": {
           "type": "string",
           "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-        },
-        "createdAt": {
-          "type": "string",
-          "example": "2024-07-12T15:29:19.550Z"
-        },
-        "updatedAt": {
-          "type": "string",
-          "example": "2024-07-12T15:29:19.550Z"
         }
       }
     },

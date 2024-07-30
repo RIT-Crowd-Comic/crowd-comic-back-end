@@ -77,7 +77,7 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: 'could not find panel with id ${req.body.id}' }
+            schema: { message: 'could not find panel with id ${id}' }
         }
         #swagger.responses[500] = {}
     */

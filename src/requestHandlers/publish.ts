@@ -194,6 +194,8 @@ const publish = async (request: RequestWithUser, res: Response) : Promise<Respon
     /*
     #swagger.tags = ['publish']
 
+    #swagger.summary = 'Create a new panel set, three panels, and three hooks together and link the panel set to an existing hook'
+
     #swagger.consumes = ['multipart/form-data']
 
     #swagger.parameters['image1'] = {

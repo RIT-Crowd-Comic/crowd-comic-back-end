@@ -36,9 +36,11 @@ const createSession = async (req: Request, res: Response): Promise<Response> => 
     // API Documentation
     /*
         #swagger.tags = ['session']
+        #swagger.summary = 'Create a session for the given user'
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Create a new user session',
+            description: 'ID of user to create the session for',
+            schema: { user_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
         } 
         #swagger.responses[200] = {
             description: 'A new session created',
@@ -76,7 +78,7 @@ const getSession = async (req: Request, res: Response): Promise<Response> => {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: 'could not find session with id ${req.params.id}' }
+            schema: { message: 'could not find session with id ${id}' }
         }
         #swagger.responses[500] = {}
     */

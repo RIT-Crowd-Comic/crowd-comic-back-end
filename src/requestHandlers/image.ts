@@ -51,7 +51,7 @@ const getImageSigned = async (req: Request, res: Response): Promise<Response> =>
         }
         #swagger.responses[200] = {
             description: 'Returns the link to the image',
-            schema: { url: 'link-to-image' }
+            schema: { url: 'link/to/image' }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
@@ -87,8 +87,8 @@ const getAllImageUrlsByPanelSetId = async (req: Request, res: Response): Promise
             type: 'number'
         }
         #swagger.responses[200] = {
-            description: 'Returns the link to the image',
-            schema: [{ url: 'link-to-image' }]
+            description: 'Returns array of all image urls',
+            schema: [{ url: 'link/to/image' }]
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }

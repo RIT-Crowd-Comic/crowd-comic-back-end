@@ -47,9 +47,11 @@ const uploadImagesPopulate = async (request: Request, res: Response) => {
     /*
     #swagger.tags = ['populate']
 
+    #swagger.summary = 'Populate the database with a preset selection of completed panel sets'
+
     #swagger.consumes = ['multipart/form-data']
 
-#swagger.parameters['image1'] = {
+    #swagger.parameters['image1'] = {
         in: 'formData',
         type: 'file',
         required: true,

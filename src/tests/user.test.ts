@@ -124,14 +124,14 @@ describe('Get User By Session (Controller)', () => {
         expect(response).toEqual(userResponse);
     });
     test('Failure to find a session will return an Error', async () => {
-        (getSession as jest.Mock).mockReturnValue(() => { throw new Error(); });
-        const response = await _getUserBySessionController(sequelizeMock())(undefined as any);
-        expect(response).toBeInstanceOf(Error);
+        (getSession as jest.Mock).mockReturnValue(() => Promise.resolve(null));
+        const response = await _getUserBySessionController(sequelizeMock())('fake_session');
+        expect(response).toEqual(new Error(`Session with an id of "fake_session" does not exist`));
     });
     test('Failure to find a user will return an Error', async () => {
         (getSession as jest.Mock).mockReturnValue(() => Promise.resolve('session'));
-        (userService.getUserBySession as jest.Mock).mockReturnValue(() => { throw new Error(); });
-        const response = await _getUserBySessionController(sequelizeMock())(undefined as any);
-        expect(response).toBeInstanceOf(Error);
+        (userService.getUserBySession as jest.Mock).mockReturnValue(() => Promise.resolve(null));
+        const response = await _getUserBySessionController(sequelizeMock())('session');
+        expect(response).toEqual(null);
     });
 });

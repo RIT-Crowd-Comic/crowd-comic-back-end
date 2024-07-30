@@ -63,7 +63,6 @@ export default (app: Express) => {
     app.post('/createSession', session.createSession);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName);
-    app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
     app.patch('*', utils.notFound);

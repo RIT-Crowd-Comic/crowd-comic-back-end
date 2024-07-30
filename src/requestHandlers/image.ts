@@ -46,6 +46,9 @@ const getImageSigned = async (req: Request, res: Response): Promise<Response> =>
     /*  
         #swagger.tags = ['image']
         #swagger.summary = 'Get an image by its id'
+        #swagger.parameters['id'] = {
+            type: 'string'
+        }
         #swagger.responses[200] = {
             description: 'Returns the link to the image',
             schema: { url: 'link-to-image' }
@@ -75,9 +78,22 @@ const getAllImageUrlsByPanelSetId = async (req: Request, res: Response): Promise
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getAllImageUrlsByPanelSetIdController(Number(id));
     return sanitizeResponse(response, res, `A panel set with an id of ${id} does not exist`);
+
+    // API documentation
     /*
         #swagger.tags = ['image']
         #swagger.summary = 'Get all images from a panel set'
+        #swagger.parameters['id'] = {
+            type: 'number'
+        }
+        #swagger.responses[200] = {
+            description: 'Returns the link to the image',
+            schema: [{ url: 'link-to-image' }]
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
     */
 };
 

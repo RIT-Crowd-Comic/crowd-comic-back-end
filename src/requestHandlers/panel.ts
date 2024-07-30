@@ -43,61 +43,6 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
 /**
  * gets a panel based on id
  * @param id The id of the panel
- * @param image The new image of the panel
- */
-const _updatePanelController = (sequelize: Sequelize) => async (id :number, image: string) => {
-    try {
-
-        // check if existing panel on a panel set based on index
-        const panel = await sequelize.models.panel.findByPk(id) as IPanel;
-        if (!panel) {
-            throw new Error(`A panel with an id of ${id} does not exist`);
-        }
-
-        return await panelService.updatePanel(panel, {
-            image:        image,
-            index:        panel.index,
-            panel_set_id: panel.panel_set_id,
-        });
-    }
-    catch (err) {
-        return err;
-    }
-};
-
-const updatePanel = async (req: Request, res: Response): Promise<Response> => {
-    const id = Number(req.body.id);
-    const image = req.body.image;
-    let validArgs = assertArgumentsNumber({ id });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-    validArgs = assertArgumentsDefined({ image });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _updatePanelController(sequelize)(id, image);
-    return sanitizeResponse(response, res);
-
-    /*
-        #swagger.summary = 'Change a panel's image'
-        #swagger.tags = ['panel']
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'Update Panel',
-            schema: { $ref: '#/definitions/panelUpdate' }
-        } 
-        #swagger.responses[200] = {
-            description: 'An updated Panel',
-            schema: { $ref: '#/definitions/panel' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[500] = {}
-    */
-};
-
-
-/**
- * gets a panel based on id
- * @param id The id of the panel
  * @returns response or genericErrorResponse
  */
 const _getPanelController = (sequelize : Sequelize) => async (id:number) => {
@@ -125,8 +70,8 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
             type: 'number'
         }
         #swagger.responses[200] = {
-            description: 'A panel',
-            schema: { id: 0, image: 'path/to/image' }
+            description: 'A panel with requested id',
+            schema: { image: 'path/to/image', index: 0, panel_set_id: 0 }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
@@ -169,12 +114,12 @@ const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Pro
         #swagger.parameters['panel_set_id'] = {
             type: 'number'
         }
-            #swagger.parameters['id'] = {
+            #swagger.parameters['index'] = {
             type: 'number'
         }
         #swagger.responses[200] = {
             description: 'A panel',
-            schema: { id: 0, image: 'path/to/image' }
+            schema: { $ref: '#/definitions/panel' }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
@@ -196,7 +141,7 @@ const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Re
 
     /*
         #swagger.tags = ['panel']
-        #swagger.summary = 'Get all panels in a panel set'
+        #swagger.summary = 'Get all panels in requested panel set(s)'
          #swagger.parameters['ids'] = {
             type: 'string',
             description: 'Array of numbers ex: 1-2-3-4'
@@ -207,6 +152,9 @@ const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Re
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
+        }
+            #swagger.responses[404] = {
+            schema: { message: 'could not find panels from panel sets ${arr}' }
         }
         #swagger.responses[500] = {}
     */
@@ -231,5 +179,5 @@ const _getPanelsFromPanelSetIDsController = (sequelize : Sequelize) => async (id
 };
 
 export {
-    _getPanelsFromPanelSetIDsController, getPanelsFromPanelSetIDs, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
+    _getPanelsFromPanelSetIDsController, getPanelsFromPanelSetIDs, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController
 };

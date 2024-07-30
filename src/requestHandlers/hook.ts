@@ -52,7 +52,7 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
             type: 'number'
         }
         #swagger.responses[200] = {
-            description: 'A hook',
+            description: 'The hook with the requested ID',
             schema: { $ref: '#/definitions/hook' }
         }
         #swagger.responses[400] = {
@@ -103,7 +103,7 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
             type: 'number'
         }
         #swagger.responses[200] = {
-            description: 'An array of hooks',
+            description: 'An array of hooks belonging to provided panel',
             schema: [{ $ref: '#/definitions/hook' }]
         }
         #swagger.responses[400] = {
@@ -230,11 +230,16 @@ const getAllHooksByPanelSetId = async (req: Request, res: Response): Promise<Res
             description: 'the id of the panel set'
         }
         #swagger.responses[200] = {
-            description: 'Finish this',
+            description: 'The array of hooks connected to provided panel set',
+            schema: [{ $ref: '#/definitions/hook' }]
         }
         #swagger.responses[400] = {
-            description: 'check other possible responses',
+            schema: { $ref: '#/definitions/error' }
         }
+        #swagger.responses[404] = {
+            schema: { message: 'could not find hooks connected to panel set with id ${id}' }
+        }
+        #swagger.responses[500] = {}
         
     */
 };

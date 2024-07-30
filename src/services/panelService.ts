@@ -31,27 +31,6 @@ const createPanel = (sequelize : Sequelize, transaction? : Transaction) => async
     };
 };
 
-// update panel currently cannot be called independantly of other services
-const updatePanel = async(oldPanel: IPanel, newPanel : PanelConfig) => {
-    const {
-        id, image, index, panel_set_id
-    } =
-    await oldPanel.update({
-        image:        newPanel.image,
-        index:        newPanel.index,
-        panel_set_id: newPanel.panel_set_id,
-    }) as IPanel;
-
-    return {
-        id, image, index, panel_set_id
-    } as {
-        id: number,
-        image: string,
-        index: number,
-        panel_set_id: number
-    };
-};
-
 /**
  * Get a panel before 
  * @param id 
@@ -111,5 +90,5 @@ const getPanelsFromPanelSetIDs = (sequelize : Sequelize) => async (ids: number[]
 
 
 export {
-    getPanelsFromPanelSetIDs, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex, updatePanel
+    getPanelsFromPanelSetIDs, createPanel, getPanel, getPanelBasedOnPanelSetAndIndex
 };

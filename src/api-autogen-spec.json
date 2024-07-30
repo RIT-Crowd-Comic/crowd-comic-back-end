@@ -96,7 +96,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A hook",
+            "description": "The hook with the requested ID",
             "schema": {
               "$ref": "#/definitions/hook"
             }
@@ -145,17 +145,21 @@
         ],
         "responses": {
           "200": {
-            "description": "A panel",
+            "description": "A panel with requested id",
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 0
-                },
                 "image": {
                   "type": "string",
                   "example": "path/to/image"
+                },
+                "index": {
+                  "type": "number",
+                  "example": 0
+                },
+                "panel_set_id": {
+                  "type": "number",
+                  "example": 0
                 }
               },
               "xml": {
@@ -207,10 +211,40 @@
         ],
         "responses": {
           "200": {
-            "description": "Finish this"
+            "description": "The array of hooks connected to provided panel set",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/hook"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "400": {
-            "description": "check other possible responses"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find hooks connected to panel set with id ${id}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -232,7 +266,7 @@
         ],
         "responses": {
           "200": {
-            "description": "An array of hooks",
+            "description": "An array of hooks belonging to provided panel",
             "schema": {
               "type": "array",
               "items": {
@@ -282,12 +316,36 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
+          "200": {
+            "description": "Returns the link to the image",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "example": "link-to-image"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -358,7 +416,7 @@
         "tags": [
           "panel"
         ],
-        "summary": "Get all panels in a panel set",
+        "summary": "Get all panels in requested panel set(s)",
         "description": "",
         "parameters": [
           {
@@ -381,6 +439,21 @@
             "schema": {
               "$ref": "#/definitions/error"
             }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find panels from panel sets ${arr}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -406,32 +479,14 @@
             "name": "index",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "id",
-            "type": "number",
-            "in": "query"
+            "type": "number"
           }
         ],
         "responses": {
           "200": {
             "description": "A panel",
             "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 0
-                },
-                "image": {
-                  "type": "string",
-                  "example": "path/to/image"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/panel"
             }
           },
           "400": {
@@ -1007,7 +1062,8 @@
                   "example": "any"
                 }
               }
-            }
+            },
+            "description": "Create a new user session"
           }
         ],
         "responses": {
@@ -1162,73 +1218,6 @@
                 "name": "main"
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/updatePanel": {
-      "post": {
-        "tags": [
-          "panel"
-        ],
-        "summary": "Change a panel",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Update Panel",
-            "schema": {
-              "$ref": "#/definitions/panelUpdate"
-            }
-          },
-          {
-            "name": "id",
-            "type": "number",
-            "in": "query"
-          },
-          {
-            "name": "panel_set_id",
-            "type": "number",
-            "in": "query"
-          },
-          {
-            "name": "ids",
-            "type": "string",
-            "description": "Array of numbers ex: 1-2-3-4",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "An array of panels",
-            "schema": {
-              "$ref": "#/definitions/panelArray"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "could not find panel with panel_set_id ${panel_set_id} and index of ${index}"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            },
-            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"

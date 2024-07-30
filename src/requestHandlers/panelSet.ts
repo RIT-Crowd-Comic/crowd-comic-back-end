@@ -87,7 +87,8 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
         #swagger.tags = ['panel-set']
         #swagger.summary = 'get a panel set by its id'
         #swagger.parameters['id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the panel set'
         }
         #swagger.responses[200] = {
             description: 'Returns the panel set',
@@ -128,6 +129,10 @@ const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise
     /*  
         #swagger.tags = ['panel-set']
         #swagger.summary = 'get an array of panel sets from a user given the user's id'
+        #swagger.parameters['id'] = {
+            type: 'string',
+            description: 'the id of the user'
+        }
         #swagger.responses[200] = {
             schema: [{ $ref: '#/definitions/panel_set' }]
         }
@@ -231,7 +236,8 @@ const getTree = async(request: Request, res: Response) : Promise<Response> => {
         #swagger.tags = ['panel-set']
         #swagger.summary = 'get all panel sets that belong to the tree starting at the given panel set'
         #swagger.parameters['id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the trunk panel set'
         }
         #swagger.responses[200] = {
             description: 'Returns an array of panel sets and their children',

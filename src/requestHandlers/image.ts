@@ -47,7 +47,8 @@ const getImageSigned = async (req: Request, res: Response): Promise<Response> =>
         #swagger.tags = ['image']
         #swagger.summary = 'Get an image by its id'
         #swagger.parameters['id'] = {
-            type: 'string'
+            type: 'string',
+            description: 'the id of the image'
         }
         #swagger.responses[200] = {
             description: 'Returns the link to the image',
@@ -84,7 +85,8 @@ const getAllImageUrlsByPanelSetId = async (req: Request, res: Response): Promise
         #swagger.tags = ['image']
         #swagger.summary = 'Get all images from a panel set'
         #swagger.parameters['id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the panel set'
         }
         #swagger.responses[200] = {
             description: 'Returns array of all image urls',

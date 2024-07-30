@@ -48,7 +48,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "the id of the image"
           }
         ],
         "responses": {
@@ -91,7 +92,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the hook"
           }
         ],
         "responses": {
@@ -140,7 +142,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel"
           }
         ],
         "responses": {
@@ -206,7 +209,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "the id of the panel set"
           }
         ],
         "responses": {
@@ -261,7 +265,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel"
           }
         ],
         "responses": {
@@ -316,7 +321,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel set"
           }
         ],
         "responses": {
@@ -362,7 +368,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel set"
           }
         ],
         "responses": {
@@ -425,7 +432,7 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "description": "Array of numbers ex: 1-2-3-4"
+            "description": "Numbers separated by a - ex: 1-2-3-4"
           }
         ],
         "responses": {
@@ -474,13 +481,15 @@
             "name": "panel_set_id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel set"
           },
           {
             "name": "index",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the index of the panel"
           }
         ],
         "responses": {
@@ -529,7 +538,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "the id of the user"
           }
         ],
         "responses": {
@@ -578,7 +588,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "the id of the session"
           }
         ],
         "responses": {
@@ -615,7 +626,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the trunk panel set"
           }
         ],
         "responses": {
@@ -717,7 +729,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the trunk panel set"
           }
         ],
         "responses": {
@@ -772,7 +785,8 @@
             "name": "id",
             "in": "query",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "the id of the session"
           }
         ],
         "responses": {
@@ -913,21 +927,21 @@
             "in": "formData",
             "type": "file",
             "required": true,
-            "description": "The file of the image for panel-3."
+            "description": "The file of the image for panel-4."
           },
           {
             "name": "image5",
             "in": "formData",
             "type": "file",
             "required": true,
-            "description": "The file of the image for panel-3."
+            "description": "The file of the image for panel-5."
           },
           {
             "name": "image6",
             "in": "formData",
             "type": "file",
             "required": true,
-            "description": "The file of the image for panel-3."
+            "description": "The file of the image for panel-6."
           }
         ],
         "responses": {
@@ -960,7 +974,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "Create a new user",
+            "description": "The new users email, password, and display name",
             "schema": {
               "$ref": "#/definitions/userDefinition"
             }
@@ -1093,12 +1107,87 @@
         "tags": [
           "user"
         ],
-        "summary": "Change a user",
+        "summary": "Change a users password",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "the users email, old password, and new password",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "example@email.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Password!"
+                },
+                "newPassword": {
+                  "type": "string",
+                  "example": "newPassword!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Successfully changed password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find user with provided email/password"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/changeDisplayName": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Change the given users password",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "the users email, password, and new display name",
             "schema": {
               "type": "object",
               "properties": {
@@ -1128,81 +1217,6 @@
                   "type": "string",
                   "example": "display name successfully changed to Jane Smith"
                 }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "could not find user with specified email/password"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/changeDisplayName": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Change the given user",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "example@email.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "Password!"
-                },
-                "newDisplayName": {
-                  "type": "string",
-                  "example": "newName"
-                }
-              }
-            }
-          },
-          {
-            "name": "id",
-            "type": "string",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A user",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/userResponse"
               },
               "xml": {
                 "name": "main"

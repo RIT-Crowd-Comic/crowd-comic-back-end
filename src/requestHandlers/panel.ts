@@ -67,7 +67,8 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
         #swagger.tags = ['panel']
         #swagger.summary = 'Get a panel by its id'
         #swagger.parameters['id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the panel'
         }
         #swagger.responses[200] = {
             description: 'A panel with requested id',
@@ -112,10 +113,12 @@ const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Pro
         #swagger.tags = ['panel']
         #swagger.summary = 'Get a panel given the panel set it came from and its index'
         #swagger.parameters['panel_set_id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the panel set'
         }
             #swagger.parameters['index'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the index of the panel'
         }
         #swagger.responses[200] = {
             description: 'A panel',
@@ -144,7 +147,7 @@ const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Re
         #swagger.summary = 'Get all panels in requested panel set(s)'
          #swagger.parameters['ids'] = {
             type: 'string',
-            description: 'Array of numbers ex: 1-2-3-4'
+            description: 'Numbers separated by a - ex: 1-2-3-4'
         }
         #swagger.responses[200] = {
             description: 'An array of panels',

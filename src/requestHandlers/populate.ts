@@ -73,19 +73,19 @@ const uploadImagesPopulate = async (request: Request, res: Response) => {
         in: 'formData',
         type: 'file',
         required: true,
-        description: 'The file of the image for panel-3.'
+        description: 'The file of the image for panel-4.'
     }
     #swagger.parameters['image5'] = {
         in: 'formData',
         type: 'file',
         required: true,
-        description: 'The file of the image for panel-3.'
+        description: 'The file of the image for panel-5.'
     }
     #swagger.parameters['image6'] = {
         in: 'formData',
         type: 'file',
         required: true,
-        description: 'The file of the image for panel-3.'
+        description: 'The file of the image for panel-6.'
     }
     #swagger.responses[200] = {
         schema: { $ref: '#/definitions/publishResponse' }

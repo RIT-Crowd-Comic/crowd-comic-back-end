@@ -68,7 +68,8 @@ const getSession = async (req: Request, res: Response): Promise<Response> => {
         #swagger.summary = 'get a session by its id'
         #swagger.parameters['id'] = {
             in: 'query',
-            type: 'string'
+            type: 'string',
+            description: 'the id of the session'
         }
         #swagger.responses[200] = {
             description: 'A session',

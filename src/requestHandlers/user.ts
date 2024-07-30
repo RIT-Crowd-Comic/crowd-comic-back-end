@@ -29,7 +29,11 @@ const getUserByID = async (req: Request, res: Response): Promise<Response> => {
     // API documentation
     /*  
         #swagger.tags = ['user']
-        #swagger.summary = 'get a user by its id'
+        #swagger.summary = 'get a user by its id',
+        #swagger.parameters['id'] = {
+            type: 'string',
+            description: 'the id of the user'
+        }
         #swagger.responses[200] = {
             description: 'Success',
             schema: { $ref: '#/definitions/userResponse' }
@@ -109,7 +113,7 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
         #swagger.summary = 'Create a new user'
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Create a new user',
+            description: 'The new users email, password, and display name',
             schema: { $ref: '#/definitions/userDefinition' }
         } 
         #swagger.responses[200] = {
@@ -231,9 +235,10 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
     // API documentation
     /*  
         #swagger.tags = ['user']
-        #swagger.summary = 'Change a user's password'
+        #swagger.summary = 'Change a users password'
         #swagger.parameters['body'] = {
             in: 'body',
+            description: 'the users email, old password, and new password',
             schema: { email: 'example@email.com', password: 'Password!', newPassword: 'newPassword!' }
         } 
         #swagger.responses[200] = {
@@ -300,9 +305,10 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
     // API documentation
     /*  
         #swagger.tags = ['user']
-        #swagger.summary = 'Change the given user's password'
+        #swagger.summary = 'Change the given users password'
         #swagger.parameters['body'] = {
             in: 'body',
+            description: 'the users email, password, and new display name',
             schema: { email: 'example@email.com', password: 'Password!', newDisplayName: 'newName' }
         } 
         #swagger.responses[200] = {
@@ -348,7 +354,8 @@ const getUserBySession = async (req: Request, res: Response) => {
         #swagger.tags = ['user']
         #swagger.summary = 'get a user from a session given a session id'
         #swagger.parameters['id'] = {
-            type: 'string'
+            type: 'string',
+            description: 'the id of the session'
         }
         #swagger.responses[200] = {
             description: 'A user',

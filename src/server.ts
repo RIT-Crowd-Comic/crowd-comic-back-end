@@ -32,7 +32,7 @@ setupDatabase().then(() => {
     app.use(bodyParser.json());
 
     // set content security policy
-    app.use(helpers.setCSP);
+    app.use(helpers.setHeaders);
 
     // session setup
     app.use(helpers.validateSessionPost);

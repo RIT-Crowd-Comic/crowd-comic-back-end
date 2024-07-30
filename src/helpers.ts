@@ -10,8 +10,9 @@ dotenv.config();
  * Set the content security policy for our server.
  * @returns 
  */
-const setCSP = (req: Request, res: Response, next: NextFunction) => {
+const setHeaders = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 'default-src *');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     return next();
 };
 
@@ -29,7 +30,6 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         return next(err);
     }
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(500).json({ message: err.message });
 };
 
@@ -71,5 +71,5 @@ const validateSessionPost = async(req : RequestWithUser, res : Response, next: N
 
 
 export {
-    setCSP, swaggerCSP, errorHandler, validateSessionPost
+    setHeaders, swaggerCSP, errorHandler, validateSessionPost
 };

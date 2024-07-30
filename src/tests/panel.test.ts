@@ -5,34 +5,56 @@ import { Sequelize } from 'sequelize';
 jest.mock('../services/panelService');
 jest.mock('../services/panelSetService');
 
-let sequelizeMock: jest.Mocked<Sequelize>;
-beforeEach(() => {
-    sequelizeMock = {} as jest.Mocked<Sequelize>;
-});
-describe('_getPanelBasedOnPanelSetIDAndIndex', () => {
-    test('Return what the service outputs for getPanelbBsedOnPanelSetAndIndex', async () => {
-        const panelData = {
-            id:    1,
-            image: '../../superCoolImage.png'
-        };
+const sequelizeMock = (props: object = {}) => ({ ...props } as jest.Mocked<Sequelize>);
 
-        (panelService.getPanelBasedOnPanelSetAndIndex as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
+describe('Create Panel Controller', () => {
+    const panelObj = { a: 'abcd' };
 
-        const response = await panel._getPanelBasedOnPanelSetAndIndexController(sequelizeMock)(1, 0);
-
-        expect(response).toEqual(panelData);
+    test('If panel_set_id is invalid, thrown an error', async() => {
+        (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(null));
+        const response = await panel._createPanelController(sequelizeMock())('image.png', 3);
+        expect(response).toBeInstanceOf(Error);
+    });
+    test('If panelSet.panels is not null, a panel should be created', async() => {
+        const panelSet = { panels: ['a', 'b'] };
+        (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSet));
+        (panelService.createPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelObj));
+        const response = await panel._createPanelController(sequelizeMock())('', 0);
+        expect(response).toBe(panelObj);
     });
 
-    test('If an error occurs, it should return the error', async () => {
-        (panelService.getPanelBasedOnPanelSetAndIndex as jest.Mock).mockReturnValue(() => Promise.reject(new Error('Some error getting panel')));
+    test('If panelSet.panels is null, a panel should still be created', async() => {
+        const panelSet = {};
+        (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSet));
+        (panelService.createPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelObj));
+        const response = await panel._createPanelController(sequelizeMock())('', 0);
+        expect(response).toBe(panelObj);
+    });
+});
 
-        const response = await panel._getPanelBasedOnPanelSetAndIndexController(sequelizeMock)(1000, -1000);
 
+describe('Update Panel Controller', () => {
+    test('If panel does not exist, throw an error', async () => {
+        const sequelize = sequelizeMock({ models: { panel: { findByPk: jest.fn(() => Promise.resolve(null)) } } });
+        const response = await panel._updatePanelController(sequelize)(0, '');
+        expect(response).toBeInstanceOf(Error);
+    });
+    test('If panel does exist, return the updated panel', async () => {
+        const panelObj = { a: 'abcd' };
+        const sequelize = sequelizeMock({ models: { panel: { findByPk: jest.fn(() => Promise.resolve('a')) } } });
+        (panelService.updatePanel as jest.Mock).mockResolvedValue(panelObj);
+        const response = await panel._updatePanelController(sequelize)(0, '');
+        expect(response).toBe(panelObj);
+    });
+    test('If there is an error, return the error', async() => {
+        const sequelize = sequelizeMock({ models: { panel: { findByPk: jest.fn(() => { throw new Error('I am an error'); }) } } });
+        const response = await panel._updatePanelController(sequelize)(0, '');
         expect(response).toBeInstanceOf(Error);
     });
 });
-describe('_getPanelController', () => {
-    test('return what the database service outputs for getPanel', async () => {
+
+describe('Get Panel Controller', () => {
+    test('Return what the database service outputs for getPanel', async () => {
         const panelData = {
             image:        '../../superCoolImage.png!',
             index:        0,
@@ -41,7 +63,7 @@ describe('_getPanelController', () => {
 
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
 
-        const response = await panel._getPanelController(sequelizeMock)(1);
+        const response = await panel._getPanelController(sequelizeMock())(1);
 
         expect(response).toEqual(panelData);
     });
@@ -49,12 +71,36 @@ describe('_getPanelController', () => {
     test('If an error occurs, it should return the error', async () => {
         (panelService.getPanel as jest.Mock).mockReturnValue(() => Promise.reject(new Error('Some error getting panel')));
 
-        const response = await panel._getPanelController(sequelizeMock)(1000);
+        const response = await panel._getPanelController(sequelizeMock())(1000);
 
         expect(response).toBeInstanceOf(Error);
     });
 });
-describe('_getPanelsFromPanelSetIDsController', () => {
+
+describe('Get Panel Based On Panel Set And Index Controller', () => {
+    test('Return what the service outputs for getPanelbBsedOnPanelSetAndIndex', async () => {
+        const panelData = {
+            id:    1,
+            image: '../../superCoolImage.png'
+        };
+
+        (panelService.getPanelBasedOnPanelSetAndIndex as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
+
+        const response = await panel._getPanelBasedOnPanelSetAndIndexController(sequelizeMock())(1, 0);
+
+        expect(response).toEqual(panelData);
+    });
+
+    test('If an error occurs, it should return the error', async () => {
+        (panelService.getPanelBasedOnPanelSetAndIndex as jest.Mock).mockReturnValue(() => Promise.reject(new Error('Some error getting panel')));
+
+        const response = await panel._getPanelBasedOnPanelSetAndIndexController(sequelizeMock())(1000, -1000);
+
+        expect(response).toBeInstanceOf(Error);
+    });
+});
+
+describe('Get Panels From Panel Set IDs Controller', () => {
     test('Should return what the service getPanelsFromPanelSetID returns', async () => {
         const panelData = [
             {
@@ -76,7 +122,7 @@ describe('_getPanelsFromPanelSetIDsController', () => {
 
         (panelService.getPanelsFromPanelSetIDs as jest.Mock).mockReturnValue(() => Promise.resolve(panelData));
 
-        const response = await panel._getPanelsFromPanelSetIDsController(sequelizeMock)([1]);
+        const response = await panel._getPanelsFromPanelSetIDsController(sequelizeMock())([1]);
 
         expect(response).toEqual(panelData);
     });
@@ -84,51 +130,7 @@ describe('_getPanelsFromPanelSetIDsController', () => {
     test('If an error occurs, it should return the error', async () => {
         (panelService.getPanelsFromPanelSetIDs as jest.Mock).mockReturnValue(() => Promise.resolve(new Error('Some error getting panels')));
 
-        const response = await panel._getPanelsFromPanelSetIDsController(sequelizeMock)([1000]);
-        expect(response).toBeInstanceOf(Error);
-    });
-});
-describe('_createPanelController', () => {
-    const panelObj = { a: 'abcd' };
-
-    test('if panel_set_id is invalid, thrown an error', async() => {
-        (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(null));
-        const response = await panel._createPanelController(sequelizeMock)('image.png', 3);
-        expect(response).toBeInstanceOf(Error);
-    });
-    test('if panelSet.panels is not null, a panel should be created', async() => {
-        const panelSet = { panels: ['a', 'b'] };
-        (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSet));
-        (panelService.createPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelObj));
-        const response = await panel._createPanelController(sequelizeMock)('', 0);
-        expect(response).toBe(panelObj);
-    });
-
-    test('if panelSet.panels is null, a panel should still be created', async() => {
-        const panelSet = {};
-        (getPanelSetByID as jest.Mock).mockReturnValue(() => Promise.resolve(panelSet));
-        (panelService.createPanel as jest.Mock).mockReturnValue(() => Promise.resolve(panelObj));
-        const response = await panel._createPanelController(sequelizeMock)('', 0);
-        expect(response).toBe(panelObj);
-    });
-});
-
-describe('_updatePanelController', () => {
-    test('if panel does not exist, throw an error', async () => {
-        sequelizeMock = { models: { panel: { findByPk: jest.fn(() => Promise.resolve(null)) } } } as unknown as jest.Mocked<Sequelize>;
-        const response = await panel._updatePanelController(sequelizeMock)(0, '');
-        expect(response).toBeInstanceOf(Error);
-    });
-    test('if panel does exist, return the updated panel', async () => {
-        const panelObj = { a: 'abcd' };
-        sequelizeMock = { models: { panel: { findByPk: jest.fn(() => Promise.resolve('a')) } } } as unknown as jest.Mocked<Sequelize>;
-        (panelService.updatePanel as jest.Mock).mockResolvedValue(panelObj);
-        const response = await panel._updatePanelController(sequelizeMock)(0, '');
-        expect(response).toBe(panelObj);
-    });
-    test('if there is an error, return the error', async() => {
-        sequelizeMock = { models: { panel: { findByPk: jest.fn(() => { throw new Error('I am an error'); }) } } } as unknown as jest.Mocked<Sequelize>;
-        const response = await panel._updatePanelController(sequelizeMock)(0, '');
+        const response = await panel._getPanelsFromPanelSetIDsController(sequelizeMock())([1000]);
         expect(response).toBeInstanceOf(Error);
     });
 });

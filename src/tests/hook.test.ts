@@ -1,5 +1,5 @@
 import {
-    _getHookController, _getPanelHooksController, _addSetToHookController, _validateHookConnectionController,
+    _getHookController, _getPanelHooksController, _validateHookConnectionController,
     _getAllHooksByPanelSetIdController
 } from '../requestHandlers/hook';
 

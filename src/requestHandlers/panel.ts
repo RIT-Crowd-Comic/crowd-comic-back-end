@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse as sanitizeResponse } from './utils';
+import { assertArgumentsNumber, sanitizeResponse as sanitizeResponse } from './utils';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';

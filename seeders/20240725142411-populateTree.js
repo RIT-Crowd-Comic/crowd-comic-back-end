@@ -99,16 +99,16 @@ module.exports = {
         // ensure that changes are rolled back on error. We don't want only some data to be deleted
         const transaction = await queryInterface.sequelize.transaction();
         try {
-
             // delete panel_set
             await queryInterface.bulkDelete('panel_sets', { id: 1 }, { transaction });
 
             // delete panels
-            await queryInterface.bulkDelete('panels', { [Op.or]: [{ id: 1 }, { id: 2 }, { id: 3 }] }, { transaction });
+            await queryInterface.bulkDelete('panels', {  id: { [Op.lte]: 3 } }, { transaction });
+
 
             // delete hooks
             await queryInterface.bulkDelete('hooks', null, { transaction });
-            await queryInterface.bulkDelete('hooks', { [Op.or]: [{ id: 1 }, { id: 2 }, { id: 3 }] }, { transaction });
+            await queryInterface.bulkDelete('hooks', {  id: { [Op.lte]: 3 } }, { transaction });
 
             // delete user after all the dependent tables are deleted
             await queryInterface.bulkDelete('users', { id: 'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce' });

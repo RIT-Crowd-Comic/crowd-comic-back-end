@@ -6,6 +6,6 @@ const getLinks = () => {
         links.push(link + imageIDs[i]);
     }
     return links;
-}
+};
 
 module.exports = { getLinks };

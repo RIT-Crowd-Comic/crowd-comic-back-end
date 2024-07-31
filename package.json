@@ -22,7 +22,7 @@
     "seed:all": "npx sequelize-cli db:seed:all",
     "seed:undo": "npx sequelize-cli db:seed:undo",
     "seed:undo:all": "npx sequelize-cli db:seed:undo:all",
-    "reset-database": "npx sequelize-cli db:migrate:undo:all & npx sequelize-cli db:migrate & npx sequelize-cli db:seed:all",
+    "reset-database": "npx sequelize-cli db:migrate:undo:all & npx sequelize-cli db:migrate & npx sequelize-cli db:seed --seed 20240725142411-populateTree",
     "cleardb": "npx ts-node src/cleardb.ts"
   },
   "nodemonConfig": {

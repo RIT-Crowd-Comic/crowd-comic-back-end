@@ -9,7 +9,7 @@ import swaggerUI from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
 import router from './router';
-import { setup as setupDatabase, sequelize } from './database';
+import { setup as setupDatabase } from './database';
 import * as helpers from './helpers';
 
 const port = process.env.PORT || process.env.NODE_PORT || 4000;

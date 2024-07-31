@@ -249,9 +249,9 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
 /**
  * Change a user's display name
  */
-const _changeDisplayNameController = (sequelize: Sequelize) => async (email: string, password: string, newDisplayName: string) => {
+const _changeDisplayNameController = (sequelize: Sequelize) => async (email: string, newDisplayName: string) => {
     try {
-        return await UserService.changeDisplayName(sequelize)(email, password, newDisplayName);
+        return await UserService.changeDisplayName(sequelize)(email, newDisplayName);
     }
     catch (err) {
         return err;
@@ -265,12 +265,11 @@ const _changeDisplayNameController = (sequelize: Sequelize) => async (email: str
 const changeDisplayName = async (req: Request, res: Response): Promise<Response> => {
 
     const email = req.body.email;
-    const password = req.body.password;
     const newDisplayName = req.body.newDisplayName;
 
     // validate arguments are not null
     const validArgs = assertArguments(
-        { email, password, newDisplayName },
+        { email, newDisplayName },
         a => a != undefined,
         'cannot be undefined'
     );
@@ -282,13 +281,12 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
 
     const response = await _changeDisplayNameController(sequelize)(
         email,
-        password,
         newDisplayName
     );
 
     // false means failed to authenticate
     // true means successfully changed display name
-    if (response === false) return res.status(404).json({ message: 'could not find user with specified email/password' });
+    if (response === false) return res.status(404).json({ message: 'could not find user with specified email' });
     if (response === true) return res.status(200).json({ message: `display name successfully changed to ${newDisplayName}` });
 
     return sanitizeResponse(response, res);

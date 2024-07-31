@@ -14,6 +14,7 @@ const setHeaders = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 'default-src *');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'x-requested-with,content-type');
     if ('OPTIONS' == req.method) {
         return res.sendStatus(200);
     }

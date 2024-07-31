@@ -2,8 +2,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
-const userID = 'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce';
 dotenv.config();
+const { getLinks } = require('./utils');
+const userID = 'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce';
 
 /** @type {import('sequelize-cli').Migration} */
 
@@ -11,7 +12,7 @@ module.exports = {
     async up(queryInterface) {
         const timestamp = '2024-07-23 09:38:33.841-07';
         const path = `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`;
-        
+        const links = getLinks();
 
         // ensure that changes are rolled back on error. We don't want only some data to be created
         const transaction = await queryInterface.sequelize.transaction();

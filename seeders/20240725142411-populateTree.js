@@ -3,32 +3,37 @@
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
+const { getLinks } = require('./utils');
+const userID = 'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface) {
+        const path = `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`;
+        const links = getLinks();
+        const timestamp = '2024-07-23 09:38:33.841-07';
 
         // ensure that changes are rolled back on error. We don't want only some data to be created
         const transaction = await queryInterface.sequelize.transaction();
         try {
             await queryInterface.bulkInsert('users', [
                 {
-                    id:           'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce',
+                    id:           userID,
                     display_name: 'Admin',
                     email:        'example@example.com',
                     password:     await bcrypt.hash('Password!', 10),
-                    created_at:   '2024-07-23 09:38:33.841-07',
-                    updated_at:   '2024-07-23 09:38:33.841-07'
+                    created_at:   timestamp,
+                    updated_at:   timestamp
                 }
             ], { returning: ['id'], transaction });
 
             // create panel_sets
             const panelSets = await queryInterface.bulkInsert('panel_sets', [
                 {
-                    author_id:  'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce',
+                    author_id:  userID,
                     name:       'Trunk 1',
-                    created_at: '2024-07-23 09:38:33.841-07',
-                    updated_at: '2024-07-23 09:38:33.841-07'
+                    created_at: timestamp,
+                    updated_at: timestamp
                 }
             ], { returning: ['id'], transaction });
 
@@ -37,50 +42,50 @@ module.exports = {
             // create panel
             const panels = await queryInterface.bulkInsert('panels', [
                 {
-                    image:        process.env.NODE_ENV === 'production' ? `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/1_9eb775c0-cd4f-4227-9dd8-1af7f9412604` : 'http://localhost:5000/crowd-comic/1_9eb775c0-cd4f-4227-9dd8-1af7f9412604',
+                    image:        links[0],
                     index:        0,
                     panel_set_id: panelSetId,
-                    created_at:   '2024-07-23 09:38:33.841-07',
-                    updated_at:   '2024-07-23 09:38:33.841-07'
+                    created_at:   timestamp,
+                    updated_at:   timestamp
                 },
                 {
-                    image:        process.env.NODE_ENV === 'production' ? `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/1_eb071f2a-fe89-43f1-b73b-02175ed77819` : 'http://localhost:5000/crowd-comic/1_eb071f2a-fe89-43f1-b73b-02175ed77819',
+                    image:        links[1],
                     index:        1,
                     panel_set_id: panelSetId,
-                    created_at:   '2024-07-23 09:38:33.841-07',
-                    updated_at:   '2024-07-23 09:38:33.841-07'
+                    created_at:   timestamp,
+                    updated_at:   timestamp
                 },
                 {
-                    image:        process.env.NODE_ENV === 'production' ? `http://${process.env.BUCKET_NAME}.s3.amazonaws.com/1_d94663cb-1d58-4e5f-bf9c-5eba27862475` : 'http://localhost:5000/crowd-comic/1_d94663cb-1d58-4e5f-bf9c-5eba27862475',
+                    image:        links[2],
                     index:        2,
                     panel_set_id: panelSetId,
-                    created_at:   '2024-07-23 09:38:33.841-07',
-                    updated_at:   '2024-07-23 09:38:33.841-07'
+                    created_at:   timestamp,
+                    updated_at:   timestamp
                 },
             ], { returning: ['id'], transaction });
 
             // create hooks
             await queryInterface.bulkInsert('hooks', [
                 {
-                    position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
+                    position:          path,
                     current_panel_id:  panels[0].id,
                     next_panel_set_id: null,
-                    created_at:        '2024-07-23 09:38:33.841-07',
-                    updated_at:        '2024-07-23 09:38:33.841-07'
+                    created_at:        timestamp,
+                    updated_at:        timestamp
                 },
                 {
-                    position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
+                    position:          path,
                     current_panel_id:  panels[1].id,
                     next_panel_set_id: null,
-                    created_at:        '2024-07-23 09:38:33.841-07',
-                    updated_at:        '2024-07-23 09:38:33.841-07'
+                    created_at:        timestamp,
+                    updated_at:        timestamp
                 },
                 {
-                    position:          `[{ "x": 1, "y": 1 }, { "x": 201, "y": 1 }, { "x": 201, "y": 201 }, { "x": 1, "y": 201 }]`,
+                    position:          path,
                     current_panel_id:  panels[2].id,
                     next_panel_set_id: null,
-                    created_at:        '2024-07-23 09:38:33.841-07',
-                    updated_at:        '2024-07-23 09:38:33.841-07'
+                    created_at:        timestamp,
+                    updated_at:        timestamp
                 }
 
             ], { transaction });
@@ -112,7 +117,7 @@ module.exports = {
             await queryInterface.bulkDelete('hooks', { id: { [Op.lte]: 3 } }, { transaction });
 
             // delete user after all the dependent tables are deleted
-            await queryInterface.bulkDelete('users', { id: 'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce' });
+            await queryInterface.bulkDelete('users', { id: userID });
 
             await transaction.commit();
         }

@@ -47,30 +47,4 @@ setupDatabase().then(() => {
 
     // start the server
     app.listen(port, () => console.log(`Listening to port ${port}`));
-
-    if (process.platform === 'win32') {
-        /* eslint-disable @typescript-eslint/no-var-requires*/
-        const rl = require('readline').createInterface({
-            input:  process.stdin,
-            output: process.stdout
-        });
-
-        rl.on('SIGINT', function () {
-            process.emit('SIGINT');
-        });
-    }
-
-    process.on('SIGINT', function () {
-
-        // graceful shutdown
-        process.exit();
-    });
-    process.on('exit', function() {
-
-        // sync the table columns, create any tables that don't exist
-        if (process.env.WIPE_DATA) {
-            sequelize.sync({ force: true });
-        }
-    });
-
 });

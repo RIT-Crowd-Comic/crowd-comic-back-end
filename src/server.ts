@@ -37,13 +37,13 @@ setupDatabase().then(() => {
     // session setup
     app.use(helpers.validateSessionPost);
 
-    // error handling 
-    app.use(helpers.errorHandler);
-
     // host swagger OAS spec file
     app.use('/help', helpers.swaggerCSP, swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
     router(app);
+
+    // error handling 
+    app.use(helpers.errorHandler);
 
     // start the server
     app.listen(port, () => console.log(`Listening to port ${port}`));

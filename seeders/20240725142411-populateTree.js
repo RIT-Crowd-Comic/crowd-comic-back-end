@@ -6,6 +6,7 @@ dotenv.config();
 const { getLinks } = require('./utils');
 const userID = 'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce';
 
+//FOR DEVELOPMENT, assumes S3 Already has images
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface) {

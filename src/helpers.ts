@@ -12,8 +12,15 @@ dotenv.config();
  */
 const setHeaders = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 'default-src *');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    return next();
+    res.setHeader('Access-Control-Allow-Origin', 'https://crowd-comic-site-07c5469f2ff1.herokuapp.com');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'x-requested-with,content-type,access-control-allow-origin');
+    if ('OPTIONS' == req.method) {
+        return res.sendStatus(200);
+    }
+    else {
+        return next();
+    }
 };
 
 const swaggerCSP = (req: Request, res: Response, next: NextFunction) => {

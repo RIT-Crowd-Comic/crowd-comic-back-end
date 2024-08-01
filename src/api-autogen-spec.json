@@ -977,17 +977,15 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "example@email.com"
                 },
                 "newDisplayName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Jane Smith"
                 }
               }
-            },
-            "description": "Change the display name for a user"
+            }
           }
         ],
         "responses": {

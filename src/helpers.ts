@@ -46,7 +46,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 const validateSessionPost = async(req : RequestWithUser, res : Response, next: NextFunction) =>{
 
     // if not a post continue, or createUser
-    if (req.method !== 'POST' || req.url === '/createUser' || req.url === '/authenticate' || req.url === '/createSession') {
+    if (req.method !== 'POST' || req.url === '/createUser' || req.url === '/authenticate' || req.url === '/createSession' || req.url ==='/saveImage') {
         return next();
     }
 

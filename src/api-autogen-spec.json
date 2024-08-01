@@ -36,18 +36,20 @@
         }
       }
     },
-    "/getImage/{id}": {
+    "/image/{id}": {
       "get": {
         "tags": [
           "image"
         ],
+        "summary": "Get an image by its id",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "the id of the image"
           }
         ],
         "responses": {
@@ -58,7 +60,7 @@
               "properties": {
                 "url": {
                   "type": "string",
-                  "example": "link-to-image"
+                  "example": "link/to/image"
                 }
               },
               "xml": {
@@ -83,18 +85,20 @@
         "tags": [
           "hook"
         ],
+        "summary": "Get a hook by its id",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the hook"
           }
         ],
         "responses": {
           "200": {
-            "description": "A hook",
+            "description": "The hook with the requested ID",
             "schema": {
               "$ref": "#/definitions/hook"
             }
@@ -111,7 +115,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find hook with id ${req.body.id}"
+                  "example": "could not find hook with id ${id}"
                 }
               },
               "xml": {
@@ -131,28 +135,34 @@
         "tags": [
           "panel"
         ],
+        "summary": "Get a panel by its id",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel"
           }
         ],
         "responses": {
           "200": {
-            "description": "A panel",
+            "description": "A panel with requested id",
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 0
-                },
                 "image": {
                   "type": "string",
                   "example": "path/to/image"
+                },
+                "index": {
+                  "type": "number",
+                  "example": 0
+                },
+                "panel_set_id": {
+                  "type": "number",
+                  "example": 0
                 }
               },
               "xml": {
@@ -172,7 +182,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "could not find panel with id ${req.body.id}"
+                  "example": "could not find panel with id ${id}"
                 }
               },
               "xml": {
@@ -189,18 +199,56 @@
     },
     "/panel_sets/{id}/hooks": {
       "get": {
+        "tags": [
+          "hook"
+        ],
+        "summary": "Get all of the hooks connected to a panel set",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "the id of the panel set"
           }
         ],
         "responses": {
+          "200": {
+            "description": "The array of hooks connected to provided panel set",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/hook"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find hooks connected to panel set with id ${id}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -210,18 +258,20 @@
         "tags": [
           "hook"
         ],
+        "summary": "Get all hooks connected to a specific panel",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of hooks",
+            "description": "An array of hooks belonging to provided panel",
             "schema": {
               "type": "array",
               "items": {
@@ -261,18 +311,47 @@
     },
     "/panel_set/{id}/images": {
       "get": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Get all images from a panel set",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "the id of the panel set"
           }
         ],
         "responses": {
+          "200": {
+            "description": "Returns array of all image urls",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "example": "link/to/image"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -282,13 +361,15 @@
         "tags": [
           "panel-set"
         ],
+        "summary": "get a panel set by its id",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel set"
           }
         ],
         "responses": {
@@ -340,18 +421,50 @@
     },
     "/panel_sets/{ids}/panels": {
       "get": {
+        "tags": [
+          "panel"
+        ],
+        "summary": "Get all panels in requested panel set(s)",
         "description": "",
         "parameters": [
           {
             "name": "ids",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Numbers separated by a - ex: 1-2-3-4"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "An array of panels",
+            "schema": {
+              "$ref": "#/definitions/panelArray"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find panels from panel sets ${arr}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -361,44 +474,29 @@
         "tags": [
           "panel"
         ],
+        "summary": "Get a panel given the panel set it came from and its index",
         "description": "",
         "parameters": [
           {
             "name": "panel_set_id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the panel set"
           },
           {
             "name": "index",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "id",
             "type": "number",
-            "in": "query"
+            "description": "the index of the panel"
           }
         ],
         "responses": {
           "200": {
             "description": "A panel",
             "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 0
-                },
-                "image": {
-                  "type": "string",
-                  "example": "path/to/image"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/panel"
             }
           },
           "400": {
@@ -433,13 +531,15 @@
         "tags": [
           "user"
         ],
+        "summary": "get a user by its id",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "the id of the user"
           }
         ],
         "responses": {
@@ -481,13 +581,15 @@
         "tags": [
           "user"
         ],
+        "summary": "get a user from a session given a session id",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "the id of the session"
           }
         ],
         "responses": {
@@ -496,7 +598,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/user"
+                "$ref": "#/definitions/userResponse"
               },
               "xml": {
                 "name": "main"
@@ -517,37 +619,29 @@
         "tags": [
           "panel-set"
         ],
+        "summary": "get an array of panel sets from a user given the user",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "the id of the trunk panel set"
           }
         ],
         "responses": {
           "200": {
-            "description": "Get all panel sets from a user",
             "schema": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "number",
-                    "example": 0
-                  },
-                  "author_id": {
-                    "type": "string",
-                    "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-                  }
-                }
+                "$ref": "#/definitions/panel_set"
               },
               "xml": {
                 "name": "main"
               }
-            }
+            },
+            "description": "Returns an array of panel sets and their children"
           },
           "400": {
             "description": "Bad Request",
@@ -561,7 +655,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "User with an id of \"${id}\" does not exist"
+                  "example": "a panel set with the id of \"${id}\" cannot be found"
                 }
               },
               "xml": {
@@ -581,6 +675,7 @@
         "tags": [
           "panel-set"
         ],
+        "summary": "Get all panel sets in database that are trunks",
         "description": "",
         "responses": {
           "200": {
@@ -588,17 +683,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "number",
-                    "example": 0
-                  },
-                  "author_id": {
-                    "type": "string",
-                    "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-                  }
-                }
+                "$ref": "#/definitions/panel_set"
               },
               "xml": {
                 "name": "main"
@@ -617,7 +702,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "Error occured, no trunks were found"
+                  "example": "No trunks were found"
                 }
               },
               "xml": {
@@ -637,18 +722,29 @@
         "tags": [
           "panel-set"
         ],
+        "summary": "get all panel sets that belong to the tree starting at the given panel set",
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "description": "the id of the trunk panel set"
           }
         ],
         "responses": {
           "200": {
-            "description": "Returns an array of panel sets and their children"
+            "description": "Returns an array of panel sets and their children",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/panel_set"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
@@ -662,7 +758,7 @@
               "properties": {
                 "message": {
                   "type": "string",
-                  "example": "a panel with the id of \"${id}\" cannot be found"
+                  "example": "a panel set with the id of \"${id}\" cannot be found"
                 }
               },
               "xml": {
@@ -679,18 +775,50 @@
     },
     "/session/{id}": {
       "get": {
+        "tags": [
+          "session"
+        ],
+        "summary": "get a session by its id",
         "description": "",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "in": "query",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "the id of the session"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "A session",
+            "schema": {
+              "$ref": "#/definitions/session"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "could not find session with id ${id}"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -700,6 +828,7 @@
         "tags": [
           "publish"
         ],
+        "summary": "Create a new panel set, three panels, and three hooks together and link the panel set to an existing hook",
         "description": "",
         "consumes": [
           "multipart/form-data"
@@ -761,89 +890,18 @@
         }
       }
     },
-    "/uploadImages": {
-      "post": {
-        "tags": [
-          "populate"
-        ],
-        "description": "",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "parameters": [
-          {
-            "name": "image1",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-1."
-          },
-          {
-            "name": "image2",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-2."
-          },
-          {
-            "name": "image3",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-3."
-          },
-          {
-            "name": "image4",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-3."
-          },
-          {
-            "name": "image5",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-3."
-          },
-          {
-            "name": "image6",
-            "in": "formData",
-            "type": "file",
-            "required": true,
-            "description": "The file of the image for panel-3."
-          }
-        ],
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/publishResponse"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/createUser": {
       "post": {
         "tags": [
           "user"
         ],
+        "summary": "Create a new user",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "Create a new user",
+            "description": "The new users email, password, and display name",
             "schema": {
               "$ref": "#/definitions/userDefinition"
             }
@@ -873,23 +931,26 @@
         "tags": [
           "user"
         ],
+        "summary": "Provide user credentials to get user information",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Provide user email and password",
             "schema": {
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "example@email.com"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Password!"
                 }
               }
-            },
-            "description": "Authenticate a user. This is likely to change when when we start using sessions for authentication."
+            }
           }
         ],
         "responses": {
@@ -931,16 +992,19 @@
         "tags": [
           "session"
         ],
+        "summary": "Create a session for the given user",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "ID of user to create the session for",
             "schema": {
               "type": "object",
               "properties": {
                 "user_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
                 }
               }
             }
@@ -970,26 +1034,30 @@
         "tags": [
           "user"
         ],
+        "summary": "Change a users password",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "the users email, old password, and new password",
             "schema": {
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "example@email.com"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Password!"
                 },
                 "newPassword": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "newPassword!"
                 }
               }
-            },
-            "description": "Change the password for a user"
+            }
           }
         ],
         "responses": {
@@ -1015,7 +1083,7 @@
             }
           },
           "404": {
-            "description": "Response code is likely to change when we start using sessions to authenticate",
+            "description": "Not Found",
             "schema": {
               "type": "object",
               "properties": {
@@ -1040,26 +1108,30 @@
         "tags": [
           "user"
         ],
+        "summary": "Change the given users password",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "the users email, password, and new display name",
             "schema": {
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "example@email.com"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Password!"
                 },
                 "newDisplayName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "newName"
                 }
               }
-            },
-            "description": "Change the display name for a user"
+            }
           }
         ],
         "responses": {
@@ -1085,7 +1157,7 @@
             }
           },
           "404": {
-            "description": "Response code is likely to change when we start using sessions to authenticate",
+            "description": "Not Found",
             "schema": {
               "type": "object",
               "properties": {
@@ -1097,41 +1169,6 @@
               "xml": {
                 "name": "main"
               }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/updatePanel": {
-      "post": {
-        "tags": [
-          "panel"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Update Panel",
-            "schema": {
-              "$ref": "#/definitions/panelUpdate"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "An updated Panel",
-            "schema": {
-              "$ref": "#/definitions/panel"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/error"
             }
           },
           "500": {
@@ -1297,6 +1334,19 @@
         }
       }
     },
+    "panel_set": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 0
+        },
+        "author_id": {
+          "type": "string",
+          "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        }
+      }
+    },
     "session": {
       "type": "object",
       "properties": {
@@ -1307,14 +1357,6 @@
         "user-id": {
           "type": "string",
           "example": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-        },
-        "createdAt": {
-          "type": "string",
-          "example": "2024-07-12T15:29:19.550Z"
-        },
-        "updatedAt": {
-          "type": "string",
-          "example": "2024-07-12T15:29:19.550Z"
         }
       }
     },

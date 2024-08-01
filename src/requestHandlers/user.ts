@@ -29,6 +29,11 @@ const getUserByID = async (req: Request, res: Response): Promise<Response> => {
     // API documentation
     /*  
         #swagger.tags = ['user']
+        #swagger.summary = 'get a user by its id',
+        #swagger.parameters['id'] = {
+            type: 'string',
+            description: 'the id of the user'
+        }
         #swagger.responses[200] = {
             description: 'Success',
             schema: { $ref: '#/definitions/userResponse' }
@@ -105,9 +110,10 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
     // API documentation
     /*  
         #swagger.tags = ['user']
+        #swagger.summary = 'Create a new user'
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Create a new user',
+            description: 'The new users email, password, and display name',
             schema: { $ref: '#/definitions/userDefinition' }
         } 
         #swagger.responses[200] = {
@@ -158,9 +164,11 @@ const authenticate = async (req: Request, res: Response): Promise<Response> => {
     // API documentation
     /*  
         #swagger.tags = ['user']
+        #swagger.summary = 'Provide user credentials to get user information'
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Authenticate a user. This is likely to change when when we start using sessions for authentication.',
+            description: 'Provide user email and password',
+            schema: { email: 'example@email.com', password: 'Password!' }
         } 
         #swagger.responses[200] = {
             description: 'Success',
@@ -227,9 +235,11 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
     // API documentation
     /*  
         #swagger.tags = ['user']
+        #swagger.summary = 'Change a users password'
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Change the password for a user',
+            description: 'the users email, old password, and new password',
+            schema: { email: 'example@email.com', password: 'Password!', newPassword: 'newPassword!' }
         } 
         #swagger.responses[200] = {
             description: 'Success',
@@ -239,7 +249,6 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            description: 'Response code is likely to change when we start using sessions to authenticate',
             schema: {  message: 'could not find user with provided email/password'  }
         }
         #swagger.responses[500] = {}
@@ -249,9 +258,9 @@ const changePassword = async (req: Request, res: Response): Promise<Response> =>
 /**
  * Change a user's display name
  */
-const _changeDisplayNameController = (sequelize: Sequelize) => async (email: string, password: string, newDisplayName: string) => {
+const _changeDisplayNameController = (sequelize: Sequelize) => async (email: string, newDisplayName: string) => {
     try {
-        return await UserService.changeDisplayName(sequelize)(email, password, newDisplayName);
+        return await UserService.changeDisplayName(sequelize)(email, newDisplayName);
     }
     catch (err) {
         return err;
@@ -265,12 +274,11 @@ const _changeDisplayNameController = (sequelize: Sequelize) => async (email: str
 const changeDisplayName = async (req: Request, res: Response): Promise<Response> => {
 
     const email = req.body.email;
-    const password = req.body.password;
     const newDisplayName = req.body.newDisplayName;
 
     // validate arguments are not null
     const validArgs = assertArguments(
-        { email, password, newDisplayName },
+        { email, newDisplayName },
         a => a != undefined,
         'cannot be undefined'
     );
@@ -282,13 +290,12 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
 
     const response = await _changeDisplayNameController(sequelize)(
         email,
-        password,
         newDisplayName
     );
 
     // false means failed to authenticate
     // true means successfully changed display name
-    if (response === false) return res.status(404).json({ message: 'could not find user with specified email/password' });
+    if (response === false) return res.status(404).json({ message: 'could not find user with specified email' });
     if (response === true) return res.status(200).json({ message: `display name successfully changed to ${newDisplayName}` });
 
     return sanitizeResponse(response, res);
@@ -296,9 +303,11 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
     // API documentation
     /*  
         #swagger.tags = ['user']
+        #swagger.summary = 'Change the given users password'
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Change the display name for a user',
+            description: 'the users email, password, and new display name',
+            schema: { email: 'example@email.com', password: 'Password!', newDisplayName: 'newName' }
         } 
         #swagger.responses[200] = {
             description: 'Success',
@@ -308,7 +317,6 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            description: 'Response code is likely to change when we start using sessions to authenticate',
             schema: { message: 'could not find user with specified email/password' }
         }
         #swagger.responses[500] = {}
@@ -342,18 +350,20 @@ const getUserBySession = async (req: Request, res: Response) => {
     // API documentation
     /*  
         #swagger.tags = ['user']
+        #swagger.summary = 'get a user from a session given a session id'
         #swagger.parameters['id'] = {
-            type: 'string'
+            type: 'string',
+            description: 'the id of the session'
         }
         #swagger.responses[200] = {
             description: 'A user',
-            schema: [{ $ref: '#/definitions/user' }]
+            schema: [{ $ref: '#/definitions/userResponse' }]
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: `No user could be found at session id ${id}` }
+            schema: { message: `Session/User with an id of ${id} does not exist` }
         }
         #swagger.responses[500] = {}
     */

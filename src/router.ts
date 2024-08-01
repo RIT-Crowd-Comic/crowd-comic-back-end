@@ -9,7 +9,6 @@ import * as utils from './requestHandlers/utils';
 import * as image from './requestHandlers/image';
 import * as session from './requestHandlers/session';
 import * as publish from './requestHandlers/publish';
-import * as populate from './requestHandlers/populate';
 import cors from 'cors';
 
 
@@ -24,7 +23,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 export default (app: Express) => {
     app.use(cors());
     app.get('/', misc.help);
-    app.get('/getImage/:id', image.getImageSigned);
+    app.get('/image/:id', image.getImageSigned);
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
     app.get('/panel_sets/:id/hooks', hook.getAllHooksByPanelSetId);
@@ -49,21 +48,11 @@ export default (app: Express) => {
         { name: 'image3', maxCount: 1 }
     ]), publish.publish);
 
-    app.post('/uploadImages', upload.fields([
-        { name: 'image1', maxCount: 1 },
-        { name: 'image2', maxCount: 1 },
-        { name: 'image3', maxCount: 1 },
-        { name: 'image4', maxCount: 1 },
-        { name: 'image5', maxCount: 1 },
-        { name: 'image6', maxCount: 1 },
-    ]), populate.uploadImagesPopulate);
-
     app.post('/createUser', user.createUser);
     app.post('/authenticate', user.authenticate);
     app.post('/createSession', session.createSession);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName);
-    app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
     app.patch('*', utils.notFound);

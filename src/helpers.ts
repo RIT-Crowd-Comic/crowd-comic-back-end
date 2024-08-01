@@ -10,9 +10,17 @@ dotenv.config();
  * Set the content security policy for our server.
  * @returns 
  */
-const setCSP = (req: Request, res: Response, next: NextFunction) => {
+const setHeaders = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 'default-src *');
-    return next();
+    res.setHeader('Access-Control-Allow-Origin', process.env.NODE_ENV === 'production' ? 'https://crowd-comic-site-07c5469f2ff1.herokuapp.com' : 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'x-requested-with,content-type,access-control-allow-origin,session-cookie');
+    if ('OPTIONS' == req.method) {
+        return res.sendStatus(200);
+    }
+    else {
+        return next();
+    }
 };
 
 const swaggerCSP = (req: Request, res: Response, next: NextFunction) => {
@@ -24,12 +32,10 @@ const swaggerCSP = (req: Request, res: Response, next: NextFunction) => {
  * Convert error responses to JSON format
  * @returns 
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-    if (res.headersSent) {
-        return next(err);
-    }
+
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(500).json({ message: err.message });
 };
 
@@ -52,7 +58,14 @@ const validateSessionPost = async(req : RequestWithUser, res : Response, next: N
             throw new Error('No session cookie is present in the request. Access denied.');
         }
 
-        const session = JSON.parse(sessionCookie);
+        let session;
+        try {
+            session = JSON.parse(sessionCookie);
+            console.log(session);
+        }
+        catch {
+            throw new Error('Failed to load session');
+        }
         if (session.name !== 'session') {
             throw new Error('No session cookie is present in the request. Access denied.');
         }
@@ -71,5 +84,5 @@ const validateSessionPost = async(req : RequestWithUser, res : Response, next: N
 
 
 export {
-    setCSP, swaggerCSP, errorHandler, validateSessionPost
+    setHeaders, swaggerCSP, errorHandler, validateSessionPost
 };

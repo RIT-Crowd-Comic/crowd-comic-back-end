@@ -45,9 +45,14 @@ const getImageSigned = async (req: Request, res: Response): Promise<Response> =>
     // API documentation
     /*  
         #swagger.tags = ['image']
+        #swagger.summary = 'Get an image by its id'
+        #swagger.parameters['id'] = {
+            type: 'string',
+            description: 'the id of the image'
+        }
         #swagger.responses[200] = {
             description: 'Returns the link to the image',
-            schema: { url: 'link-to-image' }
+            schema: { url: 'link/to/image' }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
@@ -78,6 +83,23 @@ const getAllImageUrlsByPanelSetId = async (req: Request, res: Response): Promise
     const response = await _getAllImageUrlsByPanelSetIdController(Number(id));
     return sanitizeResponse(response, res, `A panel set with an id of ${id} does not exist`);
 
+    // API documentation
+    /*
+        #swagger.tags = ['image']
+        #swagger.summary = 'Get all images from a panel set'
+        #swagger.parameters['id'] = {
+            type: 'number',
+            description: 'the id of the panel set'
+        }
+        #swagger.responses[200] = {
+            description: 'Returns array of all image urls',
+            schema: [{ url: 'link/to/image' }]
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
 };
 
 const validateImageFile = (file: Express.Multer.File | null): boolean => {

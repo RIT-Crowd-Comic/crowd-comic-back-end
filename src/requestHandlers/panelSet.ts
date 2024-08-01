@@ -75,7 +75,7 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
     if (isNaN(id)) {
         const trunks = await PanelSetService.getAllTrunkSets(sequelize) as IPanelSet[];
         const trunk = trunks[0] as IPanelSet;
-        id = trunk.id;
+        id = trunk?.id ?? undefined;
     }
     const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);
@@ -85,9 +85,10 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
     // API documentation
     /*  
         #swagger.tags = ['panel-set']
+        #swagger.summary = 'get a panel set by its id'
         #swagger.parameters['id'] = {
-
-            type: 'number'
+            type: 'number',
+            description: 'the id of the panel set'
         }
         #swagger.responses[200] = {
             description: 'Returns the panel set',
@@ -127,15 +128,19 @@ const getAllPanelSetsFromUser = async(request: Request, res: Response) : Promise
     // API documentation
     /*  
         #swagger.tags = ['panel-set']
+        #swagger.summary = 'get an array of panel sets from a user given the user's id'
+        #swagger.parameters['id'] = {
+            type: 'string',
+            description: 'the id of the user'
+        }
         #swagger.responses[200] = {
-            description: 'Get all panel sets from a user',
-            schema: [{ id: 0, author_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }]
+            schema: [{ $ref: '#/definitions/panel_set' }]
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: 'User with an id of "${id}" does not exist' }
+            schema: { message: 'This user has not made any panel sets' }
         }
         #swagger.responses[500] = {}
     */
@@ -161,15 +166,16 @@ const getAllTrunkSets = async(request: Request, res: Response) : Promise<Respons
 
     /*  
         #swagger.tags = ['panel-set']
+        #swagger.summary = 'Get all panel sets in database that are trunks'
         #swagger.responses[200] = {
             description: 'Get all trunk panel_sets',
-            schema: [{ id: 0, author_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }]
+            schema: [{ $ref: '#/definitions/panel_set' }]
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: 'Error occured, no trunks were found' }
+            schema: { message: 'No trunks were found' }
         }
         #swagger.responses[500] = {}
     */
@@ -228,17 +234,20 @@ const getTree = async(request: Request, res: Response) : Promise<Response> => {
 
     /*  
         #swagger.tags = ['panel-set']
+        #swagger.summary = 'get all panel sets that belong to the tree starting at the given panel set'
         #swagger.parameters['id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the trunk panel set'
         }
         #swagger.responses[200] = {
             description: 'Returns an array of panel sets and their children',
+            schema: [{ $ref: '#/definitions/panel_set' }]
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: 'a panel with the id of "${id}" cannot be found' }
+            schema: { message: 'a panel set with the id of "${id}" cannot be found' }
         }
         #swagger.responses[500] = {}
     */

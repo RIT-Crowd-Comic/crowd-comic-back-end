@@ -33,14 +33,53 @@ const createSession = async (req: Request, res: Response): Promise<Response> => 
 
     return sanitizeResponse(response, res);
 
+    // API Documentation
     /*
         #swagger.tags = ['session']
+        #swagger.summary = 'Create a session for the given user'
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'ID of user to create the session for',
+            schema: { user_id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
+        } 
         #swagger.responses[200] = {
             description: 'A new session created',
             schema: { $ref: '#/definitions/session' }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[500] = {}
+    */
+};
+
+const getSession = async (req: Request, res: Response): Promise<Response> => {
+    const id = req.params.id;
+    const validArgs = assertArgumentsDefined({ id });
+    if (!validArgs.success) return res.status(400).json(validArgs);
+
+    const response = await _getSessionController(sequelize)(id);
+
+    return sanitizeResponse(response, res, `Could not find session with id ${id}`);
+
+    // API Documentation
+    /*
+        #swagger.tags = ['session']
+        #swagger.summary = 'get a session by its id'
+        #swagger.parameters['id'] = {
+            in: 'query',
+            type: 'string',
+            description: 'the id of the session'
+        }
+        #swagger.responses[200] = {
+            description: 'A session',
+            schema: { $ref: '#definitions/session' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'could not find session with id ${id}' }
         }
         #swagger.responses[500] = {}
     */
@@ -58,35 +97,6 @@ const _getSessionController = (sequelize: Sequelize) => async (id: string) => {
     catch (err) {
         return err;
     }
-};
-
-const getSession = async (req: Request, res: Response): Promise<Response> => {
-    const id = req.params.id;
-    const validArgs = assertArgumentsDefined({ id });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-
-    const response = await _getSessionController(sequelize)(id);
-
-    return sanitizeResponse(response, res, `Could not find session with id ${id}`);
-
-    /*
-        #swagger.tags = ['session']
-        #swagger.parameters['id'] = {
-            in: 'query',
-            type: 'string'
-        }
-        #swagger.responses[200] = {
-            description: 'A session',
-            schema: { $ref: '#definitions/session' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[404] = {
-            schema: { message: 'could not find session with id ${req.params.id}' }
-        }
-        #swagger.responses[500] = {}
-    */
 };
 
 export {

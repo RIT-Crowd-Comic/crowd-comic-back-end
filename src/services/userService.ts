@@ -54,7 +54,7 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
         email:        user.email,
         display_name: user.display_name,
         id:           user.id
-    };
+    } as UserInfo;
 
     return undefined;
 };
@@ -80,31 +80,46 @@ const changePassword = (sequelize : Sequelize) => async (email: string, password
  * Change a user's email
  * @returns whether or not the email change was successful
  */
-const changeDisplayName = (sequelize : Sequelize) => async (email: string, password: string, newDisplayName: string): Promise<boolean> => {
+const changeDisplayName = (sequelize : Sequelize) => async (email: string, newDisplayName: string): Promise<boolean> => {
 
     // check if current email/password are correct
     const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
-    if (!user || password != user.password) return false;
+    if (!user) return false;
 
     await user.update({ display_name: newDisplayName });
     return true;
 };
 
+/**
+ * 
+ * @param {string} id ID of the user to query info from
+ * @returns {UserInfo} Info from user with provided ID
+ */
 const getUserByID = (sequelize: Sequelize) => async (id: string) => {
-    return await sequelize.models.user.findByPk(id) as IUser;
+    const user = await sequelize.models.user.findByPk(id) as IUser;
+    return {
+        email: user.email,
+        display_name: user.display_name,
+        id: user.id
+    } as UserInfo;
 };
 
 /**
  * Gets a user object from a session id
  * @param {string} session_id ID of session to query
- * @returns {IUser} User associated with given session
+ * @returns {UserInfo} User associated with given session
  */
 const getUserBySession = (sequelize: Sequelize) => async (session_id: string) => {
     const session = await sequelize.models.session.findByPk(session_id) as ISession;
     if (!session) return null;
-    return await sequelize.models.user.findByPk(session.user_id) as IUser;
+    const user = await sequelize.models.user.findByPk(session.user_id) as IUser;
+    return {
+        email: user.email,
+        display_name: user.display_name,
+        id: user.id
+    } as UserInfo;
 };
 
 export {
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession, UserInfo,
 };

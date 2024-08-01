@@ -47,18 +47,20 @@ const getHook = async (req: Request, res: Response): Promise<Response> => {
 
     /*
         #swagger.tags = ['hook']
+        #swagger.summary = 'Get a hook by its id'
         #swagger.parameters['id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the hook'
         }
         #swagger.responses[200] = {
-            description: 'A hook',
+            description: 'The hook with the requested ID',
             schema: { $ref: '#/definitions/hook' }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: 'could not find hook with id ${req.body.id}' }
+            schema: { message: 'could not find hook with id ${id}' }
         }
         #swagger.responses[500] = {}
     */
@@ -97,11 +99,13 @@ const getPanelHooks = async (req: Request, res: Response): Promise<Response> => 
 
     /*
         #swagger.tags = ['hook']
+        #swagger.summary = 'Get all hooks connected to a specific panel'
         #swagger.parameters['id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the panel'
         }
         #swagger.responses[200] = {
-            description: 'An array of hooks',
+            description: 'An array of hooks belonging to provided panel',
             schema: [{ $ref: '#/definitions/hook' }]
         }
         #swagger.responses[400] = {
@@ -218,6 +222,27 @@ const getAllHooksByPanelSetId = async (req: Request, res: Response): Promise<Res
     if (!validArgs.success) return res.status(400).json(validArgs);
     const response = await _getAllHooksByPanelSetIdController(sequelize)(Number(id));
     return sanitizeResponse(response, res, `A panel set with a id of ${id} doesn't exist`);
+
+    /*
+        #swagger.tags = ['hook']
+        #swagger.summary = 'Get all of the hooks connected to a panel set'
+        #swagger.parameters['id'] = {
+            type: 'number',
+            description: 'the id of the panel set'
+        }
+        #swagger.responses[200] = {
+            description: 'The array of hooks connected to provided panel set',
+            schema: [{ $ref: '#/definitions/hook' }]
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'could not find hooks connected to panel set with id ${id}' }
+        }
+        #swagger.responses[500] = {}
+        
+    */
 };
 
 /**

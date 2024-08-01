@@ -32,10 +32,9 @@ const swaggerCSP = (req: Request, res: Response, next: NextFunction) => {
  * Convert error responses to JSON format
  * @returns 
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-    if (res.headersSent) {
-        return next(err);
-    }
+
     res.setHeader('Content-Type', 'application/json');
     return res.status(500).json({ message: err.message });
 };
@@ -59,7 +58,14 @@ const validateSessionPost = async(req : RequestWithUser, res : Response, next: N
             throw new Error('No session cookie is present in the request. Access denied.');
         }
 
-        const session = JSON.parse(sessionCookie);
+        let session;
+        try {
+            session = JSON.parse(sessionCookie);
+            console.log(session);
+        }
+        catch {
+            throw new Error('Failed to load session');
+        }
         if (session.name !== 'session') {
             throw new Error('No session cookie is present in the request. Access denied.');
         }

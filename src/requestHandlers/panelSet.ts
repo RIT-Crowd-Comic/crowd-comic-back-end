@@ -75,7 +75,7 @@ const getPanelSetByID = async (request: Request, res: Response) : Promise<Respon
     if (isNaN(id)) {
         const trunks = await PanelSetService.getAllTrunkSets(sequelize) as IPanelSet[];
         const trunk = trunks[0] as IPanelSet;
-        id = trunk.id;
+        id = trunk?.id ?? undefined;
     }
     const validArgs = assertArgumentsNumber({ id });
     if (!validArgs.success) return res.status(400).json(validArgs);

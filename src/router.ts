@@ -23,7 +23,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 export default (app: Express) => {
     app.use(cors());
     app.get('/', misc.help);
-    app.get('/getImage/:id', image.getImageSigned);
+    app.get('/image/:id', image.getImageSigned);
     app.get('/hook/:id', hook.getHook);
     app.get('/panel/:id', panel.getPanel);
     app.get('/panel_sets/:id/hooks', hook.getAllHooksByPanelSetId);
@@ -53,7 +53,6 @@ export default (app: Express) => {
     app.post('/createSession', session.createSession);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName);
-    app.post('/updatePanel', panel.updatePanel);
     app.post('*', utils.notFound);
 
     app.patch('*', utils.notFound);

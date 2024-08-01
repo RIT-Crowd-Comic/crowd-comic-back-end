@@ -113,11 +113,13 @@
                 }
             ]
         },
+        "panel_set": {
+            "id": 0,
+            "author_id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        },
         "session": {
             "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-            "user-id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-            "createdAt": "2024-07-12T15:29:19.550Z",
-            "updatedAt": "2024-07-12T15:29:19.550Z"
+            "user-id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
         },
         "panelCreate": {
             "image": "sdfe34refergfer4trffs",

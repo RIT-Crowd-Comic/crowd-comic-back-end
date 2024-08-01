@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as panelService from '../services/panelService';
-import { assertArgumentsDefined, assertArgumentsNumber, sanitizeResponse as sanitizeResponse } from './utils';
+import { assertArgumentsNumber, sanitizeResponse as sanitizeResponse } from './utils';
 import { getPanelSetByID } from '../services/panelSetService';
 import { sequelize } from '../database';
 import { Sequelize } from 'sequelize';
@@ -43,60 +43,6 @@ const _createPanelController = (sequelize : Sequelize) => async (image: string, 
 /**
  * gets a panel based on id
  * @param id The id of the panel
- * @param image The new image of the panel
- */
-const _updatePanelController = (sequelize: Sequelize) => async (id :number, image: string) => {
-    try {
-
-        // check if existing panel on a panel set based on index
-        const panel = await sequelize.models.panel.findByPk(id) as IPanel;
-        if (!panel) {
-            throw new Error(`A panel with an id of ${id} does not exist`);
-        }
-
-        return await panelService.updatePanel(panel, {
-            image:        image,
-            index:        panel.index,
-            panel_set_id: panel.panel_set_id,
-        });
-    }
-    catch (err) {
-        return err;
-    }
-};
-
-const updatePanel = async (req: Request, res: Response): Promise<Response> => {
-    const id = Number(req.body.id);
-    const image = req.body.image;
-    let validArgs = assertArgumentsNumber({ id });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-    validArgs = assertArgumentsDefined({ image });
-    if (!validArgs.success) return res.status(400).json(validArgs);
-    const response = await _updatePanelController(sequelize)(id, image);
-    return sanitizeResponse(response, res);
-
-    /*
-        #swagger.tags = ['panel']
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'Update Panel',
-            schema: { $ref: '#/definitions/panelUpdate' }
-        } 
-        #swagger.responses[200] = {
-            description: 'An updated Panel',
-            schema: { $ref: '#/definitions/panel' }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[500] = {}
-    */
-};
-
-
-/**
- * gets a panel based on id
- * @param id The id of the panel
  * @returns response or genericErrorResponse
  */
 const _getPanelController = (sequelize : Sequelize) => async (id:number) => {
@@ -119,18 +65,20 @@ const getPanel = async (req: Request, res: Response): Promise<Response> => {
 
     /*
         #swagger.tags = ['panel']
+        #swagger.summary = 'Get a panel by its id'
         #swagger.parameters['id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the panel'
         }
         #swagger.responses[200] = {
-            description: 'A panel',
-            schema: { id: 0, image: 'path/to/image' }
+            description: 'A panel with requested id',
+            schema: { image: 'path/to/image', index: 0, panel_set_id: 0 }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: 'could not find panel with id ${req.body.id}' }
+            schema: { message: 'could not find panel with id ${id}' }
         }
         #swagger.responses[500] = {}
     */
@@ -163,21 +111,53 @@ const getPanelBasedOnPanelSetAndIndex = async (req: Request, res: Response): Pro
 
     /*
         #swagger.tags = ['panel']
+        #swagger.summary = 'Get a panel given the panel set it came from and its index'
         #swagger.parameters['panel_set_id'] = {
-            type: 'number'
+            type: 'number',
+            description: 'the id of the panel set'
         }
-            #swagger.parameters['id'] = {
-            type: 'number'
+            #swagger.parameters['index'] = {
+            type: 'number',
+            description: 'the index of the panel'
         }
         #swagger.responses[200] = {
             description: 'A panel',
-            schema: { id: 0, image: 'path/to/image' }
+            schema: { $ref: '#/definitions/panel' }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
             schema: { message: 'could not find panel with panel_set_id ${panel_set_id} and index of ${index}' }
+        }
+        #swagger.responses[500] = {}
+    */
+};
+
+
+const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Response> => {
+    const arr = req.params.ids.split('-') as [];
+    if (arr.some(a => isNaN(a)))
+        return res.status(400).json(`"${arr.join(' ')}" contains items that are not numbers`);
+    const response = await _getPanelsFromPanelSetIDsController(sequelize)(arr);
+    return sanitizeResponse(response, res, `No panel set(s) with the id(s) ${arr.join(', ')} could be found`);
+
+    /*
+        #swagger.tags = ['panel']
+        #swagger.summary = 'Get all panels in requested panel set(s)'
+         #swagger.parameters['ids'] = {
+            type: 'string',
+            description: 'Numbers separated by a - ex: 1-2-3-4'
+        }
+        #swagger.responses[200] = {
+            description: 'An array of panels',
+            schema: { $ref: '#/definitions/panelArray'  }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+            #swagger.responses[404] = {
+            schema: { message: 'could not find panels from panel sets ${arr}' }
         }
         #swagger.responses[500] = {}
     */
@@ -201,30 +181,6 @@ const _getPanelsFromPanelSetIDsController = (sequelize : Sequelize) => async (id
     }
 };
 
-const getPanelsFromPanelSetIDs = async (req: Request, res: Response): Promise<Response> => {
-    const arr = req.params.ids.split('-') as [];
-    if (arr.some(a => isNaN(a)))
-        return res.status(400).json(`"${arr.join(' ')}" contains items that are not numbers`);
-    const response = await _getPanelsFromPanelSetIDsController(sequelize)(arr);
-    return sanitizeResponse(response, res, `No panel set(s) with the id(s) ${arr.join(', ')} could be found`);
-
-    /*
-        #swagger.tags = ['panel']
-         #swagger.parameters['ids'] = {
-            type: 'string',
-            description: 'Array of numbers ex: 1-2-3-4'
-        }
-        #swagger.responses[200] = {
-            description: 'An array of panels',
-            schema: { $ref: '#/definitions/panelArray'  }
-        }
-        #swagger.responses[400] = {
-            schema: { $ref: '#/definitions/error' }
-        }
-        #swagger.responses[500] = {}
-    */
-};
-
 export {
-    _getPanelsFromPanelSetIDsController, getPanelsFromPanelSetIDs, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController, updatePanel, _updatePanelController
+    _getPanelsFromPanelSetIDsController, getPanelsFromPanelSetIDs, getPanelBasedOnPanelSetAndIndex, getPanel, _createPanelController, _getPanelController, _getPanelBasedOnPanelSetAndIndexController
 };

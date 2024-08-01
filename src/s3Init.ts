@@ -109,7 +109,7 @@ async function setBucketPolicy() {
     }
 }
 
-setBucketPolicy();
+// setBucketPolicy();
 
 
 export { s3, bucketName };

@@ -10,9 +10,17 @@ dotenv.config();
  * Set the content security policy for our server.
  * @returns 
  */
-const setCSP = (req: Request, res: Response, next: NextFunction) => {
+const setHeaders = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 'default-src *');
-    return next();
+    res.setHeader('Access-Control-Allow-Origin', 'https://crowd-comic-site-07c5469f2ff1.herokuapp.com/');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'x-requested-with,content-type,access-control-allow-origin');
+    if ('OPTIONS' == req.method) {
+        return res.sendStatus(200);
+    }
+    else {
+        return next();
+    }
 };
 
 const swaggerCSP = (req: Request, res: Response, next: NextFunction) => {
@@ -29,7 +37,6 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         return next(err);
     }
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(500).json({ message: err.message });
 };
 
@@ -71,5 +78,5 @@ const validateSessionPost = async(req : RequestWithUser, res : Response, next: N
 
 
 export {
-    setCSP, swaggerCSP, errorHandler, validateSessionPost
+    setHeaders, swaggerCSP, errorHandler, validateSessionPost
 };

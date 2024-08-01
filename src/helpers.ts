@@ -32,7 +32,9 @@ const swaggerCSP = (req: Request, res: Response, next: NextFunction) => {
  * Convert error responses to JSON format
  * @returns 
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+
     res.setHeader('Content-Type', 'application/json');
     return res.status(500).json({ message: err.message });
 };

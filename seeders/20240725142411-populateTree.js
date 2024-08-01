@@ -2309,7 +2309,7 @@ module.exports = {
       {
         "x": 558.5,
         "y": 470.4
-        }]`
+        }]`;
         const hook3 = `[
       {
         "x": 755.9,
@@ -2834,7 +2834,7 @@ module.exports = {
       {
         "x": 751.1,
         "y": 796.4
-      }]`
+      }]`;
         const links = getLinks();
         const timestamp = '2024-07-23 09:38:33.841-07';
 

@@ -14,7 +14,7 @@ const setHeaders = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Content-Security-Policy', 'default-src *');
     res.setHeader('Access-Control-Allow-Origin', process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://crowd-comic-site-07c5469f2ff1.herokuapp.com');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'x-requested-with,content-type,access-control-allow-origin,session-cookie' );
+    res.setHeader('Access-Control-Allow-Headers', 'x-requested-with,content-type,access-control-allow-origin,session-cookie');
     if ('OPTIONS' == req.method) {
         return res.sendStatus(200);
     }

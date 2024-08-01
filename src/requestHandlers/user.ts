@@ -296,7 +296,7 @@ const changeDisplayName = async (req: Request, res: Response): Promise<Response>
         #swagger.tags = ['user']
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Change the display name for a user',
+            schema: { email: 'example@email.com', newDisplayName: 'Jane Smith'}
         } 
         #swagger.responses[200] = {
             description: 'Success',

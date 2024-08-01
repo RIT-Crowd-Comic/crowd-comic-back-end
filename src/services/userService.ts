@@ -121,5 +121,5 @@ const getUserBySession = (sequelize: Sequelize) => async (session_id: string) =>
 };
 
 export {
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession, UserInfo,
 };

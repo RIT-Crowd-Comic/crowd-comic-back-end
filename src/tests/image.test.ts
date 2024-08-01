@@ -39,7 +39,7 @@ describe('Get All Image URLs By Panel Set ID Controller', () => {
     test('If an error is thrown, that error should be returned', async () => {
         (imageService.getAllImagesByPanelSetId as jest.Mock).mockReturnValue(() => Promise.resolve(null));
         const response = await _getAllImageUrlsByPanelSetIdController(0);
-        expect(response).toEqual(new Error(`Invalid panel id: ${0}`));
+        expect(response).toEqual(new Error(`Invalid panel id: 0`));
     });
     test('Return a list of panel images', async () => {
         const panelImages = [{ image: 'image1' }, { image: 'image2' }, { image: 'image3' }];

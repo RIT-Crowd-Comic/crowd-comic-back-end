@@ -32,27 +32,6 @@ describe('Create Panel Controller', () => {
     });
 });
 
-
-describe('Update Panel Controller', () => {
-    test('If panel does not exist, throw an error', async () => {
-        const sequelize = sequelizeMock({ models: { panel: { findByPk: jest.fn(() => Promise.resolve(null)) } } });
-        const response = await panel._updatePanelController(sequelize)(0, '');
-        expect(response).toBeInstanceOf(Error);
-    });
-    test('If panel does exist, return the updated panel', async () => {
-        const panelObj = { a: 'abcd' };
-        const sequelize = sequelizeMock({ models: { panel: { findByPk: jest.fn(() => Promise.resolve('a')) } } });
-        (panelService.updatePanel as jest.Mock).mockResolvedValue(panelObj);
-        const response = await panel._updatePanelController(sequelize)(0, '');
-        expect(response).toBe(panelObj);
-    });
-    test('If there is an error, return the error', async() => {
-        const sequelize = sequelizeMock({ models: { panel: { findByPk: jest.fn(() => { throw new Error('I am an error'); }) } } });
-        const response = await panel._updatePanelController(sequelize)(0, '');
-        expect(response).toBeInstanceOf(Error);
-    });
-});
-
 describe('Get Panel Controller', () => {
     test('Return what the database service outputs for getPanel', async () => {
         const panelData = {

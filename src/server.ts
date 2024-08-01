@@ -11,13 +11,14 @@ import path from 'path';
 import router from './router';
 import { setup as setupDatabase } from './database';
 import * as helpers from './helpers';
+import { setupS3 } from './s3Init';
 
 const port = process.env.PORT || process.env.NODE_PORT || 4000;
 
 const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, './api-autogen-spec.json'), 'utf-8'));
 
 // set up database before connecting server
-setupDatabase().then(() => {
+setupDatabase().then(async () => {
     const app = express();
 
     // default headers
@@ -42,6 +43,8 @@ setupDatabase().then(() => {
 
     router(app);
 
+    await setupS3();
+  
     // error handling 
     app.use(helpers.errorHandler);
 

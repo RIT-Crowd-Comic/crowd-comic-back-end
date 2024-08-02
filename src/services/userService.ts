@@ -29,14 +29,18 @@ const PASSWORD_SALT_ROUNDS = 10;
  */
 const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promise<UserInfo> => {
 
-    const { display_name, email, id, profile_picture } = await sequelize.models.user.create({
-        email:        newUser.email,
-        password:     await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
-        display_name: newUser.display_name,
+    const {
+        display_name, email, id, profile_picture
+    } = await sequelize.models.user.create({
+        email:           newUser.email,
+        password:        await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
+        display_name:    newUser.display_name,
         profile_picture: null
     }) as IUser;
 
-    return { display_name, email, id, profile_picture };
+    return {
+        display_name, email, id, profile_picture
+    };
 };
 
 /**
@@ -55,9 +59,9 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
     const match = await bcrypt.compare(password, user.password);
 
     if (match) return {
-        email:        user.email,
-        display_name: user.display_name,
-        id:           user.id,
+        email:           user.email,
+        display_name:    user.display_name,
+        id:              user.id,
         profile_picture: user.profile_picture
     } as UserInfo;
 
@@ -103,9 +107,9 @@ const changeDisplayName = (sequelize : Sequelize) => async (email: string, newDi
 const getUserByID = (sequelize: Sequelize) => async (id: string) => {
     const user = await sequelize.models.user.findByPk(id) as IUser;
     return {
-        email:        user.email,
-        display_name: user.display_name,
-        id:           user.id,
+        email:           user.email,
+        display_name:    user.display_name,
+        id:              user.id,
         profile_picture: user.profile_picture
     } as UserInfo;
 };
@@ -120,9 +124,9 @@ const getUserBySession = (sequelize: Sequelize) => async (session_id: string) =>
     if (!session) return null;
     const user = await sequelize.models.user.findByPk(session.user_id) as IUser;
     return {
-        email:        user.email,
-        display_name: user.display_name,
-        id:           user.id,
+        email:           user.email,
+        display_name:    user.display_name,
+        id:              user.id,
         profile_picture: user.profile_picture
     } as UserInfo;
 };

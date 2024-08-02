@@ -1182,7 +1182,7 @@
         "tags": [
           "user"
         ],
-        "summary": "change user",
+        "summary": "change user profile picture",
         "description": "",
         "consumes": [
           "multipart/form-data"

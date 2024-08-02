@@ -399,7 +399,7 @@ const changePfp = async (req: Request, res: Response) => {
 
     /*  
         #swagger.tags = ['user']
-        #swagger.summary = 'change user's profile picture'
+        #swagger.summary = 'change user profile picture'
         #swagger.consumes = ['multipart/form-data']
         #swagger.parameters['image'] = {
             in: 'formData',

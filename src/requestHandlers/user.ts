@@ -393,7 +393,7 @@ const changePfp = async (req: Request, res: Response) => {
 
     const validArgs = assertArgumentsString(email);
     if (!validArgs.success) return res.status(400).json(validArgs);
-    
+
     const response = await _changePfpController(sequelize)(email, buffer, mimetype);
     return sanitizeResponse(response, res);
 
@@ -425,9 +425,9 @@ const changePfp = async (req: Request, res: Response) => {
         }
         #swagger.responses[500] = {}
     */
-}
+};
 
 export {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController, _getUserBySessionController, getUserBySession, _changePfpController, changePfp 
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController, _getUserBySessionController, getUserBySession, _changePfpController, changePfp
 };

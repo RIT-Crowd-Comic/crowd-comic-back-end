@@ -1,7 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { ISession, IUser } from '../models';
 import bcrypt from 'bcrypt';
-import { sequelize } from '../database';
 import { _saveImageController } from '../requestHandlers/image';
 
 /**
@@ -100,9 +99,9 @@ const changeDisplayName = (sequelize : Sequelize) => async (email: string, newDi
 const getUserByID = (sequelize: Sequelize) => async (id: string) => {
     const user = await sequelize.models.user.findByPk(id) as IUser;
     return {
-        email: user.email,
+        email:        user.email,
         display_name: user.display_name,
-        id: user.id
+        id:           user.id
     } as UserInfo;
 };
 
@@ -116,9 +115,9 @@ const getUserBySession = (sequelize: Sequelize) => async (session_id: string) =>
     if (!session) return null;
     const user = await sequelize.models.user.findByPk(session.user_id) as IUser;
     return {
-        email: user.email,
+        email:        user.email,
         display_name: user.display_name,
-        id: user.id
+        id:           user.id
     } as UserInfo;
 };
 
@@ -134,10 +133,10 @@ const changePfp = (sequelize: Sequelize) => async (email: string, buffer: Buffer
     if (!user) throw new Error(`No user found with email ${email}`);
 
     const PFP = await _saveImageController(user.id, buffer, mimetype) as {id: string} | Error;
-    if(!PFP || PFP instanceof Error) throw new Error(`S3 Error ${PFP?.message}`)
+    if (!PFP || PFP instanceof Error) throw new Error(`S3 Error ${PFP?.message}`);
     await user.update({ profile_picture: user.id });
     return true;
-}
+};
 
 export {
     createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession, changePfp, UserInfo,

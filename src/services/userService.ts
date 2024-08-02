@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { ISession, IUser } from '../models';
 import bcrypt from 'bcrypt';
+import { sequelize } from '../database';
 
 /**
  * Information required to create a new user
@@ -119,6 +120,13 @@ const getUserBySession = (sequelize: Sequelize) => async (session_id: string) =>
         id: user.id
     } as UserInfo;
 };
+
+const changePFP = (sequelize: Sequelize) => async (email: string, buffer: Buffer, mimetype: string) => {
+    const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
+    if (!user) return false;
+
+    
+}
 
 export {
     createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession, UserInfo,

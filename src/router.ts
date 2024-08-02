@@ -53,7 +53,7 @@ export default (app: Express) => {
     app.post('/createSession', session.createSession);
     app.post('/changePassword', user.changePassword);
     app.post('/changeDisplayName', user.changeDisplayName);
-    if(process.env.NODE_ENV === 'development') app.post('/saveImage', upload.single('image'), image.saveImage); 
+    app.post('/saveImage', upload.single('image'), image.saveImage); 
     app.post('*', utils.notFound);
 
     app.patch('*', utils.notFound);

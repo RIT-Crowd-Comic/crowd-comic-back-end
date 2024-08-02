@@ -40,6 +40,7 @@ const saveImage = async (req: Request, res: Response): Promise<Response> => {
     // API documentation
     /*
     #swagger.tags = ['image']
+    #swagger.summary = 'Save a single image'
     #swagger.consumes = ['multipart/form-data']
     #swagger.parameters['image'] = {
         in: 'formData',

@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import { ISession, IUser } from '../models';
 import bcrypt from 'bcrypt';
 import { _saveImageController } from '../requestHandlers/image';
+import { getImage } from './imageService';
 
 /**
  * Information required to create a new user
@@ -16,6 +17,7 @@ interface UserInfo {
     email: string,
     display_name: string,
     id: string,
+    profile_picture: string
 }
 
 
@@ -27,13 +29,14 @@ const PASSWORD_SALT_ROUNDS = 10;
  */
 const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promise<UserInfo> => {
 
-    const { display_name, email, id } = await sequelize.models.user.create({
+    const { display_name, email, id, profile_picture } = await sequelize.models.user.create({
         email:        newUser.email,
         password:     await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
         display_name: newUser.display_name,
+        profile_picture: null
     }) as IUser;
 
-    return { display_name, email, id };
+    return { display_name, email, id, profile_picture };
 };
 
 /**
@@ -54,7 +57,8 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
     if (match) return {
         email:        user.email,
         display_name: user.display_name,
-        id:           user.id
+        id:           user.id,
+        profile_picture: user.profile_picture
     } as UserInfo;
 
     return undefined;
@@ -101,7 +105,8 @@ const getUserByID = (sequelize: Sequelize) => async (id: string) => {
     return {
         email:        user.email,
         display_name: user.display_name,
-        id:           user.id
+        id:           user.id,
+        profile_picture: user.profile_picture
     } as UserInfo;
 };
 
@@ -117,7 +122,8 @@ const getUserBySession = (sequelize: Sequelize) => async (session_id: string) =>
     return {
         email:        user.email,
         display_name: user.display_name,
-        id:           user.id
+        id:           user.id,
+        profile_picture: user.profile_picture
     } as UserInfo;
 };
 
@@ -134,8 +140,9 @@ const changePfp = (sequelize: Sequelize) => async (email: string, buffer: Buffer
 
     const PFP = await _saveImageController(user.id, buffer, mimetype) as {id: string} | Error;
     if (!PFP || PFP instanceof Error) throw new Error(`S3 Error ${PFP?.message}`);
-    await user.update({ profile_picture: user.id });
-    return true;
+    const url = await getImage(user.id);
+    await user.update({ profile_picture: url });
+    return url;
 };
 
 export {

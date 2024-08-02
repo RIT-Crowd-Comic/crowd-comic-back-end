@@ -414,8 +414,8 @@ const changePfp = async (req: Request, res: Response) => {
             description: 'User to update's email'
         }
         #swagger.responses[200] = {
-            description: 'A true response indicating success',
-            schema: [{ true }]
+            description: 'Link to the profile picture that was just uploaded',
+            schema: [{ 'http://host.com/crowd-comic/user-id-1234-5678' }]
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }

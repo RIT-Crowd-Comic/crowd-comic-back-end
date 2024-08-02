@@ -12,6 +12,7 @@ import {
 } from './utils';
 import validator from 'validator';
 import { sequelize } from '../database';
+import { validateImageFile } from './image';
 
 /**
  * Gets the user given an id
@@ -369,7 +370,64 @@ const getUserBySession = async (req: Request, res: Response) => {
     */
 };
 
+const _changePfpController = (sequelize: Sequelize) => async (id: string, buffer: Buffer, mimetype: string) => {
+    try {
+        return await UserService.changePfp(sequelize)(id, buffer, mimetype);
+    }
+    catch (err) {
+        return err;
+    }
+};
+
+const changePfp = async (req: Request, res: Response) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    if (!validateImageFile(req.file)) {
+        return res.status(400).json({ error: 'Uploaded file must be an image' });
+    }
+    const mimetype = req.file.mimetype;
+    const buffer = req.file.buffer;
+    const email = req.body.email;
+
+    const validArgs = assertArgumentsString(email);
+    if (!validArgs.success) return res.status(400).json(validArgs);
+    
+    const response = await _changePfpController(sequelize)(email, buffer, mimetype);
+    return sanitizeResponse(response, res);
+
+    /*  
+        #swagger.tags = ['user']
+        #swagger.summary = 'change user's profile picture'
+        #swagger.consumes = ['multipart/form-data']
+        #swagger.parameters['image'] = {
+            in: 'formData',
+            type: 'file',
+            required: true,
+            description: 'The file of the image to save.'
+        }
+        #swagger.parameters['email'] = {
+            in: 'formData',
+            type: 'string',
+            required: true,
+            description: 'User to update's email'
+        }
+        #swagger.responses[200] = {
+            description: 'A true response indicating success',
+            schema: [{ true }]
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: `User with an email of ${email} does not exist` }
+        }
+        #swagger.responses[500] = {}
+    */
+}
+
 export {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController, _getUserBySessionController, getUserBySession
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController, _getUserBySessionController, getUserBySession, _changePfpController, changePfp 
 };

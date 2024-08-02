@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import { ISession, IUser } from '../models';
 import bcrypt from 'bcrypt';
 import { sequelize } from '../database';
+import { _saveImageController } from '../requestHandlers/image';
 
 /**
  * Information required to create a new user
@@ -121,13 +122,23 @@ const getUserBySession = (sequelize: Sequelize) => async (session_id: string) =>
     } as UserInfo;
 };
 
-const changePFP = (sequelize: Sequelize) => async (email: string, buffer: Buffer, mimetype: string) => {
+/**
+ * Change the profile picture of a user
+ * @param {string} email Email of user to change
+ * @param {Buffer} buffer Image buffer
+ * @param {string} mimetype Image type
+ * @returns 
+ */
+const changePfp = (sequelize: Sequelize) => async (email: string, buffer: Buffer, mimetype: string) => {
     const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
-    if (!user) return false;
+    if (!user) throw new Error(`No user found with email ${email}`);
 
-    
+    const PFP = await _saveImageController(user.id, buffer, mimetype) as {id: string} | Error;
+    if(!PFP || PFP instanceof Error) throw new Error(`S3 Error ${PFP?.message}`)
+    await user.update({ profile_picture: user.id });
+    return true;
 }
 
 export {
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession, UserInfo,
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, getUserBySession, changePfp, UserInfo,
 };

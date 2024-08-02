@@ -363,7 +363,7 @@ const getUserBySession = async (req: Request, res: Response) => {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: `Session/User with an id of ${id} does not exist` }
+            schema: { message: 'Session/User with an id of ${id} does not exist' }
         }
         #swagger.responses[500] = {}
     */

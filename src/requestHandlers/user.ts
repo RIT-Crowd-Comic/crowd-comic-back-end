@@ -421,7 +421,7 @@ const changePfp = async (req: Request, res: Response) => {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: `User with an email of ${email} does not exist` }
+            schema: { message: 'User with an email of ${email} does not exist' }
         }
         #swagger.responses[500] = {}
     */

@@ -51,10 +51,10 @@ const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: 
 const deleteImage = async(id : string)=>{
 
     const params = {
-        Bucket:      process.env.BUCKET_NAME,
-        Key:         id
+        Bucket: process.env.BUCKET_NAME,
+        Key:    id
     };
-    
+
     await s3.send(new DeleteObjectCommand(params));
 
     return { id: id }; // return id to show valid deletion

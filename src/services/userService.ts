@@ -142,13 +142,13 @@ const changePfp = (sequelize: Sequelize) => async (email: string, buffer: Buffer
     const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
     if (!user) throw new Error(`No user found with email ${email}`);
 
-    const deleted = await _deleteImageController(user.profile_picture.substring(user.profile_picture.length-49)) as {id: string} | Error; //49 is the length of the image id
+    const deleted = await _deleteImageController(user.profile_picture.substring(user.profile_picture.length - 49)) as {id: string} | Error; // 49 is the length of the image id
     if (!deleted || deleted instanceof Error) throw new Error(`S3 Error ${deleted?.message}`);
 
-    const id = user.id+Date.now();
+    const id = user.id + Date.now();
     const PFP = await _saveImageController(id, buffer, mimetype) as {id: string} | Error;
     if (!PFP || PFP instanceof Error) throw new Error(`S3 Error ${PFP?.message}`);
-    
+
     const url = await getImage(id);
     await user.update({ profile_picture: url });
     return url;

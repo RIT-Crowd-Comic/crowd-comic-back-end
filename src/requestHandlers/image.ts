@@ -157,11 +157,12 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
 const _deleteImageController = (id: string) => {
     try {
         imageService.deleteImage(id);
-    } catch (error) {
+    }
+    catch (error) {
         return error;
     }
-}
+};
 
 export {
-    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned,saveImage, _saveImageController, _getImageControllerSigned, validateImageFile, _deleteImageController
+    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned, saveImage, _saveImageController, _getImageControllerSigned, validateImageFile, _deleteImageController
 };

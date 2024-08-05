@@ -11,8 +11,7 @@ const getLinks = () => {
     return links;
 };
 
-const getUser = async () => {
-   const timestamp = new Date().toISOString();
+const getUser = async (timestamp) => {
    return  {
         id:           'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce',
         display_name: 'Admin',
@@ -23,4 +22,6 @@ const getUser = async () => {
     }
 }
 
-module.exports = { getLinks, getUser };
+const getTimeStamp = () => {return new Date().toISOString();}
+
+module.exports = { getLinks, getUser, getTimeStamp };

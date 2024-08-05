@@ -145,7 +145,7 @@ const changePfp = (sequelize: Sequelize) => async (email: string, buffer: Buffer
     const PFP = await _saveImageController(user.id, buffer, mimetype) as {id: string} | Error;
     if (!PFP || PFP instanceof Error) throw new Error(`S3 Error ${PFP?.message}`);
     const url = await getImage(user.id);
-    await user.update({ profile_picture: url });
+    if(!user.profile_picture) await user.update({ profile_picture: url });
     return url;
 };
 

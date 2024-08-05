@@ -3,13 +3,12 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const { getLinks, getUser } = require('./utils');
-const timestamp = '2024-07-23 09:38:33.841-07';
 
 //FOR DEVELOPMENT, assumes S3 Already has images
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface) {
-      const user = await getUser(timestamp);
+      const user = await getUser();
         const hook1 = `[ {
             "x": 127.6,
             "y": 754.3
@@ -2836,7 +2835,7 @@ module.exports = {
         "x": 751.1,
         "y": 796.4
       }]`;
-        const links = getLinks(timestamp);
+        const links = getLinks();
 
         // ensure that changes are rolled back on error. We don't want only some data to be created
         const transaction = await queryInterface.sequelize.transaction();
@@ -2848,8 +2847,8 @@ module.exports = {
                 {
                     author_id:  user.id,
                     name:       'Trunk 1',
-                    created_at: timestamp,
-                    updated_at: timestamp
+                    created_at: user.timestamp,
+                    updated_at: user.timestamp
                 }
             ], { returning: ['id'], transaction });
 
@@ -2861,22 +2860,22 @@ module.exports = {
                     image:        links[0],
                     index:        0,
                     panel_set_id: panelSetId,
-                    created_at:   timestamp,
-                    updated_at:   timestamp
+                    created_at:   user.timestamp,
+                    updated_at:   user.timestamp
                 },
                 {
                     image:        links[1],
                     index:        1,
                     panel_set_id: panelSetId,
-                    created_at:   timestamp,
-                    updated_at:   timestamp
+                    created_at:   user.timestamp,
+                    updated_at:   user.timestamp
                 },
                 {
                     image:        links[2],
                     index:        2,
                     panel_set_id: panelSetId,
-                    created_at:   timestamp,
-                    updated_at:   timestamp
+                    created_at:   user.timestamp,
+                    updated_at:   user.timestamp
                 },
             ], { returning: ['id'], transaction });
 
@@ -2886,22 +2885,22 @@ module.exports = {
                     position:          hook1,
                     current_panel_id:  panels[2].id,
                     next_panel_set_id: null,
-                    created_at:        timestamp,
-                    updated_at:        timestamp
+                    created_at:        user.timestamp,
+                    updated_at:        user.timestamp
                 },
                 {
                     position:          hook2,
                     current_panel_id:  panels[2].id,
                     next_panel_set_id: null,
-                    created_at:        timestamp,
-                    updated_at:        timestamp
+                    created_at:        user.timestamp,
+                    updated_at:        user.timestamp
                 },
                 {
                     position:          hook3,
                     current_panel_id:  panels[2].id,
                     next_panel_set_id: null,
-                    created_at:        timestamp,
-                    updated_at:        timestamp
+                    created_at:        user.timestamp,
+                    updated_at:        user.timestamp
                 }
 
             ], { transaction });

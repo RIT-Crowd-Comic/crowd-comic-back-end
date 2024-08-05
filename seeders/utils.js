@@ -11,7 +11,8 @@ const getLinks = () => {
     return links;
 };
 
-const getUser = async (timestamp) => {
+const getUser = async () => {
+   const timestamp = new Date().toISOString();
    return  {
         id:           'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce',
         display_name: 'Admin',

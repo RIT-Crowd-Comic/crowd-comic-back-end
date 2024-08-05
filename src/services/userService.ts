@@ -98,9 +98,9 @@ const changeDisplayName = (sequelize : Sequelize) => async (email: string, newDi
 const getUserByID = (sequelize: Sequelize) => async (id: string) => {
     const user = await sequelize.models.user.findByPk(id) as IUser;
     return {
-        email: user.email,
+        email:        user.email,
         display_name: user.display_name,
-        id: user.id
+        id:           user.id
     } as UserInfo;
 };
 
@@ -114,9 +114,9 @@ const getUserBySession = (sequelize: Sequelize) => async (session_id: string) =>
     if (!session) return null;
     const user = await sequelize.models.user.findByPk(session.user_id) as IUser;
     return {
-        email: user.email,
+        email:        user.email,
         display_name: user.display_name,
-        id: user.id
+        id:           user.id
     } as UserInfo;
 };
 

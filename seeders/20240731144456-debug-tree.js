@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const dotenv = require('dotenv');
 dotenv.config();
-const { getLinks, getUser } = require('./utils');
+const { getLinks, getUser, getTimeStamp } = require('./utils');
 
 /** @type {import('sequelize-cli').Migration} */
 
@@ -1016,6 +1016,7 @@ module.exports = {
     async down(queryInterface, { Op }) {
 
         const user = await getUser();
+
         // ensure that changes are rolled back on error. We don't want only some data to be deleted
         const transaction = await queryInterface.sequelize.transaction();
         try {

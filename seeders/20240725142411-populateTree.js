@@ -4,12 +4,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 const { getLinks, getUser, getTimeStamp } = require('./utils');
 
-//FOR DEVELOPMENT, assumes S3 Already has images
+// FOR DEVELOPMENT, assumes S3 Already has images
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface) {
-      const timestamp = getTimeStamp();
-      const user = await getUser(timestamp);
+    async up(queryInterface) {
+        const timestamp = getTimeStamp();
+        const user = await getUser(timestamp);
         const hook1 = `[ {
             "x": 127.6,
             "y": 754.3
@@ -2916,7 +2916,8 @@ module.exports = {
     },
 
     async down(queryInterface, { Op }) {
-      const user = await getUser();
+        const user = await getUser();
+
         // ensure that changes are rolled back on error. We don't want only some data to be deleted
         const transaction = await queryInterface.sequelize.transaction();
         try {

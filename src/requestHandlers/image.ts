@@ -33,7 +33,7 @@ const saveImage = async (req: Request, res: Response): Promise<Response> => {
 
     const validArgs = assertArgumentsString(id);
     if (!validArgs.success) return res.status(400).json(validArgs);
-    
+
     const response = await _saveImageController(id, buffer, mimetype);
     return sanitizeResponse(response, res);
 
@@ -153,7 +153,14 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
     return mimetype.includes('image');
 };
 
+const _deleteImageController = (id: string) => {
+    try {
+        imageService.deleteImage(id);
+    } catch (error) {
+        return error;
+    }
+}
 
 export {
-    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned,saveImage, _saveImageController, _getImageControllerSigned, validateImageFile
+    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned,saveImage, _saveImageController, _getImageControllerSigned, validateImageFile, _deleteImageController
 };

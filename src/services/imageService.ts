@@ -1,4 +1,4 @@
-import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { s3 } from '../s3Init';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Sequelize } from 'sequelize';
@@ -47,6 +47,19 @@ const getAllImagesByPanelSetId = (sequelize: Sequelize) => async (panel_set_id: 
         order:      [ ['index', 'ASC'] ]
     });
 };
+
+const deleteImage = async(id : string)=>{
+
+    const params = {
+        Bucket:      process.env.BUCKET_NAME,
+        Key:         id
+    };
+    
+    await s3.send(new DeleteObjectCommand(params));
+
+    return { id: id }; // return id to show valid deletion
+};
+
 export {
-    saveImage, getImageSigned, getAllImagesByPanelSetId, getImage
+    saveImage, getImageSigned, getAllImagesByPanelSetId, getImage, deleteImage
 };

@@ -12,6 +12,7 @@ import {
 } from './utils';
 import validator from 'validator';
 import { sequelize } from '../database';
+import { validateImageFile } from './image';
 
 /**
  * Gets the user given an id
@@ -369,7 +370,78 @@ const getUserBySession = async (req: Request, res: Response) => {
     */
 };
 
+const _changePfpController = (sequelize: Sequelize) => async (id: string, buffer: Buffer, mimetype: string) => {
+    try {
+        return await UserService.changePfp(sequelize)(id, buffer, mimetype);
+    }
+    catch (err) {
+        return err;
+    }
+};
+
+const changePfp = async (req: Request, res: Response) => {
+    let data;
+
+    // parse the data field
+    try {
+        data = JSON.parse(req.body.data);
+    }
+    catch (e) {
+        return res.status(400).json({ message: 'data is not valid JSON and cannot be accepted' });
+    }
+    const email = data.email;
+
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    if (!validateImageFile(req.file)) {
+        return res.status(400).json({ error: 'Uploaded file must be an image' });
+    }
+    const mimetype = req.file.mimetype;
+    const buffer = req.file.buffer;
+
+    const validArgs = assertArgumentsString(email);
+    if (!validArgs.success) return res.status(400).json(validArgs);
+
+    const response = await _changePfpController(sequelize)(email, buffer, mimetype);
+    return sanitizeResponse(response, res);
+
+    /*  
+        #swagger.tags = ['user']
+        #swagger.summary = 'change user profile picture'
+        #swagger.consumes = ['multipart/form-data']
+        #swagger.parameters['image'] = {
+            in: 'formData',
+            type: 'file',
+            required: true,
+            description: 'The file of the image to save.'
+        }
+        #swagger.parameters['data'] = {
+            in: 'formData',
+            required: true,
+            description: 'email of user to update'
+        }
+        #swagger.parameters['Data Template'] = {
+            in: 'body',
+            description: 'Schema for the data',
+            schema: { email: 'example@email.com' }
+        }
+        #swagger.responses[200] = {
+            description: 'Link to the profile picture that was just uploaded',
+            schema: { url: 'http://host.com/crowd-comic/user-id-1234-5678' }
+        }
+        #swagger.responses[400] = {
+            schema: { $ref: '#/definitions/error' }
+        }
+        #swagger.responses[404] = {
+            schema: { message: 'User with an email of ${email} does not exist' }
+        }
+        #swagger.responses[500] = {}
+    */
+};
+
 export {
     _createUserController, _authenticateController, _changePasswordController, _changeDisplayNameController,
-    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController, _getUserBySessionController, getUserBySession
+    createUser, authenticate, changePassword, changeDisplayName, getUserByID, _getUserByIDController, _getUserBySessionController, getUserBySession, _changePfpController, changePfp
 };

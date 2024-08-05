@@ -11,8 +11,9 @@ interface IUser extends Model<InferAttributes<IUser>, InferCreationAttributes<IU
     display_name: string,
     email: string,
     password: string,
-    panel_sets?: NonAttribute<IPanelSet[]>
-    session?: NonAttribute<ISession>;
+    profile_picture: string,
+    panel_sets?: NonAttribute<IPanelSet[]>,
+    session?: NonAttribute<ISession>
 }
 
 /**
@@ -44,6 +45,10 @@ const define = (sequelize: Sequelize): void => {
                 allowNull: false,
 
                 // don't validate password here because it's a hash
+            },
+            profile_picture: {
+                type:      DataTypes.STRING,
+                allowNull: true,
             }
         },
         {

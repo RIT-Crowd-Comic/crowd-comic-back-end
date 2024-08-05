@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { ISession, IUser } from '../models';
 import bcrypt from 'bcrypt';
-import { _saveImageController } from '../requestHandlers/image';
+import { _deleteImageController, _saveImageController } from '../requestHandlers/image';
 import { getImage } from './imageService';
 
 /**
@@ -142,10 +142,17 @@ const changePfp = (sequelize: Sequelize) => async (email: string, buffer: Buffer
     const user = await sequelize.models.user.findOne({ where: { email } }) as IUser;
     if (!user) throw new Error(`No user found with email ${email}`);
 
-    const PFP = await _saveImageController(user.id, buffer, mimetype) as {id: string} | Error;
+    if(user.profile_picture) {
+        const deleted = await _deleteImageController(user.profile_picture.substring(user.profile_picture.length - 49)) as {id: string} | Error; // 49 is the length of the image id
+        if (deleted instanceof Error) throw new Error(`S3 Error ${deleted?.message}`);
+    }
+
+    const id = user.id + Date.now();
+    const PFP = await _saveImageController(id, buffer, mimetype) as {id: string} | Error;
     if (!PFP || PFP instanceof Error) throw new Error(`S3 Error ${PFP?.message}`);
-    const url = await getImage(user.id);
-    if(!user.profile_picture) await user.update({ profile_picture: url });
+
+    const url = await getImage(id);
+    await user.update({ profile_picture: url });
     return url;
 };
 

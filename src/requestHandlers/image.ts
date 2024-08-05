@@ -154,7 +154,15 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
     return mimetype.includes('image');
 };
 
+const _deleteImageController = (id: string) => {
+    try {
+        return imageService.deleteImage(id);
+    }
+    catch (error) {
+        return error;
+    }
+};
 
 export {
-    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned, saveImage, _saveImageController, _getImageControllerSigned, validateImageFile
+    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned, saveImage, _saveImageController, _getImageControllerSigned, validateImageFile, _deleteImageController
 };

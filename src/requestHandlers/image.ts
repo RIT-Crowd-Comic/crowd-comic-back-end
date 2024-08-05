@@ -18,6 +18,7 @@ const _saveImageController = async (id : string, buffer: Buffer, mimetype: strin
         return err;
     }
 };
+
 // save an image request
 const saveImage = async (req: Request, res: Response): Promise<Response> => {
     if (!req.file) {
@@ -33,7 +34,7 @@ const saveImage = async (req: Request, res: Response): Promise<Response> => {
 
     const validArgs = assertArgumentsString(id);
     if (!validArgs.success) return res.status(400).json(validArgs);
-    
+
     const response = await _saveImageController(id, buffer, mimetype);
     return sanitizeResponse(response, res);
 
@@ -155,5 +156,5 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
 
 
 export {
-    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned,saveImage, _saveImageController, _getImageControllerSigned, validateImageFile
+    getAllImageUrlsByPanelSetId, _getAllImageUrlsByPanelSetIdController, getImageSigned, saveImage, _saveImageController, _getImageControllerSigned, validateImageFile
 };

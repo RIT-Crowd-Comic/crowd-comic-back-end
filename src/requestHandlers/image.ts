@@ -156,7 +156,7 @@ const validateImageFile = (file: Express.Multer.File | null): boolean => {
 
 const _deleteImageController = (id: string) => {
     try {
-        imageService.deleteImage(id);
+        return imageService.deleteImage(id);
     }
     catch (error) {
         return error;

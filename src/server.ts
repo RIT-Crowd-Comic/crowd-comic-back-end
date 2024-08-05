@@ -44,7 +44,7 @@ setupDatabase().then(async () => {
     router(app);
 
     await setupS3();
-  
+
     // error handling 
     app.use(helpers.errorHandler);
 

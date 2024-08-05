@@ -18,6 +18,7 @@ const _saveImageController = async (id : string, buffer: Buffer, mimetype: strin
         return err;
     }
 };
+
 // save an image request
 const saveImage = async (req: Request, res: Response): Promise<Response> => {
     if (!req.file) {

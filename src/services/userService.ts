@@ -144,7 +144,7 @@ const changePfp = (sequelize: Sequelize) => async (email: string, buffer: Buffer
 
     if(user.profile_picture) {
         const deleted = await _deleteImageController(user.profile_picture.substring(user.profile_picture.length - 49)) as {id: string} | Error; // 49 is the length of the image id
-        if (!deleted || deleted instanceof Error) throw new Error(`S3 Error ${deleted?.message}`);
+        if (deleted instanceof Error) throw new Error(`S3 Error ${deleted?.message}`);
     }
 
     const id = user.id + Date.now();

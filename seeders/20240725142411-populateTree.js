@@ -1,15 +1,15 @@
 'use strict';
 /* eslint-disable @typescript-eslint/no-var-requires */
-const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
-const { getLinks } = require('./utils');
-const userID = 'fe85b84d-fd04-4830-9f0f-4b4524c4c8ce';
+const { getLinks, getUser } = require('./utils');
+const timestamp = '2024-07-23 09:38:33.841-07';
 
 //FOR DEVELOPMENT, assumes S3 Already has images
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface) {
+      const user = await getUser(timestamp);
         const hook1 = `[ {
             "x": 127.6,
             "y": 754.3
@@ -2836,27 +2836,17 @@ module.exports = {
         "x": 751.1,
         "y": 796.4
       }]`;
-        const links = getLinks();
-        const timestamp = '2024-07-23 09:38:33.841-07';
+        const links = getLinks(timestamp);
 
         // ensure that changes are rolled back on error. We don't want only some data to be created
         const transaction = await queryInterface.sequelize.transaction();
         try {
-            await queryInterface.bulkInsert('users', [
-                {
-                    id:           userID,
-                    display_name: 'Admin',
-                    email:        'example@example.com',
-                    password:     await bcrypt.hash('Password!', 10),
-                    created_at:   timestamp,
-                    updated_at:   timestamp
-                }
-            ], { returning: ['id'], transaction });
+            await queryInterface.bulkInsert('users', [ user ], { returning: ['id'], transaction });
 
             // create panel_sets
             const panelSets = await queryInterface.bulkInsert('panel_sets', [
                 {
-                    author_id:  userID,
+                    author_id:  user.id,
                     name:       'Trunk 1',
                     created_at: timestamp,
                     updated_at: timestamp
@@ -2926,7 +2916,7 @@ module.exports = {
     },
 
     async down(queryInterface, { Op }) {
-
+      const user = await getUser();
         // ensure that changes are rolled back on error. We don't want only some data to be deleted
         const transaction = await queryInterface.sequelize.transaction();
         try {
@@ -2943,7 +2933,7 @@ module.exports = {
             await queryInterface.bulkDelete('hooks', { id: { [Op.lte]: 3 } }, { transaction });
 
             // delete user after all the dependent tables are deleted
-            await queryInterface.bulkDelete('users', { id: userID });
+            await queryInterface.bulkDelete('users', { id: user.id });
 
             await transaction.commit();
         }

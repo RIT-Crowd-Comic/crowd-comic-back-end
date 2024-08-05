@@ -610,6 +610,24 @@
             "schema": {
               "$ref": "#/definitions/error"
             }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Session/User with an id of ${id} does not exist"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -1196,21 +1214,66 @@
             "description": "The file of the image to save."
           },
           {
-            "name": "body",
+            "name": "data",
+            "in": "formData",
+            "required": true,
+            "description": "email of user to update",
+            "type": "string"
+          },
+          {
+            "name": "Data Template",
             "in": "body",
+            "description": "Schema for the data",
             "schema": {
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "example@email.com"
                 }
               }
             }
           }
         ],
         "responses": {
+          "200": {
+            "description": "Link to the profile picture that was just uploaded",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "example": "http://host.com/crowd-comic/user-id-1234-5678"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User with an email of ${email} does not exist"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

@@ -364,7 +364,7 @@ const getUserBySession = async (req: Request, res: Response) => {
             schema: { $ref: '#/definitions/error' }
         }
         #swagger.responses[404] = {
-            schema: { message: `Session/User with an id of ${id} does not exist` }
+            schema: { message: 'Session/User with an id of ${id} does not exist' }
         }
         #swagger.responses[500] = {}
     */
@@ -380,6 +380,17 @@ const _changePfpController = (sequelize: Sequelize) => async (id: string, buffer
 };
 
 const changePfp = async (req: Request, res: Response) => {
+    let data;
+
+    // parse the data field
+    try {
+        data = JSON.parse(req.body.data);
+    }
+    catch (e) {
+        return res.status(400).json({ message: 'data is not valid JSON and cannot be accepted' });
+    }
+    const email = data.email;
+
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -389,7 +400,6 @@ const changePfp = async (req: Request, res: Response) => {
     }
     const mimetype = req.file.mimetype;
     const buffer = req.file.buffer;
-    const email = req.body.email;
 
     const validArgs = assertArgumentsString(email);
     if (!validArgs.success) return res.status(400).json(validArgs);
@@ -407,15 +417,19 @@ const changePfp = async (req: Request, res: Response) => {
             required: true,
             description: 'The file of the image to save.'
         }
-        #swagger.parameters['email'] = {
+        #swagger.parameters['data'] = {
             in: 'formData',
-            type: 'string',
             required: true,
-            description: 'User to update's email'
+            description: 'email of user to update'
+        }
+        #swagger.parameters['Data Template'] = {
+            in: 'body',
+            description: 'Schema for the data',
+            schema: { email: 'example@email.com' }
         }
         #swagger.responses[200] = {
             description: 'Link to the profile picture that was just uploaded',
-            schema: [{ 'http://host.com/crowd-comic/user-id-1234-5678' }]
+            schema: { url: 'http://host.com/crowd-comic/user-id-1234-5678' }
         }
         #swagger.responses[400] = {
             schema: { $ref: '#/definitions/error' }

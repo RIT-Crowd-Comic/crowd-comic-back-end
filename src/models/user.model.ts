@@ -13,7 +13,9 @@ interface IUser extends Model<InferAttributes<IUser>, InferCreationAttributes<IU
     password: string,
     profile_picture: string,
     panel_sets?: NonAttribute<IPanelSet[]>,
-    session?: NonAttribute<ISession>
+    session?: NonAttribute<ISession>,
+    created_at: NonAttribute<string>,
+    updated_at: NonAttribute<string>
 }
 
 /**

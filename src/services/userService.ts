@@ -18,6 +18,8 @@ interface UserInfo {
     display_name: string,
     id: string,
     profile_picture: string
+    created_at?: string,
+    updated_at?: string
 }
 
 
@@ -30,7 +32,7 @@ const PASSWORD_SALT_ROUNDS = 10;
 const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promise<UserInfo> => {
 
     const {
-        display_name, email, id, profile_picture
+        display_name, email, id, profile_picture, created_at, updated_at
     } = await sequelize.models.user.create({
         email:           newUser.email,
         password:        await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
@@ -39,7 +41,7 @@ const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promi
     }) as IUser;
 
     return {
-        display_name, email, id, profile_picture
+        display_name, email, id, profile_picture, created_at, updated_at
     };
 };
 
@@ -62,7 +64,7 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
         email:           user.email,
         display_name:    user.display_name,
         id:              user.id,
-        profile_picture: user.profile_picture
+        profile_picture: user.profile_picture,
     } as UserInfo;
 
     return undefined;
@@ -110,7 +112,10 @@ const getUserByID = (sequelize: Sequelize) => async (id: string) => {
         email:           user.email,
         display_name:    user.display_name,
         id:              user.id,
-        profile_picture: user.profile_picture
+        profile_picture: user.profile_picture,
+        created_at:      user.created_at,
+        updated_at:      user.updated_at,
+
     } as UserInfo;
 };
 

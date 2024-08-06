@@ -32,7 +32,7 @@ const PASSWORD_SALT_ROUNDS = 10;
 const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promise<UserInfo> => {
 
     const {
-        display_name, email, id, profile_picture
+        display_name, email, id, profile_picture, created_at, updated_at
     } = await sequelize.models.user.create({
         email:           newUser.email,
         password:        await bcrypt.hash(newUser.password, PASSWORD_SALT_ROUNDS),
@@ -41,7 +41,7 @@ const createUser = (sequelize : Sequelize) => async (newUser: UserConfig): Promi
     }) as IUser;
 
     return {
-        display_name, email, id, profile_picture
+        display_name, email, id, profile_picture, created_at, updated_at
     };
 };
 

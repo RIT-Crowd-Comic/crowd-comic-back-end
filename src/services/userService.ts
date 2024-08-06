@@ -18,6 +18,8 @@ interface UserInfo {
     display_name: string,
     id: string,
     profile_picture: string
+    created_at?: string,
+    updated_at?: string
 }
 
 
@@ -62,7 +64,7 @@ const authenticate = (sequelize : Sequelize) => async (email: string, password: 
         email:           user.email,
         display_name:    user.display_name,
         id:              user.id,
-        profile_picture: user.profile_picture
+        profile_picture: user.profile_picture,
     } as UserInfo;
 
     return undefined;
@@ -110,7 +112,10 @@ const getUserByID = (sequelize: Sequelize) => async (id: string) => {
         email:           user.email,
         display_name:    user.display_name,
         id:              user.id,
-        profile_picture: user.profile_picture
+        profile_picture: user.profile_picture,
+        created_at:      user.created_at,
+        updated_at:      user.updated_at,
+
     } as UserInfo;
 };
 

@@ -16,7 +16,7 @@
             "description": "Local server"
         },
         {
-            "url": "<your live url here>",
+            "url": "https://crowd-comic-back-end-6417ec5ea59c.herokuapp.com/",
             "description": "Live server"
         }
     ],
